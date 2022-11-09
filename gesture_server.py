@@ -4,7 +4,7 @@ import cv2 as cv
 import numpy as np
 import paho.mqtt.client as mqtt
 
-MQTT_BROKER = "169.254.96.47"
+MQTT_BROKER = "164.67.207.49"
 MQTT_RECEIVE = "home/server/team6/gesture"
 
 frame = np.zeros((240, 320, 3), np.uint8)
