@@ -5,20 +5,28 @@ import paho.mqtt.client as mqtt
 import base64
 import time
 # Raspberry PI IP address
-MQTT_BROKER = "169.254.96.47"
+MQTT_BROKER = 'test.mosquitto.org'
 # Topic on which frame will be published
 MQTT_SEND = "home/server/team6/gesture"
 # Object to capture the frames
 cap = cv.VideoCapture(0)
+
+if( not cap.isOpened() ):
+  print("Error when reading steam_avi")
 # Phao-MQTT Clinet
 client = mqtt.Client()
 # Establishing Connection with the Broker
 client.connect(MQTT_BROKER)
+
 try:
  while True:
   start = time.time()
   # Read Frame
   _, frame = cap.read()
+  if cv.waitKey(1) & 0xFF == ord('q'):
+        break
+  # display frame
+  cv.imshow("Stream", frame)
   # Encoding the Frame
   _, buffer = cv.imencode('.jpg', frame)
   # Converting into encoded bytes
