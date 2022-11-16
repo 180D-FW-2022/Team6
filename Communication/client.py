@@ -20,23 +20,23 @@ client.connect(MQTT_BROKER)
 
 try:
  while True:
-  start = time.time()
+  # start = time.time()
   # Read Frame
   _, frame = cap.read()
-  if cv.waitKey(1) & 0xFF == ord('q'):
-        break
+  # if cv.waitKey(1) & 0xFF == ord('q'):
+  #       break
   # display frame
-  cv.imshow("Stream", frame)
+  # cv.imshow("Stream", frame)
   # Encoding the Frame
   _, buffer = cv.imencode('.jpg', frame)
   # Converting into encoded bytes
   jpg_as_text = base64.b64encode(buffer)
   # Publishig the Frame on the Topic home/server
   client.publish(MQTT_SEND, jpg_as_text)
-  end = time.time()
-  t = end - start
-  fps = 1/t
-  print(fps)
+  # end = time.time()
+  # t = end - start
+  # fps = 1/t
+  # print(fps)
 except:
  cap.release()
  client.disconnect()
