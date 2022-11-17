@@ -3,7 +3,7 @@ import base64
 import cv2 as cv
 import numpy as np
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 client.connect(('131.179.42.113', 8080))
 
 # Object to capture the frames
@@ -15,8 +15,9 @@ try:
  while True:
   # Read Frame
   _, frame = cap.read()
-  # if cv.waitKey(1) & 0xFF == ord('q'):
-  #       break
+  cv.imshow('client',frame)
+  if cv.waitKey(1) & 0xFF == ord('q'):
+        break
   # display frame
   # cv.imshow("Stream", frame)
   # Encoding the Frame
@@ -24,11 +25,11 @@ try:
   # Converting into encoded bytes
   jpg_as_text = base64.b64encode(buffer)
   client.sendall(jpg_as_text)
-  from_server = client.recv(4096)
+#   from_server = client.recv(4096)
 
 except:
  cap.release()
  client.close()
- print(from_server)
+#  print(from_server)
  print("\nNow you can restart fresh")
 
