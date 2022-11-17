@@ -23,7 +23,7 @@ try:
   _, buffer = cv.imencode('.jpg', frame)
   # Converting into encoded bytes
   jpg_as_text = base64.b64encode(buffer)
-  client.sendall('I am CLIENT\n'.encode())
+  client.sendall(jpg_as_text)
   from_server = client.recv(4096)
 
 except:
