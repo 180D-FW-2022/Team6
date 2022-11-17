@@ -5,6 +5,7 @@ serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # Assigns a port for the server that listens to clients connecting to this port.
 serv.bind(('131.179.42.113', 8080))
 serv.listen(5)
+
 while True:
 	conn, addr = serv.accept()
 	from_client = ''
