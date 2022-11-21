@@ -4,7 +4,7 @@ import socket,cv2, pickle,struct
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '131.179.42.16' # paste your server ip address here
+host_ip = '131.179.28.192' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
