@@ -15,18 +15,8 @@ from missing import missing
 from cachecache import cachecache
 # Load the cascade
 # ========================================================================
-# faceCascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
-# faceCascade.load('data/haarcascade_frontalface_default.xml')
-
-#cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_frontalface_default.xml"
-#cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_eye_tree_eyeglasses.xml"
-
-#faceCascade = cv2.CascadeClassifier(cascPath)
-
-faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-
-# Read the input image
-#print(cascPath)
+faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+ 
 
 print("starting video capture")
 
