@@ -4,7 +4,7 @@ import socket,cv2, pickle,struct
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '164.67.207.174' # paste your server ip address here
+host_ip = '131.179.42.16' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
@@ -16,6 +16,7 @@ while True:
 		data+=packet
 	packed_msg_size = data[:payload_size]
 	data = data[payload_size:]
+	print(packed_msg_size)
 	msg_size = struct.unpack("Q",packed_msg_size)[0]
 	
 	while len(data) < msg_size:
