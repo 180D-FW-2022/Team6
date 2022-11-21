@@ -8,7 +8,7 @@ import socket, cv2, pickle,struct,imutils
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_name  = socket.gethostname()
-host_ip = socket.gethostbyname(host_name)
+host_ip = '164.67.207.174' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
 socket_address = (host_ip,port)
