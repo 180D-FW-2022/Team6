@@ -8,7 +8,7 @@ import socket, cv2, pickle,struct,imutils
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_name  = socket.gethostname()
-host_ip = '131.179.42.16' #socket.gethostbyname(host_name)
+host_ip = '172.31.46.249' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
 socket_address = (host_ip,port)
@@ -29,7 +29,7 @@ while True:
 		
 		while(vid.isOpened()):
 			img,frame = vid.read()
-			frame = imutils.resize(frame,width=320)
+			# frame = imutils.resize(frame,width=320)
 			a = pickle.dumps(frame)
 			message = struct.pack("Q",len(a))+a
 			client_socket.sendall(message)
