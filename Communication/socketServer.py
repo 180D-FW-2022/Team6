@@ -7,11 +7,12 @@ import cv2 as cv
 serv = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # Assigns a port for the server that listens to clients connecting to this port.
 serv.bind(('131.179.42.113', 8080))
-serv.listen(5)
+# serv.listen(5)
 frame = np.zeros((240, 320, 3), np.uint8)
 
 while True:
     conn, addr = serv.accept()
+    # conn, addr = serv.recvfrom()
     from_client = ''
     while True:
         data = conn.recv(4096)
