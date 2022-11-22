@@ -39,6 +39,6 @@ while True:
 			client_socket.sendall(message)
 			
 			# cv2.imshow('TRANSMITTING VIDEO',frame)
-			key = cv2.waitKey(1) & 0xFF
-			if key ==ord('q'):
-				client_socket.close()			
+			# key = cv2.waitKey(1) & 0xFF
+			# if key ==ord('q'):
+			# 	client_socket.close()			
