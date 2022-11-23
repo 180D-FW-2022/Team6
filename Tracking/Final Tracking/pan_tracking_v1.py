@@ -10,16 +10,26 @@ import os
 import curses
 import time
 from PCA9685 import PCA9685
-from bonjour import bonjour
-from missing import missing
-from cachecache import cachecache
+#from bonjour import bonjour
+#from missing import missing
+#from cachecache import cachecache
 # Load the cascade
 # ========================================================================
-faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
- 
-print("starting video capture")
+# faceCascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
+# faceCascade.load('data/haarcascade_frontalface_default.xml')
 
+#cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_frontalface_default.xml"
+#cascPath=os.path.dirname(cv2.__file__)+"/data/haarcascade_eye_tree_eyeglasses.xml"
+
+#faceCascade = cv2.CascadeClassifier(cascPath)
+# Read the input image
+#print(cascPath)
 # Start video capture
+
+import pkg_resources
+haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
+faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/hope/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
+
 video_capture = cv2.VideoCapture(0)
 
 # font 
@@ -92,13 +102,13 @@ delta_y_dot = 0
 rectangle_found = 0
 
 # make some fun
-bonjour = bonjour()
-missing = missing()
-cachecache = cachecache()
+#bonjour = bonjour()
+#missing = missing()
+#cachecache = cachecache()
 
-bonjour_ind = 0
-missing_ind = 0
-cachecache_ind = 0
+#bonjour_ind = 0
+#missing_ind = 0
+#cachecache_ind = 0
 
 #
 # main loop
@@ -169,9 +179,10 @@ try:
        
         # wait for keypress
         # ===========================================================
-        char = cv2.waitKey(20)
+        #char = cv2.waitKey(20)
         #print('key pressed', char)
         
+        """
         if char == ord('q'):
             break
         if char == ord('p'):
@@ -203,8 +214,8 @@ try:
             pwm.setRotationAngle(0, current_TILT) #TILT 
             #time.sleep(0.001)            
             cv2.putText(frame, 'down ', (20, 20), font, fontScale, (0, 255, 0), thickness, cv2.LINE_AA)
-            
-        elif rectangle_found > 0 and (abs(delta_x) < 500 and abs(delta_y) < 500) and char == -1:
+        """    
+        if rectangle_found > 0 and (abs(delta_x) < 500 and abs(delta_y) < 500):
             # stay away
 #             k_PAN = -0.01
 #             k_TILT = +0.01
@@ -253,16 +264,16 @@ try:
             pwm.setRotationAngle(1, current_PAN)
             pwm.setRotationAngle(0, current_TILT)
 
-        elif char == -1:
-            cv2.putText(frame, 'on air !', (20, 20), font, fontScale, (0, 255, 0), thickness, cv2.LINE_AA)
+      #  elif char == -1:
+       #     cv2.putText(frame, 'on air !', (20, 20), font, fontScale, (0, 255, 0), thickness, cv2.LINE_AA)
             #print('on air !')
             
         # Display the resulting frame
-        cv2.imshow('face_tracking', frame)            
+        #cv2.imshow('face_tracking', frame)            
 #             
 finally:
     # shut down cleanly
     pwm.exit_PCA9685()
     
     video_capture.release()
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
