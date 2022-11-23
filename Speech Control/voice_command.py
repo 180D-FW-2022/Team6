@@ -14,52 +14,85 @@ command = "m"
 
 # The state variable will change depending on whether recording is on or not
 control = "off"
+
+def camera():
+    global cap, ret, frame
+    while(True):
+        cap = cv2.VideoCapture(0)
+        while(True):
+            ret, frame = cap.read()
+            #cv2.imshow('frame',frame)
+            if cv2.waitKey(5) & 0xFF == 27:
+                break
+        cap.release()
+        cv2.destroyAllWindows()
+
+
 def respond():
     global command
-    global control
+    global cap, ret, frame
     while(True):
-        time.sleep(2)
-        print("before " + control)
-        if "start" in command:
-            print("Start Recording")
-            global cap
-            cap = cv2.VideoCapture(0)
-            control = "on"
-            print("in start " + control)
+        time.sleep(10)
+        if(cap.isOpened() == False):
+            print("Camera not ready")
+        else:
+            print("Camera on")
 
-            while(True):
-                if "stop" in command:
-                    print("Stop Recording")
-                    cap.release()
-                    cv2.destroyAllWindows()
-                    time.sleep(3)
-                    control = "off"
-                    break
-                #    break
-                # Capture frame-by-frame
-                ret, frame = cap.read()
 
-                # Display the resulting frame
-                cv2.imshow('frame',frame)
-                if cv2.waitKey(5) & 0xFF == 27:
-                    break
-            # When everything done, release the capture
-            print("done? " + control)
-            cap.release()
-            cv2.destroyAllWindows()
+        frame_width = int(cap.get(3))
+        frame_height = int(cap.get(4))
 
-        #elif "stop" or "end" in command:
-         #   print("Stop Recording")
-                #cap.release()
-                #cv2.destroyAllWindows()
-          #  time.sleep(3)
-        #else:
-         #   print("waiting for command")
-          #  time.sleep(1)
+        size = (frame_width, frame_height)
+
+        result = cv2.VideoWriter(r'C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.mp4',cv2.VideoWriter_fourcc(*'MJPG'),10,size)
+
+        while(True):
+            if "start" in command:
+                print("Start Recording")
+                while(True):
+                    #print("write")
+
+                    result.write(frame)
+
+
+                    # Capture frame-by-frame
+                    #ret, frame = cap.read()
+
+                    # Display the resulting frame
+                    #cv2.imshow('frame',frame)
+
+                    if "stop" in command:
+                        print("Stop Recording")
+                        break
+
+                    if cv2.waitKey(5) & 0xFF == 27:
+                        break
+
+            if "stop" in command:
+                print("break")
+                break
+            if "exit" in command:
+                exit()
+
+
+        # When everything done, release the capture
+        print("done?")
+        result.release()
+        cap.release()
+        cv2.destroyAllWindows()
+
+
+
+
+
+
+
+
 
 # function to translate audio to command
 
 def hear():
+    time.sleep(5)
     
     while(True):
         
@@ -83,33 +116,21 @@ def hear():
         time.sleep(3)
         
 
-        #print("hear")
-        #time.sleep(2)
-
-def print_command():
-    global command
-    print("entered")
-    while(True):
-        print("you ordered" + command)
-        time.sleep(3)
-
-
-
-
-
-
 # recognize speech using Google Speech Recognition
 # try:
 
 if __name__ == '__main__':
     t1 = threading.Thread(target=hear)
-    t2 = threading.Thread(target=respond)
+    t2 = threading.Thread(target=camera)
+    t3 = threading.Thread(target=respond)
 
     t1.start()
     t2.start()
+    t3.start()
 
     t1.join()
     t2.join()
+    t3.join()
             
             
 
