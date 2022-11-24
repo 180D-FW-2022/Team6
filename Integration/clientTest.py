@@ -21,12 +21,12 @@ model = load_model('mp_hand_gesture')
 f = open('gesture.names', 'r')
 classNames = f.read().split('\n')
 f.close()
-print(classNames)
+# print(classNames)
 ##########################################################################################
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '164.67.207.180' # paste your server ip address here
+host_ip = '131.179.29.237' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
@@ -87,7 +87,7 @@ while True:
 
     # Show the final output
 	cv2.imshow("Output", frame)
-	
+
 	######################################################################################################
 
 	if cv2.waitKey(1) == ord('q'):
