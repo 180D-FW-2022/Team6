@@ -39,8 +39,6 @@ import pkg_resources
 haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/ece180/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
 
-video_capture = cv2.VideoCapture(0)
-
 # font 
 font = cv2.FONT_HERSHEY_SIMPLEX  
 # org 
@@ -151,7 +149,7 @@ try:
 				# Try to reduce lagging issues
 				if sync_freq == 0:
 					# Capture frame-by-frame
-					ret, frame = video_capture.read()
+					ret, frame = vid.read()
 					gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 					faces = faceCascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 					
@@ -316,5 +314,5 @@ finally:
 	# shut down cleanly
     pwm.exit_PCA9685()
     
-    video_capture.release()
+    vid.release()
     #cv2.destroyAllWindows()
