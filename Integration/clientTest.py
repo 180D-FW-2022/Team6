@@ -26,7 +26,7 @@ f.close()
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '131.179.29.237' # paste your server ip address here
+host_ip = '131.179.42.90' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
