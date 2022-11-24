@@ -11,7 +11,7 @@ import os
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '164.67.212.32' # paste your server ip address here
+host_ip = '131.179.42.90' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
@@ -39,7 +39,7 @@ def frompi():
 
         ####
         
-        if "stop" in command:
+        if "stop" in command.lower():
             print("stop camera")
             cap.release()
             cv2.destroyAllWindows()
