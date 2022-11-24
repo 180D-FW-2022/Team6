@@ -141,6 +141,8 @@ try:
 		print('GOT CONNECTION FROM:',addr)
 		if client_socket:
 			vid = cv2.VideoCapture(0)
+			vid = cv2.release()
+			vid = cv2.VideoCapture(0)
 			
 			while(vid.isOpened()):
 				img,frame = vid.read()
