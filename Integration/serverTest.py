@@ -141,9 +141,9 @@ try:
 		print('GOT CONNECTION FROM:',addr)
 		if client_socket:
 			vid = cv2.VideoCapture(0)
-			vid = cv2.release()
+			vid.release()
 			vid = cv2.VideoCapture(0)
-			
+
 			while(vid.isOpened()):
 				img,frame = vid.read()
 				# frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
