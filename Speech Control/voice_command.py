@@ -31,21 +31,67 @@ def camera():
 def respond():
     global command
     global cap, ret, frame
-    while(True):
-        time.sleep(10)
-        if(cap.isOpened() == False):
-            print("Camera not ready")
-        else:
+    global begin
+    begin = False
+    print(begin)
+    while(begin == False):
+        print(begin)
+        time.sleep(1)
+        try:
+            frame_width = int(cap.get(3))
+            frame_height = int(cap.get(4))
+
+            size = (frame_width, frame_height)
+
+            result = cv2.VideoWriter(r'C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.avi',cv2.VideoWriter_fourcc(*'MJPG'),275,size)
+
             print("Camera on")
+            begin = True
+
+            '''
+
+            while(True):
+                if "start" in command:
+                    print("Start Recording")
+                    while(True):
+                        #print("write")
+
+                        result.write(frame)
 
 
-        frame_width = int(cap.get(3))
-        frame_height = int(cap.get(4))
+                        # Capture frame-by-frame
+                        #ret, frame = cap.read()
 
-        size = (frame_width, frame_height)
+                        # Display the resulting frame
+                        #cv2.imshow('frame',frame)   does not work (timer from another module error)
 
-        result = cv2.VideoWriter(r'C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.mp4',cv2.VideoWriter_fourcc(*'MJPG'),10,size)
+                        if "stop" in command:
+                            print("Stop Recording")
+                            break
 
+                        if cv2.waitKey(1) & 0xFF == 27:
+                            break
+
+                if "stop" in command:
+                    print("break")
+                    break
+                if "exit" in command:
+                    exit()
+
+
+            # When everything done, release the capture
+            print("done?")
+            result.release()
+            cap.release()
+            cv2.destroyAllWindows()
+
+            '''
+
+        except:
+            print("Camera not ready")
+
+
+    while(True):
         while(True):
             if "start" in command:
                 print("Start Recording")
@@ -59,24 +105,22 @@ def respond():
                     #ret, frame = cap.read()
 
                     # Display the resulting frame
-                    #cv2.imshow('frame',frame)
+                    #cv2.imshow('frame',frame)   does not work (timer from another module error)
 
                     if "stop" in command:
                         print("Stop Recording")
                         break
 
-                    if cv2.waitKey(5) & 0xFF == 27:
+                    if cv2.waitKey(1) & 0xFF == 27:
                         break
 
             if "stop" in command:
-                print("break")
                 break
             if "exit" in command:
                 exit()
 
 
         # When everything done, release the capture
-        print("done?")
         result.release()
         cap.release()
         cv2.destroyAllWindows()
@@ -84,14 +128,10 @@ def respond():
 
 
 
-
-
-
-
-
 # function to translate audio to command
 
 def hear():
+    global begin
     time.sleep(5)
     
     while(True):
@@ -100,6 +140,9 @@ def hear():
 
         r = sr.Recognizer()
         with sr.Microphone() as source:
+            while(begin == False):
+                time.sleep(0.5)
+
             print("Say something!")
             audio = r.listen(source)
 
