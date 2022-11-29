@@ -7,21 +7,14 @@ import socket, cv2, pickle,struct #,imutils
 import numpy as np
 
 #################################################### Pan-Tilt Tracking Initializations ######################################################################
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  5 00:33:26 2020
 
-@author: nguye
-"""
 import numpy
 import cv2
 import os
 import curses
 import time
 from PCA9685 import PCA9685
-#from bonjour import bonjour
-#from missing import missing
-#from cachecache import cachecache
+
 # Load the cascade
 # ========================================================================
 # faceCascade = cv2.CascadeClassifier('data/haarcascade_frontalface_default.xml')
@@ -108,15 +101,6 @@ delta_y_dot = 0
 
 rectangle_found = 0
 
-# make some fun
-#bonjour = bonjour()
-#missing = missing()
-#cachecache = cachecache()
-
-#bonjour_ind = 0
-#missing_ind = 0
-#cachecache_ind = 0
-
 ######################################################################### End of Pan-Tilt Tracking Initializations ####################################################################################
 
 # Socket Create
@@ -143,7 +127,7 @@ try:
 			vid = cv2.VideoCapture(0)
 			vid.release()
 			vid = cv2.VideoCapture(0)
-
+			
 			while(vid.isOpened()):
 				img,frame = vid.read()
 				# frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
