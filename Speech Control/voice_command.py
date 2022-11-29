@@ -12,9 +12,6 @@ import os
 # function for response to command
 command = "m"
 
-# The state variable will change depending on whether recording is on or not
-control = "off"
-
 def camera():
     global cap, ret, frame
     while(True):
