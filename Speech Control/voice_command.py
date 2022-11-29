@@ -43,49 +43,11 @@ def respond():
 
             size = (frame_width, frame_height)
 
+            # 275 is a frame rate that I have decided looks the closest to real speed
             result = cv2.VideoWriter(r'C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.avi',cv2.VideoWriter_fourcc(*'MJPG'),275,size)
 
             print("Camera on")
             begin = True
-
-            '''
-
-            while(True):
-                if "start" in command:
-                    print("Start Recording")
-                    while(True):
-                        #print("write")
-
-                        result.write(frame)
-
-
-                        # Capture frame-by-frame
-                        #ret, frame = cap.read()
-
-                        # Display the resulting frame
-                        #cv2.imshow('frame',frame)   does not work (timer from another module error)
-
-                        if "stop" in command:
-                            print("Stop Recording")
-                            break
-
-                        if cv2.waitKey(1) & 0xFF == 27:
-                            break
-
-                if "stop" in command:
-                    print("break")
-                    break
-                if "exit" in command:
-                    exit()
-
-
-            # When everything done, release the capture
-            print("done?")
-            result.release()
-            cap.release()
-            cv2.destroyAllWindows()
-
-            '''
 
         except:
             print("Camera not ready")
@@ -96,16 +58,7 @@ def respond():
             if "start" in command:
                 print("Start Recording")
                 while(True):
-                    #print("write")
-
                     result.write(frame)
-
-
-                    # Capture frame-by-frame
-                    #ret, frame = cap.read()
-
-                    # Display the resulting frame
-                    #cv2.imshow('frame',frame)   does not work (timer from another module error)
 
                     if "stop" in command:
                         print("Stop Recording")
@@ -159,9 +112,6 @@ def hear():
         time.sleep(3)
         
 
-# recognize speech using Google Speech Recognition
-# try:
-
 if __name__ == '__main__':
     t1 = threading.Thread(target=hear)
     t2 = threading.Thread(target=camera)
@@ -175,13 +125,3 @@ if __name__ == '__main__':
     t2.join()
     t3.join()
             
-            
-
-        
-       # p = mp.Process(target=respond,args=(command))
-
-
-# except sr.UnknownValueError:
-#     print("Google Speech Recognition could not understand audio")
-# except sr.RequestError as e:
-#     print("Could not request results from Google Speech Recognition service; {0}".format(e))
