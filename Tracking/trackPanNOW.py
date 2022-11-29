@@ -17,7 +17,6 @@ from cachecache import cachecache
 # ========================================================================
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
  
-
 print("starting video capture")
 
 # Start video capture
