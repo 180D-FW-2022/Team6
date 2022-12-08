@@ -1,0 +1,13 @@
+Speech Control Code
+
+Main Contributer:
+Tal Ovadia
+
+This folder has code that implements and experiments with different speech control features. The main file is called voice_command.py. This file has three main functions.
+These functions are camera, hear, and respond. The camera function boots up the camera using openCV and runs it into constantly changing frames. The hear function
+prompts the user to say something and issue a voice command. It then hears and registers this voice command. The respond function waits for the command from hear. Once
+it receives the command, it checks to see if it recognizes the command. If it recognizes the command, it runs the corresponding code to respond to the command. Currently,
+there are coded responses for "start" and "stop." These start and stop the recording of the frames that are given by the camera function. This recording is put into a
+file called C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.avi. This file path feeds into a folder that it connected to this Github folder, which is
+why you can find that file in this folder. Running the code and going through the start and stop recording commands will cause the file to change and can be uploaded to
+Github.
