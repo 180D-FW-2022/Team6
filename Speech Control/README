@@ -11,3 +11,25 @@ there are coded responses for "start" and "stop." These start and stop the recor
 file called C:\Users\ovadi\OneDrive\Documents\GitHub\Team6\Speech Control\001.avi. This file path feeds into a folder that it connected to this Github folder, which is
 why you can find that file in this folder. Running the code and going through the start and stop recording commands will cause the file to change and can be uploaded to
 Github.
+
+One bug I ran into was that sometimes the avi file would be corrupted. This occurred if I didn't stop the recording or if I modified the name of the file to .mp4
+instead of .avi. I think that one thing I can do to work around this is to figure out a way to discard these corrupted files or try to stop the recording without the
+user having to give the command for other cases that the recording should be stopped.
+
+I want to improve on the code by giving the user a way to manage the files without having to modify the code. I also want to create a new file for every recording so
+that no file is ever overwritten. This would allow the user to create multiple videos without having to constantly change the file name manually. That way, the user
+could record multiple recordings without having to rerun the voice_command.py file.
+
+
+
+References:
+
+https://www.instructables.com/Speech-Recognition-Using-Google-Speech-API-and-Pyt/
+
+I used "Speech Recognition Using Google Speech API and Python" to help me figure out how to use Speech Recognition to listen for a the user's input and convert it to a
+string that I can work with.
+
+https://stackoverflow.com/questions/14140495/how-to-capture-a-video-and-audio-in-python-from-a-camera-or-webcam
+
+I used "How to capture a video (AND audio) in python, from a camera (or webcam)" to help me understand how to use the openCV frames that I was generating in order to
+create an avi video file. Using their code, the frame rate was very slow and I had to modify it to make the avi file appear to be at the same speed as real life.
