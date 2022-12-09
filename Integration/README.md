@@ -1,6 +1,6 @@
 This folder contains the integration of all our subsystems. It succesfully transmits camera data from the server device (raspberry pi) to the client device (laptop). It recognizes voice commands on the client device, performs gesture recognition on the client device, and performs facial tracking and motor actuation on the server device.
 
-While functional in its current state, there exists a 5 second lag between the server and client device. We hope to resolve this issue in the next quarter.
+While functional in its current state, there exists a 4 second lag between the server and client device. We hope to resolve this issue in the next quarter.
 
 To run this code, first ensure that both the raspberry pi and laptop are connected to the same wifi. Next, update the ip address in serverTest.py and clientTest.py to that of the raspberry pi collecting camera data and equipped with the pan-tilt device. Next, run serverTest.py on the raspberry pi and clientTest.py on the laptop to see the unmanned videographer at work.
 

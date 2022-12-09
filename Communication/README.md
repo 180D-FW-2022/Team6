@@ -4,4 +4,4 @@ client.py/server.py contain code adapted from the solution at https://medium.com
 
 socketClient.py/socketServer.py contain code adapted from the solution at https://bruinlearn.ucla.edu/courses/140361/modules utilized in our Week 3 Lab. This iteration only sent one frame of camera data before stopping. This was our second iteration.
 
-clientTest.py/serverTest.py contain are current working iteration and contain code adapted from the solution at https://pyshine.com/Socket-programming-and-openc/. There remains a few seconds lag in this iteration that hopefully will be resolved in the winter quarter.
+clientTest.py/serverTest.py contain are current working iteration and contain code adapted from the solution at https://pyshine.com/Socket-programming-and-openc/. There remains an approximate 4 second lag in this iteration that hopefully will be resolved in the winter quarter.
