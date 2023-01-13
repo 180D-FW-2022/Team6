@@ -3,7 +3,7 @@
 
 # This code is for the server 
 # Lets import the libraries
-import socket, cv2, pickle,struct #,imutils
+import socket, cv2, pickle,struct,imutils
 import numpy as np
 
 
@@ -31,7 +31,7 @@ while True:
 		
 		while(vid.isOpened()):
 			img,frame = vid.read()
-			# frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
+			frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
 			
 			a = pickle.dumps(frame)
 			message = struct.pack("Q",len(a))+a
