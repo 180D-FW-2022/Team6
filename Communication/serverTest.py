@@ -36,7 +36,7 @@ while True:
 			a = pickle.dumps(frame)
 			message = struct.pack("Q",len(a))+a
 			if( np.shape(frame)==()):
-				print(message)
+				# print(message)
 				continue
 			client_socket.sendall(message)
 			
