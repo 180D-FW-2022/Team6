@@ -31,6 +31,7 @@ f.close()
 # print(classNames)
 ##########################################################################################
 
+###########################################################
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_ip = '131.179.29.237' # paste your server ip address here

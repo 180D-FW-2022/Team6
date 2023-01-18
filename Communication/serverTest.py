@@ -1,5 +1,7 @@
 #Source: https://pyshine.com/Socket-programming-and-openc/
 #Source for new test code: https://pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/
+#Future resource for audio data: https://pyshine.com/Socket-Programming-send-receive-live-audio/
+#Just listen on two different ports
 
 # Welcome to PyShine
 
@@ -61,7 +63,7 @@ vs = PiVideoStream().start()
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_name  = socket.gethostname()
-host_ip = '169.232.242.106' #socket.gethostbyname(host_name)
+host_ip = '169.232.126.228' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
 socket_address = (host_ip,port)
