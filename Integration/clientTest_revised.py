@@ -10,7 +10,7 @@ import os
 ############################################################################################
 
 ##########Face Tracking Dependencies###############3
-from PCA9685 import PCA9685
+# from PCA9685 import PCA9685
 import pkg_resources
 
 ###################### Additional Gesture Recognition Dependencies and Setup Code ####################
@@ -36,70 +36,10 @@ f.close()
 # print(classNames)
 ##########################################################################################
 
-##################### Face Tracking Code #################
-haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
-faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/ece180/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
 
-# font 
-font = cv2.FONT_HERSHEY_SIMPLEX  
-# org 
-org = (50, 50)   
-# fontScale 
-fontScale = 1   
-# Blue color in BGR 
-color = (255, 0, 0)   
-# Line thickness of 2 px 
-thickness = 2
-
-# ========================================================================
-sync_freq = 0 
-# ========================================================================
-
-# Initial info
-max_PAN      = 180
-max_TILT     = 145
-min_PAN      = 0
-min_TILT     = 0
-
-max_rate_TILT = 3
-max_rate_PAN  = 3
-    
-step_PAN     = 1
-step_TILT    = 1
-current_PAN  = 90
-current_TILT = 60
-
-
-# pseudo-PID control
-k_PAN = 0.015
-k_TILT = -0.015
-
-kd_PAN = 0.095
-kd_TILT = -0.095
-
-error_acceptance = 15
-# ========================================================================
-previous_x = 0
-previous_y = 0
-
-previous_h = 0
-previous_w = 0                  
-
-delta_x = 0
-delta_y = 0
-
-previous_delta_x = 0
-previous_delta_y = 0
-
-delta_x_dot = 0
-delta_y_dot = 0
-
-rectangle_found = 0
-
-###########################################################
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '169.232.126.228' # paste your server ip address here
+host_ip = '131.179.28.168' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
@@ -113,6 +53,67 @@ command = "m"
 def frompi():
 	global command
 	global data
+	##################### Face Tracking Code #################
+	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
+	faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/ece180/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
+
+	# font 
+	font = cv2.FONT_HERSHEY_SIMPLEX  
+	# org 
+	org = (50, 50)   
+	# fontScale 
+	fontScale = 1   
+	# Blue color in BGR 
+	color = (255, 0, 0)   
+	# Line thickness of 2 px 
+	thickness = 2
+
+	# ========================================================================
+	sync_freq = 0 
+	# ========================================================================
+
+	# Initial info
+	max_PAN      = 180
+	max_TILT     = 145
+	min_PAN      = 0
+	min_TILT     = 0
+
+	max_rate_TILT = 3
+	max_rate_PAN  = 3
+		
+	step_PAN     = 1
+	step_TILT    = 1
+	current_PAN  = 90
+	current_TILT = 60
+
+
+	# pseudo-PID control
+	k_PAN = 0.015
+	k_TILT = -0.015
+
+	kd_PAN = 0.095
+	kd_TILT = -0.095
+
+	error_acceptance = 15
+	# ========================================================================
+	previous_x = 0
+	previous_y = 0
+
+	previous_h = 0
+	previous_w = 0                  
+
+	delta_x = 0
+	delta_y = 0
+
+	previous_delta_x = 0
+	previous_delta_y = 0
+
+	delta_x_dot = 0
+	delta_y_dot = 0
+
+	rectangle_found = 0
+
+	###########################################################
 	while True:
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
