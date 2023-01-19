@@ -54,7 +54,7 @@ def frompi():
 	global command
 	global data
 	##################### Face Tracking Code #################
-	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
+	# haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/ece180/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
 
 	# font 
