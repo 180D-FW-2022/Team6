@@ -298,8 +298,8 @@ def frompi():
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
 			pan_tilt_update = (current_PAN,current_TILT)
-			client_socket.sendall(pan_tilt_update.encode())
-			
+			# client_socket.sendall(pan_tilt_update.encode())
+
 		# Show the final output
 		cv2.imshow("Output", frame)
 
