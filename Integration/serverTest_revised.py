@@ -23,13 +23,13 @@ from imutils.video.pivideostream import PiVideoStream
 
 #setting start up serrvo positions
 # ========================================================================
-pwm = PCA9685()
-pwm.setPWMFreq(50)
+# pwm = PCA9685()
+# pwm.setPWMFreq(50)
 
 current_PAN  = 90
 current_TILT = 60
-pwm.setRotationAngle(1, current_PAN) #PAN    
-pwm.setRotationAngle(0, current_TILT) #TILT
+# pwm.setRotationAngle(1, current_PAN) #PAN    
+# pwm.setRotationAngle(0, current_TILT) #TILT
 
 ######################################################################### End of Pan-Tilt Tracking Initializations ####################################################################################
 
@@ -112,7 +112,7 @@ try:
 				print(from_client)						
 finally:
 	# shut down cleanly
-    pwm.exit_PCA9685()
+    # pwm.exit_PCA9685()
     
     vs.release()
     #cv2.destroyAllWindows()
