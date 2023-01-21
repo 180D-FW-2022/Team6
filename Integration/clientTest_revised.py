@@ -298,7 +298,7 @@ def frompi():
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
 			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT)
-			# client_socket.sendall(pan_tilt_update_string.encode())
+			client_socket.sendall(pan_tilt_update_string.encode())
 			# sys.stdout = sys.__stdout__
 			# print(pan_tilt_update_string)
 			# sys.stdout = open(os.devnull, 'w')

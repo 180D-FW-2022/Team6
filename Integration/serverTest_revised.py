@@ -28,6 +28,7 @@ from imutils.video.pivideostream import PiVideoStream
 
 current_PAN  = 90
 current_TILT = 60
+payload_size = struct.calcsize("Q")
 # pwm.setRotationAngle(1, current_PAN) #PAN    
 # pwm.setRotationAngle(0, current_TILT) #TILT
 
@@ -108,6 +109,12 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
+				from_client = ''
+				while True:
+					client_message = client_socket.recv(4096).decode()
+					if not client_message: break
+					from_client += client_message.decode('utf_8')
+					print(from_client)
 				# from_client = client_socket.recv(4096).decode()
 				# print(from_client)						
 finally:
