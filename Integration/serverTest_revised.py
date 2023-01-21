@@ -3,7 +3,7 @@
 
 # This code is for the server 
 # Lets import the libraries
-import socket, cv2, pickle,struct, imutils
+import socket, cv2, pickle,struct, imutils, select
 import numpy as np
 
 #################################################### Pan-Tilt Tracking Initializations ######################################################################
@@ -97,7 +97,7 @@ try:
 	# Socket Accept
 	while True:
 		client_socket,addr = server_socket.accept()
-		client_socket.setblocking(0)
+		# client_socket.setblocking(0)
 		print('GOT CONNECTION FROM:',addr)
 		if client_socket:
 			while(vs):
@@ -115,7 +115,9 @@ try:
 				while True:
 					try:
 						print('2')
-						client_message = client_socket.recv(4096).decode()
+						r, _, _ = select.select([client_socket], [], [])
+						if r:
+							client_message = client_socket.recv(4096).decode()
 						print('3')
 						# if not client_message: break
 						print('4')
@@ -130,5 +132,5 @@ finally:
 	# shut down cleanly
     # pwm.exit_PCA9685()
     
-    vs.release()
-    #cv2.destroyAllWindows()
+    # vs.release()
+    cv2.destroyAllWindows()
