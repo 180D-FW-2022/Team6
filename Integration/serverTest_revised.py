@@ -108,8 +108,8 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
-				# from_client = client_socket.recv(4096)
-				# print(from_client)						
+				from_client = client_socket.recv(4096)
+				print(from_client)						
 finally:
 	# shut down cleanly
     # pwm.exit_PCA9685()
