@@ -108,7 +108,7 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
-				from_client = client_socket.recv(4096)
+				from_client = client_socket.recv(4096).decode()
 				print(from_client)						
 finally:
 	# shut down cleanly
