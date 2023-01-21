@@ -110,10 +110,15 @@ try:
 					continue
 				client_socket.sendall(message)
 				from_client = ''
+				print('1')
 				while True:
+					print('2')
 					client_message = client_socket.recv(4096).decode()
+					print('3')
 					if not client_message: break
+					print('4')
 					from_client += client_message.decode('utf_8')
+					print('5')
 					print(from_client)
 				# from_client = client_socket.recv(4096).decode()
 				# print(from_client)						
