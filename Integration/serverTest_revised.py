@@ -107,7 +107,7 @@ try:
 				if( np.shape(frame)==()):
 					# print(message)
 					continue
-				# client_socket.sendall(message)
+				client_socket.sendall(message)
 				# from_client = client_socket.recv(4096).decode()
 				# print(from_client)						
 finally:
