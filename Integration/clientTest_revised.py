@@ -6,7 +6,7 @@ import socket,cv2, pickle,struct
 import speech_recognition as sr
 import threading
 import time
-import os
+import sys, os
 ############################################################################################
 
 ##########Face Tracking Dependencies###############3
@@ -21,9 +21,10 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
+# sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
 mpDraw = mp.solutions.drawing_utils
 
 # Load the gesture recognizer model
@@ -39,7 +40,7 @@ f.close()
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '131.179.28.168' # paste your server ip address here
+host_ip = '131.179.29.169' # paste your server ip address here
 port = 9999
 client_socket.connect((host_ip,port)) # a tuple
 data = b""
@@ -55,7 +56,7 @@ def frompi():
 	global data
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
-	faceCascade = cv2.CascadeClassifier('/home/pi/berryconda3/envs/ece180/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml')
+	faceCascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
 	# font 
 	font = cv2.FONT_HERSHEY_SIMPLEX  
@@ -112,7 +113,7 @@ def frompi():
 	delta_y_dot = 0
 
 	rectangle_found = 0
-
+	# vid = cv2.VideoCapture(0)
 	###########################################################
 	while True:
 		while len(data) < payload_size:
@@ -129,7 +130,7 @@ def frompi():
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
 		frame = pickle.loads(frame_data)
-
+		# img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
 		################################ Gesture Recognition Code #########################################
@@ -168,15 +169,15 @@ def frompi():
 		# show the prediction on the frame
 		cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
 		
-		if "stop" in className.lower():
-			print("stop camera")
-			cap.release()
-			cv2.destroyAllWindows()
-			break
-		
-		# Show the final output
+		# Stop if the stop gesture is recognized
 
-		cv2.imshow("Output", frame)
+		# if "stop" in className.lower():
+		# 	print("stop camera")
+		# 	cap.release()
+		# 	cv2.destroyAllWindows()
+		# 	break
+		
+		
 
 		######################################################################################################
 
@@ -209,7 +210,7 @@ def frompi():
 				cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 				rectangle_found += 1
 				if rectangle_found == 1:                    
-					print(' x y previous ', previous_x, previous_y)                    
+					# print(' x y previous ', previous_x, previous_y)                    
 # ========================================================================================
 					# stay away from me !
 #                     delta_x = previous_x - x
@@ -234,7 +235,7 @@ def frompi():
 						delta_y     = 0
 						delta_y_dot = 0
 # ========================================================================================
-					print(' x y new ', x, y)
+					# print(' x y new ', x, y)
 					
 					previous_x = x
 					previous_y = y
@@ -253,7 +254,7 @@ def frompi():
 #             k_PAN = -0.01
 #             k_TILT = +0.01
 			# get in touch            
-			print('pan tilt -- current ', current_PAN, current_TILT)
+			# print('pan tilt -- current ', current_PAN, current_TILT)
 
 			# pseu-do PID
 			delta_TILT = k_TILT * delta_y + kd_TILT * delta_y_dot
@@ -271,7 +272,7 @@ def frompi():
 			if current_TILT < min_TILT:                
 				current_TILT = min_TILT
 				
-			print('delta tilt ', delta_TILT)
+			# print('delta tilt ', delta_TILT)
 			# pseu-do PID
 			delta_PAN = k_PAN * delta_x + kd_PAN * delta_x_dot
 			# rate-limiter
@@ -288,14 +289,18 @@ def frompi():
 			if current_PAN < min_PAN:                
 				current_PAN = min_PAN           
 			
-			print('delta PAN ', delta_PAN)
+			# print('delta PAN ', delta_PAN)
 			
-			print('delta_x delta_y ', delta_x, delta_y)
+			# print('delta_x delta_y ', delta_x, delta_y)
 			
-			print('pan tilt -- new ', current_PAN, current_TILT)            
+			# print('pan tilt -- new ', current_PAN, current_TILT)            
 			
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
+
+		# Show the final output
+		cv2.imshow("Output", frame)
+
 		if cv2.waitKey(1) == ord('q'):
 			break
 
@@ -336,4 +341,4 @@ if __name__ == '__main__':
 
 ############################################################################################################################
 
-client_socket.close()
+# client_socket.close()
