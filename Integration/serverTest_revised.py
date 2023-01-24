@@ -101,7 +101,7 @@ try:
 	# Socket Accept
 	while True:
 		client_socket,addr = server_socket.accept()
-		# client_socket.setblocking(0)
+		client_socket.setblocking(0)
 		print('GOT CONNECTION FROM:',addr)
 		if client_socket:
 			while(vs):
@@ -120,6 +120,7 @@ try:
 					try:
 						print('2')
 						from_client = ''
+						print(client_socket.recv(4096))
 						client_message = client_socket.recv(4096)
 						print('3')
 						# if not client_message: break
