@@ -21,6 +21,10 @@ from picamera import PiCamera
 from threading import Thread
 from imutils.video.pivideostream import PiVideoStream
 
+###### troubleshooting hanging receive
+import sys, fcntl, os, errno
+from time import sleep
+
 #setting start up serrvo positions
 # ========================================================================
 # pwm = PCA9685()
@@ -110,23 +114,34 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
-				from_client = ''
-				print('1')
-				try:
-					print('2')
-					r, _, _ = select.select([client_socket], [], [])
-					if r:
-						client_message = client_socket.recv(4096).decode()
-					print('3')
-					# if not client_message: break
-					print('4')
-					from_client += client_message.decode('utf_8')
-					print('5')
-					print(from_client)
-				except:
-					print('error')
-				# from_client = client_socket.recv(4096).decode()
-				# print(from_client)						
+				while True:
+					
+					print('1')
+					try:
+						print('2')
+						from_client = ''
+						client_message = client_socket.recv(4096)
+						print('3')
+						# if not client_message: break
+						print('4')
+						from_client += client_message.decode('utf_8')
+						print('5')
+						print(from_client)
+					except socket.error as e:
+						err = e.args[0]
+						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+							sleep(1)
+							print ('No data available')
+							continue
+						else:
+							# a "real" error occurred
+							print (e)
+							sys.exit(1)
+					else:
+						print("success")
+					
+					# from_client = client_socket.recv(4096).decode()
+					# print(from_client)						
 finally:
 	# shut down cleanly
     # pwm.exit_PCA9685()
