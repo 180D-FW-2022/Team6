@@ -113,10 +113,7 @@ try:
 				if( np.shape(frame)==()):
 					# print(message)
 					continue
-				try:
-					client_socket.sendall(message)
-				except:
-					print("camera data error")
+				client_socket.sendall(message)
 				# while True:
 					
 				# 	print('1')
