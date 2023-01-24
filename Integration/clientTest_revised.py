@@ -21,7 +21,7 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-sys.stdout = open(os.devnull, 'w')
+# sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
@@ -297,8 +297,10 @@ def frompi():
 			
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
-			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT) + "\n"
-			client_socket.sendall(pan_tilt_update_string.encode())
+			# pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT) + "\n"
+			pan_tilt_update_string = "test"
+			print(pan_tilt_update_string.encode())
+			print(client_socket.sendall(pan_tilt_update_string.encode()))
 			# sys.stdout = sys.__stdout__
 			# print(pan_tilt_update_string)
 			# sys.stdout = open(os.devnull, 'w')
