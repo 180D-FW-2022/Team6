@@ -101,7 +101,7 @@ try:
 	# Socket Accept
 	while True:
 		client_socket,addr = server_socket.accept()
-		client_socket.setblocking(0)
+		# client_socket.setblocking(0)
 		print('GOT CONNECTION FROM:',addr)
 		if client_socket:
 			while(vs):
