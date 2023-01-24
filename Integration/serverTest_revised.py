@@ -117,32 +117,32 @@ try:
 					client_socket.sendall(message)
 				except:
 					print("camera data error")
-				while True:
+				# while True:
 					
-					print('1')
-					try:
-						print('2')
-						from_client = ''
-						print(client_socket.recv(4096))
-						client_message = client_socket.recv(4096)
-						print('3')
-						# if not client_message: break
-						print('4')
-						from_client += client_message.decode('utf_8')
-						print('5')
-						print(from_client)
-					except socket.error as e:
-						err = e.args[0]
-						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-							sleep(1)
-							print ('No data available')
-							continue
-						else:
-							# a "real" error occurred
-							print (e)
-							sys.exit(1)
-					else:
-						print("success")
+				# 	print('1')
+				# 	try:
+				# 		print('2')
+				# 		from_client = ''
+				# 		print(client_socket.recv(4096))
+				# 		client_message = client_socket.recv(4096)
+				# 		print('3')
+				# 		# if not client_message: break
+				# 		print('4')
+				# 		from_client += client_message.decode('utf_8')
+				# 		print('5')
+				# 		print(from_client)
+				# 	except socket.error as e:
+				# 		err = e.args[0]
+				# 		if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+				# 			sleep(1)
+				# 			print ('No data available')
+				# 			continue
+				# 		else:
+				# 			# a "real" error occurred
+				# 			print (e)
+				# 			sys.exit(1)
+				# 	else:
+				# 		print("success")
 					
 					# from_client = client_socket.recv(4096).decode()
 					# print(from_client)						
