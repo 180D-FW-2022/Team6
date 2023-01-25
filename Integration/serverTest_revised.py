@@ -122,13 +122,9 @@ try:
 						print('2')
 						from_client = ''
 						client_socket.setblocking(0)
-						print(client_socket.recv(4096))
-						client_message = client_socket.recv(4096)
-						client_socket.setblocking(1)
-						print('3')
-						# if not client_message: break
-						print('4')
-						from_client += client_message.decode('utf_8')
+						client_message = client_socket.recv(4096).decode()
+						# client_socket.setblocking(1)
+						from_client += client_message
 						print('5')
 						print(from_client)
 					except socket.error as e:
