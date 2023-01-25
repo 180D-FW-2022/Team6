@@ -85,26 +85,33 @@ vs = PiVideoStream().start()
 ###########################################################################################################################3
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_name  = socket.gethostname()
+tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+# host_name  = socket.gethostname()
 host_ip = '169.232.126.22' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
+tracking_port = 9998
 socket_address = (host_ip,port)
+tracking_address = (host_ip,tracking_port)
 
 # Socket Bind
 server_socket.bind(socket_address)
+tracking_socket.bind(tracking_address)
 
 # Socket Listen
 server_socket.listen(5)
 print("LISTENING AT:",socket_address)
+tracking_socket.listen(5)
+print("LISTENING AT:",tracking_address)
 
 try:
 	# Socket Accept
 	while True:
 		client_socket,addr = server_socket.accept()
-		
+		client_tracking_socket,tracking_addr = tracking_socket.accept()
 		print('GOT CONNECTION FROM:',addr)
-		if client_socket:
+		print('GOT CONNECTION FROM:',tracking_addr)
+		if client_socket and client_tracking_socket:
 			while(vs):
 				frame = vs.read()
 				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
@@ -115,14 +122,14 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
+				client_tracking_socket.setblocking(0)
 				while True:
 					
 					print('1')
 					try:
 						print('2')
 						from_client = ''
-						client_socket.setblocking(0)
-						client_message = client_socket.recv(4096).decode()
+						client_message = client_tracking_socket.recv(4096).decode()
 						# client_socket.setblocking(1)
 						from_client += client_message
 						print('5')
@@ -131,7 +138,6 @@ try:
 						err = e.args[0]
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
 							sleep(1)
-							client_socket.setblocking(1)
 							print ('No data available')
 							break
 							# continue
