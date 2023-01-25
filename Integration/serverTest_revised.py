@@ -135,6 +135,7 @@ try:
 						err = e.args[0]
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
 							sleep(1)
+							client_socket.setblocking(1)
 							print ('No data available')
 							break
 							# continue
