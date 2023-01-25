@@ -40,12 +40,12 @@ f.close()
 
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-# client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_ip = '169.232.126.22' # paste your server ip address here
 port = 9999
-# tracking_port = 9998
+tracking_port = 9998
 client_socket.connect((host_ip,port)) # a tuple
-# client_tracking_socket.connect((host_ip,tracking_port))
+client_tracking_socket.connect((host_ip,tracking_port))
 data = b""
 payload_size = struct.calcsize("Q")
 
