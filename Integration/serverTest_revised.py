@@ -136,7 +136,8 @@ try:
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
 							sleep(1)
 							print ('No data available')
-							continue
+							break
+							# continue
 						else:
 							# a "real" error occurred
 							print (e)
