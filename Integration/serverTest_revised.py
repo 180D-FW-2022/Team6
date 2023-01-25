@@ -125,19 +125,19 @@ try:
 				client_tracking_socket.setblocking(0)
 				while True:
 					
-					print('1')
+					# print('1')
 					try:
-						print('2')
+						# print('2')
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096).decode()
 						# client_socket.setblocking(1)
 						from_client += client_message
-						print('5')
+						# print('5')
 						print(from_client)
 					except socket.error as e:
 						err = e.args[0]
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-							sleep(1)
+							# sleep(1)
 							print ('No data available')
 							break
 							# continue
