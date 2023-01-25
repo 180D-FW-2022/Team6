@@ -131,7 +131,7 @@ try:
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096).decode()
 						# client_socket.setblocking(1)
-						from_client += str(client_message)
+						from_client = str(client_message)
 						if ',' in from_client:
 							current_PAN = from_client.split(',')[0]
 							current_TILT = from_client.split(',')[1]
