@@ -151,4 +151,6 @@ finally:
     # pwm.exit_PCA9685()
     
     # vs.release()
-    cv2.destroyAllWindows()
+	cv2.destroyAllWindows()
+	server_socket.close()
+    
