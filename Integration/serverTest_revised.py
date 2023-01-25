@@ -131,22 +131,25 @@ try:
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096).decode()
 						# client_socket.setblocking(1)
-						from_client += client_message
+						from_client += str(client_message)
+						if ',' in from_client:
+							current_PAN = from_client.split(',')[0]
+							current_TILT = from_client.split(',')[1]
+							print(current_PAN)
+							print(current_TILT)
 						# print('5')
 						print(from_client)
 					except socket.error as e:
 						err = e.args[0]
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
 							# sleep(1)
-							print ('No data available')
+							# print ('No data available')
 							break
 							# continue
 						else:
 							# a "real" error occurred
-							print (e)
+							# print (e)
 							sys.exit(1)
-					else:
-						print("success")
 					
 					# from_client = client_socket.recv(4096).decode()
 					# print(from_client)						
