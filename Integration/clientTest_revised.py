@@ -300,7 +300,7 @@ def frompi():
 			
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
-			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT) + '\n'
+			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT)
 			# pan_tilt_update_string = "test"
 			print(pan_tilt_update_string.encode())
 			print(client_tracking_socket.sendall(pan_tilt_update_string.encode()))
