@@ -41,7 +41,7 @@ f.close()
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '169.232.126.22' # paste your server ip address here
+host_ip = '131.179.28.246' # paste your server ip address here
 port = 9999
 tracking_port = 9998
 client_socket.connect((host_ip,port)) # a tuple
@@ -300,10 +300,10 @@ def frompi():
 			
 			# pwm.setRotationAngle(1, current_PAN)
 			# pwm.setRotationAngle(0, current_TILT)
-			# pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT) + "\n"
-			pan_tilt_update_string = "test"
+			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT)
+			# pan_tilt_update_string = "test"
 			print(pan_tilt_update_string.encode())
-			# print(client_tracking_socket.sendall(pan_tilt_update_string.encode()))
+			print(client_tracking_socket.sendall(pan_tilt_update_string.encode()))
 			# sys.stdout = sys.__stdout__
 			# print(pan_tilt_update_string)
 			# sys.stdout = open(os.devnull, 'w')
