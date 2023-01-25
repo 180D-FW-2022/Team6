@@ -22,8 +22,8 @@ from threading import Thread
 from imutils.video.pivideostream import PiVideoStream
 
 ###### troubleshooting hanging receive
-import sys, fcntl, os, errno
-from time import sleep
+# import sys, fcntl, os, errno
+# from time import sleep
 
 #setting start up serrvo positions
 # ========================================================================
@@ -80,12 +80,13 @@ class PiVideoStream:
 
 print("[INFO] sampling THREADED frames from `picamera` module...")
 vs = PiVideoStream().start()
+# vs = cv2.VideoCapture(0)
 
 ###########################################################################################################################3
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_name  = socket.gethostname()
-host_ip = '169.232.126.22' #socket.gethostbyname(host_name)
+host_ip = '164.67.209.223' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
 socket_address = (host_ip,port)
