@@ -22,8 +22,8 @@ from threading import Thread
 from imutils.video.pivideostream import PiVideoStream
 
 ###### troubleshooting hanging receive
-# import sys, fcntl, os, errno
-# from time import sleep
+import sys, fcntl, os, errno
+from time import sleep
 
 #setting start up serrvo positions
 # ========================================================================
