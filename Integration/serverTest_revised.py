@@ -135,10 +135,10 @@ try:
 						if ',' in from_client:
 							current_PAN = from_client.split(',')[0]
 							current_TILT = from_client.split(',')[1]
-							print(current_PAN)
-							print(current_TILT)
+							print(current_PAN + '\n')
+							print(current_TILT + '\n')
 						# print('5')
-						print(from_client)
+						print(from_client + '\n')
 					except socket.error as e:
 						err = e.args[0]
 						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
