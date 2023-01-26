@@ -135,8 +135,13 @@ try:
 						if ',' in from_client:
 							current_PAN = from_client.split(',')[0]
 							current_TILT = from_client.split(',')[1]
-							print(current_PAN + '\n')
-							print(current_TILT + '\n')
+							if current_PAN.isnumeric() and current_TILT.isnumeric():
+								current_PAN = float(current_PAN)
+								current_TILT = float(current_TILT)
+								print (current_PAN + current_TILT)
+
+							# print(current_PAN + '\n')
+							# print(current_TILT + '\n')
 						# print('5')
 						print(from_client + '\n')
 					except socket.error as e:
