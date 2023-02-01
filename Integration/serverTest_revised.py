@@ -27,20 +27,6 @@ from imutils.video.pivideostream import PiVideoStream
 import sys, fcntl, os, errno
 # from time import sleep
 
-#setting start up serrvo positions
-# ========================================================================
-# pwm = PCA9685()
-# pwm.setPWMFreq(50)
-
-current_PAN  = 90
-current_TILT = 60
-payload_size = struct.calcsize("Q")
-# pwm.setRotationAngle(1, current_PAN) #PAN    
-# pwm.setRotationAngle(0, current_TILT) #TILT
-
-# Setting up serial communication to robot car
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-ser.reset_input_buffer()
 
 ######################################################################### End of Pan-Tilt Tracking Initializations ####################################################################################
 
@@ -83,6 +69,21 @@ class PiVideoStream:
 	def stop(self):
 		# indicate that the thread should be stopped
 		self.stopped = True
+
+#setting start up serrvo positions
+# ========================================================================
+# pwm = PCA9685()
+# pwm.setPWMFreq(50)
+
+current_PAN  = 90
+current_TILT = 60
+payload_size = struct.calcsize("Q")
+# pwm.setRotationAngle(1, current_PAN) #PAN    
+# pwm.setRotationAngle(0, current_TILT) #TILT
+
+# Setting up serial communication to robot car
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 print("[INFO] sampling THREADED frames from `picamera` module...")
 vs = PiVideoStream().start()
@@ -139,6 +140,7 @@ try:
 						# client_socket.setblocking(1)
 						from_client = str(client_message)
 						ser.write(client_message)
+						ser.write(b"test\n")
 						line = ser.readline().decode('utf-8').rstrip()
 						print(line)
 						# if ',' in from_client:
@@ -152,7 +154,7 @@ try:
 							# print(current_PAN + '\n')
 							# print(current_TILT + '\n')
 						# print('5')
-						print(from_client + '\n')
+						# print(from_client + '\n')
 					except socket.error as e:
 						break
 						# err = e.args[0]
