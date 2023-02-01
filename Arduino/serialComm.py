@@ -8,8 +8,8 @@ if __name__ == '__main__':
 
     while True:
         ser.write(b"FRONT\n")
-        # line = ser.readline().decode('utf-8').rstrip()
-        # print(line)
+        line = ser.readline().decode('utf-8').rstrip()
+        print(line)
         time.sleep(1)
         ser.write(b"BACK\n")
         time.sleep(1)
