@@ -5,6 +5,8 @@
 # Lets import the libraries
 import socket, cv2, pickle,struct, imutils, select
 import numpy as np
+import serial
+import time
 
 #################################################### Pan-Tilt Tracking Initializations ######################################################################
 
@@ -23,7 +25,7 @@ from imutils.video.pivideostream import PiVideoStream
 
 ###### troubleshooting hanging receive
 import sys, fcntl, os, errno
-from time import sleep
+# from time import sleep
 
 #setting start up serrvo positions
 # ========================================================================
@@ -35,6 +37,10 @@ current_TILT = 60
 payload_size = struct.calcsize("Q")
 # pwm.setRotationAngle(1, current_PAN) #PAN    
 # pwm.setRotationAngle(0, current_TILT) #TILT
+
+# Setting up serial communication to robot car
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 ######################################################################### End of Pan-Tilt Tracking Initializations ####################################################################################
 
@@ -132,29 +138,33 @@ try:
 						client_message = client_tracking_socket.recv(4096).decode()
 						# client_socket.setblocking(1)
 						from_client = str(client_message)
-						if ',' in from_client:
-							current_PAN = from_client.split(',')[0]
-							current_TILT = from_client.split(',')[1]
-							if current_PAN.isnumeric() and current_TILT.isnumeric():
-								current_PAN = float(current_PAN)
-								current_TILT = float(current_TILT)
-								print (current_PAN + current_TILT)
+						ser.write(client_message)
+						line = ser.readline().decode('utf-8').rstrip()
+						print(line)
+						# if ',' in from_client:
+						# 	current_PAN = from_client.split(',')[0]
+						# 	current_TILT = from_client.split(',')[1]
+						# 	if current_PAN.isnumeric() and current_TILT.isnumeric():
+						# 		current_PAN = float(current_PAN)
+						# 		current_TILT = float(current_TILT)
+						# 		print (current_PAN + current_TILT)
 
 							# print(current_PAN + '\n')
 							# print(current_TILT + '\n')
 						# print('5')
 						print(from_client + '\n')
 					except socket.error as e:
-						err = e.args[0]
-						if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-							# sleep(1)
-							# print ('No data available')
-							break
-							# continue
-						else:
-							# a "real" error occurred
-							# print (e)
-							sys.exit(1)
+						break
+						# err = e.args[0]
+						# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+						# 	# sleep(1)
+						# 	# print ('No data available')
+						# 	break
+						# 	# continue
+						# else:
+						# 	# a "real" error occurred
+						# 	# print (e)
+						# 	sys.exit(1)
 					
 					# from_client = client_socket.recv(4096).decode()
 					# print(from_client)						
