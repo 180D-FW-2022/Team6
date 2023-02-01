@@ -135,7 +135,7 @@ try:
 					try:
 						# print('2')
 						from_client = ''
-						client_message = client_tracking_socket.recv(4096).decode()
+						client_message = client_tracking_socket.recv(4096)
 						# client_socket.setblocking(1)
 						from_client = str(client_message)
 						ser.write(client_message)
