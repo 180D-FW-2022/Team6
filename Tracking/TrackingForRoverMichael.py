@@ -91,7 +91,7 @@ while True:
         
         # callibrate
         #Delete later
-        if count >=20: #cv2.waitKey(1) & 0xFF == ord('b'):
+        if count ==5: #cv2.waitKey(1) & 0xFF == ord('b'):
             desired_face_area = current_area
             callibrated = True
             
