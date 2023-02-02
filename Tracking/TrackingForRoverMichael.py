@@ -8,9 +8,11 @@
 # In[4]:
 
 
-import cv2
+import cv2, serial, time
 import numpy as np
 
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 # Load the cascade for face detection
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -26,8 +28,11 @@ current_face_area = 0
 callibrated = False
 moving = False
 
+# Delete later
+
 while True:
-    
+    #Delete later
+    # count = count + 1
     # Read the frame
     _, frame = cap.read()
 
@@ -75,32 +80,33 @@ while True:
         print(error_x)
         
         # left and right motion
-        if (error_x>10): #TODO: include tolerances
-            print("turn right") 
+        if (error_x>60): #TODO: include tolerances
+            ser.write(b"LEFTT\n") 
             moving = True
-        elif (error_x<10):
-            print("turn left") #todo: directions might be wrong
+        elif (error_x<-60):
+            ser.write(b"RIGHT\n") #todo: directions might be wrong
             moving = True
         else:
             moving = False
         
         # callibrate
-        if cv2.waitKey(1) & 0xFF == ord('b'):
+        #Delete later
+        if not callibrated: #cv2.waitKey(1) & 0xFF == ord('b'):
             desired_face_area = current_area
             callibrated = True
             
         print("desired_face_area")
         print(desired_face_area)
 
-        print("current_faca_area")
+        print("current_face_area")
         print(current_area)
         
         if callibrated:
             if (current_area - desired_face_area > 100000): #TODO: can change the tolerance
-                print("zoom out")
+                ser.write(b"BACK\n")
                 moving = True
             elif (current_area - desired_face_area<-100000):
-                print("zoom in")
+                ser.write(b"FRONT\n")
                 moving = True
             else:
                 moving = False
@@ -108,17 +114,17 @@ while True:
             print ("not callibrated")
         
         if not moving:
-            print ("stop")
+            ser.write(b"STOP\n")
 
     else: #faces empty
         print("faces empty")
 
     # Show the frame
-    cv2.imshow("Face Tracking", frame)
+    # cv2.imshow("Face Tracking", frame)
 
-    # Exit if the 'q' key is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # # Exit if the 'q' key is pressed
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
 
 # Release the video capture
 cap.release()
