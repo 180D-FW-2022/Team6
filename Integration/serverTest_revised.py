@@ -130,9 +130,6 @@ try:
 					continue
 				client_socket.sendall(message)
 				client_tracking_socket.setblocking(0)
-				ser.write(b"test\n")
-				line = ser.readline().decode('utf-8').rstrip()
-				print(line)
 				while True:
 					
 					# print('1')
