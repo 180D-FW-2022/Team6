@@ -18,9 +18,7 @@ def hear():
 
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            while(begin == False):
-                time.sleep(0.5)
-
+            
             print("Say something!")
             audio = r.listen(source)
 
