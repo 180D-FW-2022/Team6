@@ -140,7 +140,7 @@ try:
 						# client_socket.setblocking(1)
 						from_client = str(client_message)
 						ser.write(client_message)
-						ser.write(b"test\n")
+						# ser.write(b"test\n")
 						line = ser.readline().decode('utf-8').rstrip()
 						print(line)
 						# if ',' in from_client:
