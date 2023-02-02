@@ -98,7 +98,7 @@ while True:
         print("desired_face_area")
         print(desired_face_area)
 
-        print("current_faca_area")
+        print("current_face_area")
         print(current_area)
         
         if callibrated:
