@@ -23,7 +23,7 @@ void loop()
 { 
   if (Serial.available() > 0) {
     String data = Serial.readStringUntil('\n');
-    Serial.print('Received: ');
+    Serial.print("Received: ");
     Serial.println(data);
     if (data == "BACK"){
       digitalWrite(ML_Ctrl,LOW);//set the direction control pin of left motor to LOW
