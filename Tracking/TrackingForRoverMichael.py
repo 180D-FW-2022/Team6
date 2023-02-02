@@ -28,8 +28,11 @@ current_face_area = 0
 callibrated = False
 moving = False
 
+# Delete later
+count = 1
 while True:
-    
+    #Delete later
+    count = count + 1
     # Read the frame
     _, frame = cap.read()
 
@@ -87,7 +90,8 @@ while True:
             moving = False
         
         # callibrate
-        if cv2.waitKey(1) & 0xFF == ord('b'):
+        #Delete later
+        if count >=20: #cv2.waitKey(1) & 0xFF == ord('b'):
             desired_face_area = current_area
             callibrated = True
             
@@ -118,9 +122,9 @@ while True:
     # Show the frame
     # cv2.imshow("Face Tracking", frame)
 
-    # Exit if the 'q' key is pressed
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+    # # Exit if the 'q' key is pressed
+    # if cv2.waitKey(1) & 0xFF == ord('q'):
+    #     break
 
 # Release the video capture
 cap.release()
