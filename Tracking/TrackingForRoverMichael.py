@@ -80,11 +80,11 @@ while True:
         print(error_x)
         
         # left and right motion
-        if (error_x>10): #TODO: include tolerances
-            ser.write(b"RIGHT\n") 
+        if (error_x>60): #TODO: include tolerances
+            ser.write(b"LEFTT\n") 
             moving = True
-        elif (error_x<10):
-            ser.write(b"LEFT\n") #todo: directions might be wrong
+        elif (error_x<-60):
+            ser.write(b"RIGHT\n") #todo: directions might be wrong
             moving = True
         else:
             moving = False
