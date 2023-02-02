@@ -8,9 +8,11 @@
 # In[4]:
 
 
-import cv2
+import cv2, serial, time
 import numpy as np
 
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 # Load the cascade for face detection
 face_cascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
@@ -76,10 +78,10 @@ while True:
         
         # left and right motion
         if (error_x>10): #TODO: include tolerances
-            print("turn right") 
+            ser.write(b"RIGHT\n") 
             moving = True
         elif (error_x<10):
-            print("turn left") #todo: directions might be wrong
+            ser.write(b"LEFT\n") #todo: directions might be wrong
             moving = True
         else:
             moving = False
@@ -97,10 +99,10 @@ while True:
         
         if callibrated:
             if (current_area - desired_face_area > 100000): #TODO: can change the tolerance
-                print("zoom out")
+                ser.write(b"BACK\n")
                 moving = True
             elif (current_area - desired_face_area<-100000):
-                print("zoom in")
+                ser.write(b"FRONT\n")
                 moving = True
             else:
                 moving = False
@@ -108,7 +110,7 @@ while True:
             print ("not callibrated")
         
         if not moving:
-            print ("stop")
+            ser.write(b"STOP\n")
 
     else: #faces empty
         print("faces empty")
