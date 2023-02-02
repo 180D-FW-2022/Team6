@@ -32,7 +32,7 @@ moving = False
 
 while True:
     #Delete later
-    count = count + 1
+    # count = count + 1
     # Read the frame
     _, frame = cap.read()
 
