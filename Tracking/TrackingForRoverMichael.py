@@ -116,7 +116,7 @@ while True:
         print("faces empty")
 
     # Show the frame
-    cv2.imshow("Face Tracking", frame)
+    # cv2.imshow("Face Tracking", frame)
 
     # Exit if the 'q' key is pressed
     if cv2.waitKey(1) & 0xFF == ord('q'):
