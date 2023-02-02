@@ -29,7 +29,7 @@ callibrated = False
 moving = False
 
 # Delete later
-count = 1
+
 while True:
     #Delete later
     count = count + 1
@@ -91,7 +91,7 @@ while True:
         
         # callibrate
         #Delete later
-        if count ==5: #cv2.waitKey(1) & 0xFF == ord('b'):
+        if not callibrated: #cv2.waitKey(1) & 0xFF == ord('b'):
             desired_face_area = current_area
             callibrated = True
             
