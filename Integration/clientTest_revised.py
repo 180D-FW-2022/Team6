@@ -42,7 +42,7 @@ direction = b''
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '131.179.29.20' # paste your server ip address here
+host_ip = '169.232.126.240' # paste your server ip address here
 port = 9999
 tracking_port = 9998
 client_socket.connect((host_ip,port)) # a tuple
@@ -65,9 +65,10 @@ command = "m"
 def frompi():
 	global command
 	global data
+	global direction
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
-	faceCascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
+	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
 	
 	###########################################################
@@ -146,6 +147,10 @@ def frompi():
 		###########################################################################################
 		
 		################################################## Pan-Tilt Tracking Code #################################################
+		# Convert the frame to grayscale
+		# 
+		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
 		faces = face_cascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
 		areas=[]
