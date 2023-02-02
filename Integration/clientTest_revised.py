@@ -41,7 +41,7 @@ f.close()
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '169.232.126.55' # paste your server ip address here
+host_ip = '131.179.29.20' # paste your server ip address here
 port = 9999
 tracking_port = 9998
 client_socket.connect((host_ip,port)) # a tuple

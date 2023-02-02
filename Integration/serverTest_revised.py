@@ -94,7 +94,7 @@ vs = PiVideoStream().start()
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 # host_name  = socket.gethostname()
-host_ip = '169.232.126.55' #socket.gethostbyname(host_name)
+host_ip = '131.179.29.20' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
