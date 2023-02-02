@@ -34,6 +34,7 @@ model = load_model('mp_hand_gesture')
 f = open('gesture.names', 'r')
 classNames = f.read().split('\n')
 f.close()
+direction = b''
 # print(classNames)
 ##########################################################################################
 
@@ -49,6 +50,13 @@ client_tracking_socket.connect((host_ip,tracking_port))
 data = b""
 payload_size = struct.calcsize("Q")
 
+# Set the initial position of the motor
+initial_position = 0
+
+desired_face_area = 0
+current_face_area = 0
+callibrated = False
+moving = False
 
 # From Speech recognition code
 
@@ -61,62 +69,7 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	faceCascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	# font 
-	font = cv2.FONT_HERSHEY_SIMPLEX  
-	# org 
-	org = (50, 50)   
-	# fontScale 
-	fontScale = 1   
-	# Blue color in BGR 
-	color = (255, 0, 0)   
-	# Line thickness of 2 px 
-	thickness = 2
-
-	# ========================================================================
-	sync_freq = 0 
-	# ========================================================================
-
-	# Initial info
-	max_PAN      = 180
-	max_TILT     = 145
-	min_PAN      = 0
-	min_TILT     = 0
-
-	max_rate_TILT = 3
-	max_rate_PAN  = 3
-		
-	step_PAN     = 1
-	step_TILT    = 1
-	current_PAN  = 90
-	current_TILT = 60
-
-
-	# pseudo-PID control
-	k_PAN = 0.015
-	k_TILT = -0.015
-
-	kd_PAN = 0.095
-	kd_TILT = -0.095
-
-	error_acceptance = 15
-	# ========================================================================
-	previous_x = 0
-	previous_y = 0
-
-	previous_h = 0
-	previous_w = 0                  
-
-	delta_x = 0
-	delta_y = 0
-
-	previous_delta_x = 0
-	previous_delta_y = 0
-
-	delta_x_dot = 0
-	delta_y_dot = 0
-
-	rectangle_found = 0
-	# vid = cv2.VideoCapture(0)
+	
 	###########################################################
 	while True:
 		while len(data) < payload_size:
@@ -193,120 +146,93 @@ def frompi():
 		###########################################################################################
 		
 		################################################## Pan-Tilt Tracking Code #################################################
-		# Try to reduce lagging issues
-		if sync_freq == 0:
-			# Capture frame-by-frame
-			# ret, frame = vid.read()
-			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-			faces = faceCascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
-			
-		if sync_freq < 0:
-			sync_freq += 1
-			# stopping blinking rectangle
-#             if rectangle_found > 0:
-#                 cv2.rectangle(frame, (previous_x, previous_y), (x+previous_w, y+previous_h), (0, 255, 0), 2)            
-		#
-		else:            
-			sync_freq = 0
-			rectangle_found = 0
-			for (x, y, w, h) in faces:
-				cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-				rectangle_found += 1
-				if rectangle_found == 1:                    
-					# print(' x y previous ', previous_x, previous_y)                    
-# ========================================================================================
-					# stay away from me !
-#                     delta_x = previous_x - x
-#                     delta_y = previous_y - y
+		faces = face_cascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
-					# get in touch !                   
-					
-					delta_x = 300 - x
-					delta_y = 200 - y
-					
-					
-					delta_x_dot = delta_x - previous_delta_x
-					delta_y_dot = delta_y - previous_delta_y
-					
-# ========================================================================================
-					# ignoring small error
-					if abs(delta_x) < error_acceptance:
-						delta_x     = 0
-						delta_x_dot = 0
-						
-					if abs(delta_y) < error_acceptance:
-						delta_y     = 0
-						delta_y_dot = 0
-# ========================================================================================
-					# print(' x y new ', x, y)
-					
-					previous_x = x
-					previous_y = y
-					
-					previous_h = h
-					previous_w = w
-					
-					previous_delta_x = delta_x
-					previous_delta_y = delta_y
-					
-					cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-					cv2.putText(frame, str(x) + " " + str(y), (x, y), font, fontScale, (75, 75, 0), thickness, cv2.LINE_AA)
+		areas=[]
+		if np.any(faces): # faces is not empty
+			# find the largest face 
+			if (len(faces)>1): # if there are more than one face
+				for (x, y, w, h) in faces:
+					areas.append((x+w)*(y+h))
+
+				maxArea = max(areas)
+				maxAreaPos = areas.index(maxArea)
+
+				face = faces[maxAreaPos] #largest face
+			elif (len(faces)==1):
+				face = faces[0]
 		
-		if rectangle_found > 0 and (abs(delta_x) < 500 and abs(delta_y) < 500):
-			# stay away
-#             k_PAN = -0.01
-#             k_TILT = +0.01
-			# get in touch            
-			# print('pan tilt -- current ', current_PAN, current_TILT)
+			(x,y,w,h) = face 
 
-			# pseu-do PID
-			delta_TILT = k_TILT * delta_y + kd_TILT * delta_y_dot
-			# rate-limiter
-			delta_TILT = min(abs(delta_TILT), max_rate_TILT)*numpy.sign(delta_TILT)
-			# noise exclude
-			if abs(delta_TILT) < step_TILT:
-				delta_TILT = 0
-			# here we go
-			current_TILT = current_TILT + delta_TILT
+			# Draw a rectangle around the faces
+			cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
+			# Get the center of the face
+			face_center_x = x + w/2
+			face_center_y = y + h/2
 			
-			if current_TILT > max_TILT:
-				current_TILT = max_TILT                
-			if current_TILT < min_TILT:                
-				current_TILT = min_TILT
+			# field of view center
+			frame_center_x = frame.shape[1]/2
+			frame_center_y = frame.shape[0]/2
+
+			# calculate the area of the desired face rectangle
+			current_area = (x+w)*(y+h)
+			
+			# Calculate the error from the center of the frame
+			error_x = frame_center_x - face_center_x
+			error_y = frame_center_y - face_center_y
+			
+			print("error_x")
+			print(error_x)
+			
+			# left and right motion
+			if (error_x>60): #TODO: include tolerances
+				# ser.write(b"LEFT\n") 
+				direction = b"LEFT\n"
+				moving = True
+			elif (error_x<-60):
+				# ser.write(b"RIGHT\n") #todo: directions might be wrong
+				direction = b"RIGHT\n"
+				moving = True
+			else:
+				moving = False
+			
+			# callibrate
+			#Delete later
+			if not callibrated: #cv2.waitKey(1) & 0xFF == ord('b'):
+				desired_face_area = current_area
+				callibrated = True
 				
-			# print('delta tilt ', delta_TILT)
-			# pseu-do PID
-			delta_PAN = k_PAN * delta_x + kd_PAN * delta_x_dot
-			# rate-limiter
-			delta_PAN = min(abs(delta_PAN), max_rate_PAN)*numpy.sign(delta_PAN)
-			# noise exclude
-			if abs(delta_PAN) < step_PAN:
-				delta_PAN = 0            
-			# here we go
+			print("desired_face_area")
+			print(desired_face_area)
+
+			print("current_face_area")
+			print(current_area)
 			
-			current_PAN = current_PAN + delta_PAN
-				
-			if current_PAN > max_PAN:
-				current_PAN = max_PAN                
-			if current_PAN < min_PAN:                
-				current_PAN = min_PAN           
+			if callibrated:
+				if (current_area - desired_face_area > 100000): #TODO: can change the tolerance
+					# ser.write(b"BACK\n")
+					direction = b"BACK\n"
+					moving = True
+				elif (current_area - desired_face_area<-100000):
+					# ser.write(b"FRONT\n")
+					direction = b"FRONT\n"
+					moving = True
+				else:
+					moving = False
+			else:
+				print ("not callibrated")
 			
-			# print('delta PAN ', delta_PAN)
-			
-			# print('delta_x delta_y ', delta_x, delta_y)
-			
-			# print('pan tilt -- new ', current_PAN, current_TILT)            
-			
-			# pwm.setRotationAngle(1, current_PAN)
-			# pwm.setRotationAngle(0, current_TILT)
-			pan_tilt_update_string = str(current_PAN) + ',' + str(current_TILT) + '\n'
-			# pan_tilt_update_string = "test"
-			print(pan_tilt_update_string.encode())
-			print(client_tracking_socket.sendall(pan_tilt_update_string.encode()))
-			# sys.stdout = sys.__stdout__
-			# print(pan_tilt_update_string)
-			# sys.stdout = open(os.devnull, 'w')
+			if not moving:
+				# ser.write(b"STOP\n")
+				direction = b"STOP\n"
+
+		else: #faces empty
+			print("faces empty")
+
+		
+		print(direction.encode())
+		print(client_tracking_socket.sendall(direction.encode()))
 
 		# Show the final output
 		cv2.imshow("Output", frame)
