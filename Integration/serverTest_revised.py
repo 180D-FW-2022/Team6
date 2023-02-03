@@ -143,10 +143,10 @@ try:
 						# print('2')
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096)
-						if client_message != previous_message:
+						if client_message:# != previous_message:
 							# client_socket.setblocking(1)
 							# from_client = str(client_message)
-							previous_message = client_message
+							# previous_message = client_message
 							ser.write(client_message)
 							print(client_message)
 						else:

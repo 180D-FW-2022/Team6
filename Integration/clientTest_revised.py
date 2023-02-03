@@ -63,7 +63,7 @@ def frompi():
 
 	desired_face_area = 0
 	current_face_area = 0
-	callibrated = True
+	callibrated = False
 	moving = False
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
@@ -142,7 +142,7 @@ def frompi():
 		#################################### Speech Recognition ###################################
 		if "stop" in command.lower():
 			print("stop camera")
-			cap.release()
+			# cap.release()
 			cv2.destroyAllWindows()
 			break
 		###########################################################################################
@@ -193,16 +193,18 @@ def frompi():
 			
 			# left and right motion
 			if (error_x>60): #TODO: include tolerances
-				direction = b"LEFT\n"
-				client_tracking_socket.sendall(direction)
-				print(direction)
-				moving = True
-			elif (error_x<-60):
-				#todo: directions might be wrong
 				direction = b"RIGHT\n"
 				client_tracking_socket.sendall(direction)
 				print(direction)
 				moving = True
+				continue
+			elif (error_x<-60):
+				#todo: directions might be wrong
+				direction = b"Left\n"
+				client_tracking_socket.sendall(direction)
+				print(direction)
+				moving = True
+				continue
 			else:
 				moving = False
 			
@@ -219,12 +221,12 @@ def frompi():
 			print(current_area)
 			
 			if callibrated:
-				if (current_area - desired_face_area > 1000): #TODO: can change the tolerance
+				if (current_area - desired_face_area > 10000): #TODO: can change the tolerance
 					direction = b"BACK\n"
 					client_tracking_socket.sendall(direction)
 					print(direction)
 					moving = True
-				elif (current_area - desired_face_area<-1000):
+				elif (current_area - desired_face_area<-10000):
 					direction = b"FRONT\n"
 					client_tracking_socket.sendall(direction)
 					print(direction)
