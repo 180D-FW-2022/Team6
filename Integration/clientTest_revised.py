@@ -21,7 +21,7 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-sys.stdout = open(os.devnull, 'w')
+# sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
@@ -193,19 +193,22 @@ def frompi():
 			
 			# left and right motion
 			if (error_x>60): #TODO: include tolerances
-				# ser.write(b"LEFT\n") 
 				direction = b"LEFT\n"
+				client_tracking_socket.sendall(direction)
+				print(direction)
 				moving = True
 			elif (error_x<-60):
-				# ser.write(b"RIGHT\n") #todo: directions might be wrong
+				#todo: directions might be wrong
 				direction = b"RIGHT\n"
+				client_tracking_socket.sendall(direction)
+				print(direction)
 				moving = True
 			else:
 				moving = False
 			
 			# callibrate
 			#Delete later
-			if callibrated:#cv2.waitKey(1) & 0xFF == ord('b'):
+			if cv2.waitKey(1) & 0xFF == ord('b'):
 				desired_face_area = current_area
 				callibrated = True
 				
@@ -216,13 +219,15 @@ def frompi():
 			print(current_area)
 			
 			if callibrated:
-				if (current_area - desired_face_area > 100000): #TODO: can change the tolerance
-					# ser.write(b"BACK\n")
+				if (current_area - desired_face_area > 1000): #TODO: can change the tolerance
 					direction = b"BACK\n"
+					client_tracking_socket.sendall(direction)
+					print(direction)
 					moving = True
-				elif (current_area - desired_face_area<-100000):
-					# ser.write(b"FRONT\n")
+				elif (current_area - desired_face_area<-1000):
 					direction = b"FRONT\n"
+					client_tracking_socket.sendall(direction)
+					print(direction)
 					moving = True
 				else:
 					moving = False
@@ -230,15 +235,16 @@ def frompi():
 				print ("not callibrated")
 			
 			if not moving:
-				# ser.write(b"STOP\n")
 				direction = b"STOP\n"
+				client_tracking_socket.sendall(direction)
+				print(direction)
 
 		else: #faces empty
 			print("faces empty")
 
 		
 		print(direction)
-		print(client_tracking_socket.sendall(direction))
+		# print(client_tracking_socket.sendall(direction))
 
 		# Show the final output
 		cv2.imshow("Output", frame)

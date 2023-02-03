@@ -78,6 +78,7 @@ class PiVideoStream:
 current_PAN  = 90
 current_TILT = 60
 payload_size = struct.calcsize("Q")
+previous_message = b''
 # pwm.setRotationAngle(1, current_PAN) #PAN    
 # pwm.setRotationAngle(0, current_TILT) #TILT
 
@@ -142,13 +143,14 @@ try:
 						# print('2')
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096)
-						if client_message.decode() in ["FRONT","BACK","LEFT","RIGHT","STOP"]:
+						if client_message != previous_message:
 							# client_socket.setblocking(1)
 							# from_client = str(client_message)
+							previous_message = client_message
 							ser.write(client_message)
 							print(client_message)
 						else:
-							print(client_message)
+							print("nope")
 					except socket.error as e:
 						print("nothin")
 						break
