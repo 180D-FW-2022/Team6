@@ -147,22 +147,10 @@ try:
 							# from_client = str(client_message)
 							ser.write(client_message)
 							print(client_message)
-						# ser.write(b"test\n")
-						# line = ser.readline().decode('utf-8').rstrip()
-						# print(line)
-						# if ',' in from_client:
-						# 	current_PAN = from_client.split(',')[0]
-						# 	current_TILT = from_client.split(',')[1]
-						# 	if current_PAN.isnumeric() and current_TILT.isnumeric():
-						# 		current_PAN = float(current_PAN)
-						# 		current_TILT = float(current_TILT)
-						# 		print (current_PAN + current_TILT)
-
-							# print(current_PAN + '\n')
-							# print(current_TILT + '\n')
-						# print('5')
-						# print(from_client + '\n')
+						else:
+							print('2')
 					except socket.error as e:
+						print("nothin")
 						break
 						# err = e.args[0]
 						# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
@@ -174,9 +162,7 @@ try:
 						# 	# a "real" error occurred
 						# 	# print (e)
 						# 	sys.exit(1)
-					
-					# from_client = client_socket.recv(4096).decode()
-					# print(from_client)						
+											
 finally:
 	# shut down cleanly
     # pwm.exit_PCA9685()
