@@ -24,6 +24,11 @@ import IMU
 import datetime
 import os
 import csv
+import serial
+
+# Setting up serial communication to robot car
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 
 RAD_TO_DEG = 57.29578
@@ -420,14 +425,19 @@ while True:
 
     if stationary:
         tiltdetection = 'IMU is stationary.\t'
+        ser.write(b"STOP\n")
     if forwardtilt:
         tiltdetection = 'IMU is tilting forward.\t'
+        ser.write(b"FRONT\n")
     if backwardtilt:
         tiltdetection = 'IMU is tilting backward.\t'
+        ser.write(b"BACK\n")
     if righttilt:
         tiltdetection = 'IMU is tilting right.\t'
+        ser.write(b"RIGHT\n")
     if lefttilt:
         tiltdetection = 'IMU is tilting left.\t'
+        ser.write(b"LEFT\n")
     
     #print(outputString)
     print(tiltdetection)
