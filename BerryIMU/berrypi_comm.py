@@ -438,21 +438,22 @@ try:
                 stationary=1 #unless tilting at specific angles ouput will read stationary
                 
 
-                if stationary:
-                    tiltdetection = 'IMU is stationary.\t'
-                    laptop_socket.sendall(b"STOP\n")
+                
                 if forwardtilt:
                     tiltdetection = 'IMU is tilting forward.\t'
                     laptop_socket.sendall(b"FRONT\n")
-                if backwardtilt:
+                elif backwardtilt:
                     tiltdetection = 'IMU is tilting backward.\t'
                     laptop_socket.sendall(b"BACK\n")
-                if righttilt:
+                elif righttilt:
                     tiltdetection = 'IMU is tilting right.\t'
                     laptop_socket.sendall(b"RIGHT\n")
-                if lefttilt:
+                elif lefttilt:
                     tiltdetection = 'IMU is tilting left.\t'
                     laptop_socket.sendall(b"LEFT\n")
+                elif stationary:
+                    tiltdetection = 'IMU is stationary.\t'
+                    laptop_socket.sendall(b"STOP\n")
                 
                 #print(outputString)
                 print(tiltdetection)
