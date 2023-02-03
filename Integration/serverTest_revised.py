@@ -93,6 +93,10 @@ vs = PiVideoStream().start()
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+#Avoid address in use error
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host_name  = socket.gethostname()
 host_ip = '169.232.126.23' #socket.gethostbyname(host_name)
 print('HOST IP:',host_ip)

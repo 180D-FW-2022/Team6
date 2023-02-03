@@ -50,14 +50,6 @@ client_tracking_socket.connect((host_ip,tracking_port))
 data = b""
 payload_size = struct.calcsize("Q")
 
-# Set the initial position of the motor
-initial_position = 0
-
-desired_face_area = 0
-current_face_area = 0
-callibrated = False
-moving = False
-
 # From Speech recognition code
 
 command = "m"
@@ -66,6 +58,13 @@ def frompi():
 	global command
 	global data
 	global direction
+	# Set the initial position of the motor
+	initial_position = 0
+
+	desired_face_area = 0
+	current_face_area = 0
+	callibrated = False
+	moving = False
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
@@ -204,7 +203,7 @@ def frompi():
 			
 			# callibrate
 			#Delete later
-			if not callibrated: #cv2.waitKey(1) & 0xFF == ord('b'):
+			if cv2.waitKey(1) & 0xFF == ord('b'):
 				desired_face_area = current_area
 				callibrated = True
 				
@@ -242,8 +241,8 @@ def frompi():
 		# Show the final output
 		cv2.imshow("Output", frame)
 
-		if cv2.waitKey(1) == ord('q'):
-			break
+		# if cv2.waitKey(1) == ord('q'):
+		# 	break
 
 ############################################ Speech Recognition #############################################	
 def hear():
