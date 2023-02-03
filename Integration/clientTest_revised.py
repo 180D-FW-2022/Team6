@@ -53,7 +53,7 @@ remote_port = 9999
 
 client_socket.connect((host_ip,port)) # a tuple
 client_tracking_socket.connect((host_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
+# remote_socket.connect((remote_ip,remote_port))
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -80,26 +80,26 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	vid = cv2.VideoCapture(0)
+	# vid = cv2.VideoCapture(0)
 	###########################################################
 	while True:
-		# while len(data) < payload_size:
-		# 	packet = client_socket.recv(4*1024) # 4K
-		# 	if not packet: break
-		# 	data+=packet
-		# packed_msg_size = data[:payload_size]
-		# data = data[payload_size:]
-		# # print(packed_msg_size)
-		# msg_size = struct.unpack("Q",packed_msg_size)[0]
+		while len(data) < payload_size:
+			packet = client_socket.recv(4*1024) # 4K
+			if not packet: break
+			data+=packet
+		packed_msg_size = data[:payload_size]
+		data = data[payload_size:]
+		# print(packed_msg_size)
+		msg_size = struct.unpack("Q",packed_msg_size)[0]
 		
-		# while len(data) < msg_size:
-		# 	data += client_socket.recv(4*1024)
-		# frame_data = data[:msg_size]
-		# data  = data[msg_size:]
-		# frame = pickle.loads(frame_data)
+		while len(data) < msg_size:
+			data += client_socket.recv(4*1024)
+		frame_data = data[:msg_size]
+		data  = data[msg_size:]
+		frame = pickle.loads(frame_data)
 
 
-		img,frame = vid.read()
+		# img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
 		################################ Gesture Recognition Code #########################################
@@ -157,135 +157,134 @@ def frompi():
 			cv2.destroyAllWindows()
 			break
 		###########################################################################################
-		if cv2.waitKey(1) == ord('r'):
+		if cv2.waitKey(1) & 0xFF == ord('r'):
 			manual_control =  not manual_control
 
 		if not manual_control:
 			print("face tracking control")
-			# ################################################## Pan-Tilt Tracking Code #################################################
-			# # Convert the frame to grayscale
-			# # 
-			# gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+			################################################## Pan-Tilt Tracking Code #################################################
+			# Convert the frame to grayscale
+			# 
+			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-			# faces = face_cascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+			faces = face_cascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
 
-			# areas=[]
-			# if np.any(faces): # faces is not empty
-			# 	# find the largest face 
-			# 	if (len(faces)>1): # if there are more than one face
-			# 		for (x, y, w, h) in faces:
-			# 			areas.append((x+w)*(y+h))
+			areas=[]
+			if np.any(faces): # faces is not empty
+				# find the largest face 
+				if (len(faces)>1): # if there are more than one face
+					for (x, y, w, h) in faces:
+						areas.append((x+w)*(y+h))
 
-			# 		maxArea = max(areas)
-			# 		maxAreaPos = areas.index(maxArea)
+					maxArea = max(areas)
+					maxAreaPos = areas.index(maxArea)
 
-			# 		face = faces[maxAreaPos] #largest face
-			# 	elif (len(faces)==1):
-			# 		face = faces[0]
+					face = faces[maxAreaPos] #largest face
+				elif (len(faces)==1):
+					face = faces[0]
 			
-			# 	(x,y,w,h) = face 
+				(x,y,w,h) = face 
 
-			# 	# Draw a rectangle around the faces
-			# 	cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+				# Draw a rectangle around the faces
+				cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
-			# 	# Get the center of the face
-			# 	face_center_x = x + w/2
-			# 	face_center_y = y + h/2
+				# Get the center of the face
+				face_center_x = x + w/2
+				face_center_y = y + h/2
 				
-			# 	# field of view center
-			# 	frame_center_x = frame.shape[1]/2
-			# 	frame_center_y = frame.shape[0]/2
+				# field of view center
+				frame_center_x = frame.shape[1]/2
+				frame_center_y = frame.shape[0]/2
 
-			# 	# calculate the area of the desired face rectangle
-			# 	current_area = (x+w)*(y+h)
+				# calculate the area of the desired face rectangle
+				current_area = (x+w)*(y+h)
 				
-			# 	# Calculate the error from the center of the frame
-			# 	error_x = frame_center_x - face_center_x
-			# 	error_y = frame_center_y - face_center_y
+				# Calculate the error from the center of the frame
+				error_x = frame_center_x - face_center_x
+				error_y = frame_center_y - face_center_y
 				
-			# 	print("error_x")
-			# 	print(error_x)
+				print("error_x")
+				print(error_x)
 				
-			# 	# left and right motion
-			# 	if (error_x>60): #TODO: include tolerances
-			# 		direction = b"RIGHT\n"
-			# 		client_tracking_socket.sendall(direction)
-			# 		print(direction)
-			# 		moving = True
-			# 		continue
-			# 	elif (error_x<-60):
-			# 		#todo: directions might be wrong
-			# 		direction = b"LEFT\n"
-			# 		client_tracking_socket.sendall(direction)
-			# 		print(direction)
-			# 		moving = True
-			# 		continue
-			# 	else:
-			# 		moving = False
+				# left and right motion
+				if (error_x>60): #TODO: include tolerances
+					direction = b"RIGHT\n"
+					client_tracking_socket.sendall(direction)
+					print(direction)
+					moving = True
+					continue
+				elif (error_x<-60):
+					#todo: directions might be wrong
+					direction = b"LEFT\n"
+					client_tracking_socket.sendall(direction)
+					print(direction)
+					moving = True
+					continue
+				else:
+					moving = False
 				
-			# 	# callibrate
-			# 	#Delete later
-			# 	if cv2.waitKey(1) & 0xFF == ord('b'):
-			# 		desired_face_area = current_area
-			# 		callibrated = True
+				# callibrate
+				#Delete later
+				if cv2.waitKey(1) & 0xFF == ord('b'):
+					desired_face_area = current_area
+					callibrated = True
 					
-			# 	print("desired_face_area")
-			# 	print(desired_face_area)
+				print("desired_face_area")
+				print(desired_face_area)
 
-			# 	print("current_face_area")
-			# 	print(current_area)
+				print("current_face_area")
+				print(current_area)
 				
-			# 	if callibrated:
-			# 		if (current_area - desired_face_area > 5000): #TODO: can change the tolerance
-			# 			direction = b"BACK\n"
-			# 			client_tracking_socket.sendall(direction)
-			# 			print(direction)
-			# 			moving = True
-			# 		elif (current_area - desired_face_area<-1000):
-			# 			direction = b"FRONT\n"
-			# 			client_tracking_socket.sendall(direction)
-			# 			print(direction)
-			# 			moving = True
-			# 		else:
-			# 			moving = False
-			# 	else:
-			# 		print ("not callibrated")
+				if callibrated:
+					if (current_area - desired_face_area > 5000): #TODO: can change the tolerance
+						direction = b"BACK\n"
+						client_tracking_socket.sendall(direction)
+						print(direction)
+						moving = True
+					elif (current_area - desired_face_area<-1000):
+						direction = b"FRONT\n"
+						client_tracking_socket.sendall(direction)
+						print(direction)
+						moving = True
+					else:
+						moving = False
+				else:
+					print ("not callibrated")
 				
-			# 	if not moving:
-			# 		direction = b"STOP\n"
-			# 		client_tracking_socket.sendall(direction)
-			# 		print(direction)
+				if not moving:
+					direction = b"STOP\n"
+					client_tracking_socket.sendall(direction)
+					print(direction)
 
-			# else: #faces empty
-			# 	print("faces empty")
-			# 	# direction = b"STOP\n"
-			# 	# client_tracking_socket.sendall(direction)
-			# 	# print(direction)
+			else: #faces empty
+				print("faces empty")
+				# direction = b"STOP\n"
+				# client_tracking_socket.sendall(direction)
+				# print(direction)
 
 			
-			# print(direction)
+			print(direction)
 
 			# Show the final output
 			cv2.imshow("Output", frame)
 
 			if cv2.waitKey(1) == ord('q'):
 				break
+
 		elif manual_control:
 			print("IMU control")
-			while True:
-					try:
-						from_IMU = ''
-						from_IMU = remote_socket.recv(4096)
-						if from_IMU:
-							# ser.write(from_IMU)
-							print(from_IMU)
-							client_tracking_socket.sendall(from_IMU)
-						else:
-							print("No IMU message 1")
-					except socket.error as e:
-						print("No IMU message 2")
-						break
-			continue
+			# client_tracking_socket.sendall(b"test\n")
+			try:
+				from_IMU = ''
+				# from_IMU = remote_socket.recv(4096)
+				if from_IMU:
+					print(from_IMU)
+					client_tracking_socket.sendall(from_IMU)
+				else:
+					print("No IMU message 1")
+			except socket.error as e:
+				print("No IMU message 2")
+				break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
 
