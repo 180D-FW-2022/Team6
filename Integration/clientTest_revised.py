@@ -63,7 +63,7 @@ def frompi():
 
 	desired_face_area = 0
 	current_face_area = 0
-	callibrated = False
+	callibrated = True
 	moving = False
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
@@ -203,7 +203,7 @@ def frompi():
 			
 			# callibrate
 			#Delete later
-			if cv2.waitKey(1) & 0xFF == ord('b'):
+			if callibrated:#cv2.waitKey(1) & 0xFF == ord('b'):
 				desired_face_area = current_area
 				callibrated = True
 				

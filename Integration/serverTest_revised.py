@@ -123,6 +123,7 @@ try:
 		print('GOT CONNECTION FROM:',addr)
 		print('GOT CONNECTION FROM:',tracking_addr)
 		if client_socket and client_tracking_socket:
+			client_tracking_socket.setblocking(0)
 			while(vs):
 				frame = vs.read()
 				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
@@ -133,7 +134,7 @@ try:
 					# print(message)
 					continue
 				client_socket.sendall(message)
-				client_tracking_socket.setblocking(0)
+				
 				while True:
 					
 					# print('1')
@@ -141,12 +142,14 @@ try:
 						# print('2')
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096)
-						# client_socket.setblocking(1)
-						from_client = str(client_message)
-						ser.write(client_message)
+						if client_message.decode() in ["FRONT","BACK","LEFT","RIGHT","STOP"]:
+							# client_socket.setblocking(1)
+							# from_client = str(client_message)
+							ser.write(client_message)
+							print(client_message)
 						# ser.write(b"test\n")
-						line = ser.readline().decode('utf-8').rstrip()
-						print(line)
+						# line = ser.readline().decode('utf-8').rstrip()
+						# print(line)
 						# if ',' in from_client:
 						# 	current_PAN = from_client.split(',')[0]
 						# 	current_TILT = from_client.split(',')[1]
