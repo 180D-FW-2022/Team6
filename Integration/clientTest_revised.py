@@ -200,7 +200,7 @@ def frompi():
 				continue
 			elif (error_x<-60):
 				#todo: directions might be wrong
-				direction = b"Left\n"
+				direction = b"LEFT\n"
 				client_tracking_socket.sendall(direction)
 				print(direction)
 				moving = True
@@ -221,12 +221,12 @@ def frompi():
 			print(current_area)
 			
 			if callibrated:
-				if (current_area - desired_face_area > 10000): #TODO: can change the tolerance
+				if (current_area - desired_face_area > 5000): #TODO: can change the tolerance
 					direction = b"BACK\n"
 					client_tracking_socket.sendall(direction)
 					print(direction)
 					moving = True
-				elif (current_area - desired_face_area<-10000):
+				elif (current_area - desired_face_area<-1000):
 					direction = b"FRONT\n"
 					client_tracking_socket.sendall(direction)
 					print(direction)
@@ -243,6 +243,9 @@ def frompi():
 
 		else: #faces empty
 			print("faces empty")
+			# direction = b"STOP\n"
+			# client_tracking_socket.sendall(direction)
+			# print(direction)
 
 		
 		print(direction)

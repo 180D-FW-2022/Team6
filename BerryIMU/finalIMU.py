@@ -1,4 +1,3 @@
-#http://ozzmaker.com/
 #!/usr/bin/python
 #
 #    This program  reads the angles from the acceleromteer, gyroscope
