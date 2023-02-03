@@ -201,7 +201,7 @@ IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 #Avoid address in use error
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_ip = '128.97.51.11'
+remote_ip = '169.232.238.146'
 print('HOST IP:',remote_ip)
 remote_port = 9999
 remote_address = (remote_ip,remote_port)
