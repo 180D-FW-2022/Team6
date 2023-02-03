@@ -45,7 +45,7 @@ client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 host_ip = '169.232.126.23' # paste your server ip address here
-remote_ip = '169.232.238.146'
+remote_ip = '128.97.51.11'
 
 port = 9999
 tracking_port = 9998
@@ -74,7 +74,7 @@ def frompi():
 	callibrated = False
 	moving = False
 
-	manual_control = False
+	manual_control = True
 
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
