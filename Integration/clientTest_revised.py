@@ -42,7 +42,7 @@ direction = b''
 # create socket
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-host_ip = '169.232.126.240' # paste your server ip address here
+host_ip = '169.232.126.23' # paste your server ip address here
 port = 9999
 tracking_port = 9998
 client_socket.connect((host_ip,port)) # a tuple
@@ -236,8 +236,8 @@ def frompi():
 			print("faces empty")
 
 		
-		print(direction.encode())
-		print(client_tracking_socket.sendall(direction.encode()))
+		print(direction)
+		print(client_tracking_socket.sendall(direction))
 
 		# Show the final output
 		cv2.imshow("Output", frame)
