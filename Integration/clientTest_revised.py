@@ -69,7 +69,7 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	
+	# vid = cv2.VideoCapture(0)
 	###########################################################
 	while True:
 		while len(data) < payload_size:
@@ -86,6 +86,8 @@ def frompi():
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
 		frame = pickle.loads(frame_data)
+
+
 		# img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
@@ -241,8 +243,8 @@ def frompi():
 		# Show the final output
 		cv2.imshow("Output", frame)
 
-		# if cv2.waitKey(1) == ord('q'):
-		# 	break
+		if cv2.waitKey(1) == ord('q'):
+			break
 
 ############################################ Speech Recognition #############################################	
 def hear():

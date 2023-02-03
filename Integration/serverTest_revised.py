@@ -148,7 +148,7 @@ try:
 							ser.write(client_message)
 							print(client_message)
 						else:
-							print('2')
+							print(client_message)
 					except socket.error as e:
 						print("nothin")
 						break
