@@ -44,15 +44,15 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host_ip = '169.232.126.23' # paste your server ip address here
+host_ip = '169.232.245.171' # paste your server ip address here
 remote_ip = '128.97.51.11'
 
 port = 9999
 tracking_port = 9998
 remote_port = 9999
 
-# client_socket.connect((host_ip,port)) # a tuple
-# client_tracking_socket.connect((host_ip,tracking_port))
+client_socket.connect((host_ip,port)) # a tuple
+client_tracking_socket.connect((host_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
 
 data = b""
@@ -279,6 +279,7 @@ def frompi():
 						if from_IMU:
 							# ser.write(from_IMU)
 							print(from_IMU)
+							client_tracking_socket.sendall(from_IMU)
 						else:
 							print("No IMU message 1")
 					except socket.error as e:
