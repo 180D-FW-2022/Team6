@@ -1,4 +1,4 @@
-import smbus
+import smbus2 as smbus
 bus = smbus.SMBus(1)
 from LSM9DS0 import *
 from LSM9DS1 import *
