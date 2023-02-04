@@ -53,7 +53,7 @@ remote_port = 9999
 
 client_socket.connect((host_ip,port)) # a tuple
 client_tracking_socket.connect((host_ip,tracking_port))
-# remote_socket.connect((remote_ip,remote_port))
+remote_socket.connect((remote_ip,remote_port))
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -276,7 +276,7 @@ def frompi():
 			# client_tracking_socket.sendall(b"test\n")
 			try:
 				from_IMU = ''
-				# from_IMU = remote_socket.recv(4096)
+				from_IMU = remote_socket.recv(4096)
 				if from_IMU:
 					print(from_IMU)
 					client_tracking_socket.sendall(from_IMU)

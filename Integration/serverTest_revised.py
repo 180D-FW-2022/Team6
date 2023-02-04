@@ -40,6 +40,9 @@ class PiVideoStream:
 		# self.stream = self.camera.capture_continuous(self.rawCapture,
 		# 	format="bgr", use_video_port=True)
 		self.stream = cv2.VideoCapture(0)
+		self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+		self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+		self.stream.set(cv2.CAP_PROP_FPS, 10)
 		# initialize the frame and the variable used to indicate
 		# if the thread should be stopped
 		self.frame = None
