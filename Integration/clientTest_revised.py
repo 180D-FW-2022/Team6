@@ -159,8 +159,14 @@ def frompi():
 			break
 		###########################################################################################
 		try:  # used try so that if user pressed other than the given key error will not be shown
-			if keyboard.is_pressed('r'): 
+			if keyboard.is_pressed('r'):
+				sys.stdout = sys.__stdout__ 
 				manual_control = not manual_control
+				if manual_control:
+					print("IMU Control")
+				else:
+					print("Face Tracking")
+				sys.stdout = open(os.devnull, 'w')
 		except:
 			print('error')
 			
@@ -229,10 +235,21 @@ def frompi():
 					moving = False
 				
 				# callibrate
-				#Delete later
-				if cv2.waitKey(1) & 0xFF == ord('b'):
-					desired_face_area = current_area
-					callibrated = True
+				# #Delete later
+				# if cv2.waitKey(1) & 0xFF == ord('b'):
+				# 	desired_face_area = current_area
+				# 	callibrated = True
+
+				try:  # used try so that if user pressed other than the given key error will not be shown
+					if keyboard.is_pressed('b'):
+						desired_face_area = current_area
+						callibrated = True
+						sys.stdout = sys.__stdout__ 
+						print(desired_face_area)
+						print(callibrated)
+						sys.stdout = open(os.devnull, 'w')
+				except:
+					print('error')
 					
 				print("desired_face_area")
 				print(desired_face_area)
