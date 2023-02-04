@@ -155,11 +155,10 @@ try:
 							# from_client = str(client_message)
 							# previous_message = client_message
 							ser.write(client_message)
-							print(client_message)
-						else:
-							print("nope")
+							# print(client_message)
+						# else:
+						# 	print("nope")
 					except socket.error as e:
-						print("nothin")
 						break
 						# err = e.args[0]
 						# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:

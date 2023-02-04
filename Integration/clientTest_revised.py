@@ -12,6 +12,7 @@ import sys, os
 ##########Face Tracking Dependencies###############3
 # from PCA9685 import PCA9685
 import pkg_resources
+import keyboard
 
 ###################### Additional Gesture Recognition Dependencies and Setup Code ####################
 import cv2
@@ -21,7 +22,7 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-# sys.stdout = open(os.devnull, 'w')
+sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
@@ -157,8 +158,12 @@ def frompi():
 			cv2.destroyAllWindows()
 			break
 		###########################################################################################
-		if cv2.waitKey(1) & 0xFF == ord('r'):
-			manual_control =  not manual_control
+		try:  # used try so that if user pressed other than the given key error will not be shown
+			if keyboard.is_pressed('r'): 
+				manual_control = not manual_control
+		except:
+			print('error')
+			
 
 		if not manual_control:
 			print("face tracking control")
@@ -265,8 +270,7 @@ def frompi():
 			
 			print(direction)
 
-			# Show the final output
-			cv2.imshow("Output", frame)
+			
 
 			if cv2.waitKey(1) == ord('q'):
 				break
@@ -287,6 +291,12 @@ def frompi():
 				break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
+
+		# Show the final output
+		cv2.imshow("Output", frame)
+
+		if cv2.waitKey(1) & 0xFF == ord('r'):
+			manual_control =  not manual_control
 
 
 ############################################ Speech Recognition #############################################	

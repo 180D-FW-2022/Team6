@@ -456,7 +456,7 @@ try:
                     laptop_socket.sendall(b"STOP\n")
                 
                 #print(outputString)
-                print(tiltdetection)
+                # print(tiltdetection)
                 #slow program down a bit, makes the output more readable
                 time.sleep(0.03)
 
