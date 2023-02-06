@@ -22,7 +22,7 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-sys.stdout = open(os.devnull, 'w')
+# sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
 hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
@@ -72,7 +72,7 @@ def frompi():
 
 	desired_face_area = 0
 	current_face_area = 0
-	calledCallibrate
+	calledCallibrate = False
 	callibrated = False
 	moving = False
 
@@ -83,8 +83,11 @@ def frompi():
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
 	# vid = cv2.VideoCapture(0)
+	last_message_time = time.time()
+	# current_time = time.time()
 	###########################################################
 	while True:
+		current_time = time.time()
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -104,6 +107,7 @@ def frompi():
 		# img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
+		sys.stdout = open(os.devnull, 'w')
 		################################ Gesture Recognition Code #########################################
 		x, y, c = frame.shape
 
@@ -162,7 +166,7 @@ def frompi():
 		
 
 		######################################################################################################
-
+		sys.stdout = sys.__stdout__ 
 		#################################### Speech Recognition ###################################
 		if "stop" in command.lower():
 			print("stop camera")
@@ -170,8 +174,10 @@ def frompi():
 			cv2.destroyAllWindows()
 			break
 		if "callibrate" in command.lower():
+			sys.stdout = sys.__stdout__ 
 			print("callibrate confirmed")
 			calledCallibrate = True
+			sys.stdout = open(os.devnull, 'w')
 		###########################################################################################
 		try:  # used try so that if user pressed other than the given key error will not be shown
 			if keyboard.is_pressed('r'):
@@ -235,14 +241,18 @@ def frompi():
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
 					direction = b"RIGHT\n"
-					client_tracking_socket.sendall(direction)
+					if current_time - last_message_time > .25:
+						last_message_time = current_time
+						client_tracking_socket.sendall(direction)
 					print(direction)
 					moving = True
 					continue
 				elif (error_x<-70):
 					#todo: directions might be wrong
 					direction = b"LEFT\n"
-					client_tracking_socket.sendall(direction)
+					if current_time - last_message_time > .25:
+						last_message_time = current_time
+						client_tracking_socket.sendall(direction)
 					print(direction)
 					moving = True
 					continue
@@ -277,12 +287,16 @@ def frompi():
 				if callibrated:
 					if (current_area - desired_face_area > 6000): #TODO: can change the tolerance
 						direction = b"BACK\n"
-						client_tracking_socket.sendall(direction)
+						if current_time - last_message_time > .25:
+							last_message_time = current_time
+							client_tracking_socket.sendall(direction)
 						print(direction)
 						moving = True
 					elif (current_area - desired_face_area<-2000):
 						direction = b"FRONT\n"
-						client_tracking_socket.sendall(direction)
+						if current_time - last_message_time > .25:
+							last_message_time = current_time
+							client_tracking_socket.sendall(direction)
 						print(direction)
 						moving = True
 					else:
@@ -340,7 +354,7 @@ def hear():
     while(True):
         
         global command
-
+		
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Say something!")

@@ -30,24 +30,28 @@ void loop()
       analogWrite(ML_PWM,175);//set the PWM control speed of left motor to 175
       digitalWrite(MR_Ctrl,LOW);//set the direction control pin of right motor to LOW
       analogWrite(MR_PWM,175);//set the PWM control speed of right motor to 175
+      delay(250);
     }
     else if (data == "FRONT"){
       digitalWrite(ML_Ctrl,HIGH);//set the direction control pin of left motor to HIGH
       analogWrite(ML_PWM,175);//set the PWM control speed of left motor to 175  
       digitalWrite(MR_Ctrl,HIGH);//set the direction control pin of right motor to HIGH
       analogWrite(MR_PWM,175);//set the PWM control speed of right motor to 175
+      delay(250);
     }
     else if (data == "RIGHT"){
       digitalWrite(ML_Ctrl,LOW);//set the direction control pin of left motor to LOW
       analogWrite(ML_PWM,175);//set the PWM control speed of left motor to 175
       digitalWrite(MR_Ctrl,HIGH);//set the direction control pin of right motor to HIGH
       analogWrite(MR_PWM,175);//set the PWM control speed of right motor to 175
+      delay(250);
     }
     else if (data == "LEFT"){
       digitalWrite(ML_Ctrl,HIGH);//set the direction control pin of left motor to HIGH
       analogWrite(ML_PWM,175);//set the PWM control speed of left motor to 175
       digitalWrite(MR_Ctrl,LOW);//set the direction control pin of right motor to LOW
       analogWrite(MR_PWM,175);//set the PWM control speed of right motor to 175
+      delay(250);
     }
     else{
       analogWrite(ML_PWM,0);//set the PWM control speed of left motor to 0
@@ -59,4 +63,7 @@ void loop()
       analogWrite(MR_PWM,0);//set the PWM control speed of right motor to 0
     }
   }
+  analogWrite(ML_PWM,0);//set the PWM control speed of left motor to 0
+  analogWrite(MR_PWM,0);//set the PWM control speed of right motor to 0
+  delay(250);
 }//*****************************************
