@@ -173,9 +173,9 @@ def frompi():
 			# cap.release()
 			cv2.destroyAllWindows()
 			break
-		if "callibrate" in command.lower():
+		if "calibrate" in command.lower():
 			sys.stdout = sys.__stdout__ 
-			print("callibrate confirmed")
+			print("calibrate confirmed")
 			calledCallibrate = True
 			sys.stdout = open(os.devnull, 'w')
 		###########################################################################################
@@ -244,7 +244,7 @@ def frompi():
 					if current_time - last_message_time > .25:
 						last_message_time = current_time
 						client_tracking_socket.sendall(direction)
-					print(direction)
+					# print(direction)
 					moving = True
 					continue
 				elif (error_x<-70):
@@ -253,7 +253,7 @@ def frompi():
 					if current_time - last_message_time > .25:
 						last_message_time = current_time
 						client_tracking_socket.sendall(direction)
-					print(direction)
+					# print(direction)
 					moving = True
 					continue
 				else:
@@ -285,19 +285,19 @@ def frompi():
 				print(current_area)
 				
 				if callibrated:
-					if (current_area - desired_face_area > 6000): #TODO: can change the tolerance
+					if (current_area - desired_face_area > 250): #TODO: can change the tolerance
 						direction = b"BACK\n"
 						if current_time - last_message_time > .25:
 							last_message_time = current_time
 							client_tracking_socket.sendall(direction)
-						print(direction)
+						# print(direction)
 						moving = True
-					elif (current_area - desired_face_area<-2000):
+					elif (current_area - desired_face_area<-250):
 						direction = b"FRONT\n"
 						if current_time - last_message_time > .25:
 							last_message_time = current_time
 							client_tracking_socket.sendall(direction)
-						print(direction)
+						# print(direction)
 						moving = True
 					else:
 						moving = False
@@ -307,7 +307,7 @@ def frompi():
 				if not moving:
 					direction = b"STOP\n"
 					client_tracking_socket.sendall(direction)
-					print(direction)
+					# print(direction)
 
 			else: #faces empty
 				print("faces empty")

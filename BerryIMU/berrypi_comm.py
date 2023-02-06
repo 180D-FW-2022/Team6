@@ -205,6 +205,7 @@ remote_ip = '131.179.34.209'
 print('HOST IP:',remote_ip)
 remote_port = 9999
 remote_address = (remote_ip,remote_port)
+remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 remote_socket.bind(remote_address)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # Socket Listen
