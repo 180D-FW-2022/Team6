@@ -45,8 +45,8 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host_ip = '169.232.126.135' # paste your server ip address here
-remote_ip = '128.97.51.121'
+host_ip = '131.179.40.104' # paste your server ip address here
+remote_ip = '131.179.34.209'
 
 port = 9999
 tracking_port = 9998
@@ -72,6 +72,7 @@ def frompi():
 
 	desired_face_area = 0
 	current_face_area = 0
+	calledCallibrate
 	callibrated = False
 	moving = False
 
@@ -147,6 +148,17 @@ def frompi():
 		# 	cv2.destroyAllWindows()
 		# 	break
 		
+		if "rock" in className.lower():
+			sys.stdout = sys.__stdout__ 
+			print("IMU Control")
+			sys.stdout = open(os.devnull, 'w')
+			manual_control = True
+
+		if "okay" in className.lower():
+			sys.stdout = sys.__stdout__ 
+			print("Face Tracking")
+			sys.stdout = open(os.devnull, 'w')
+			manual_control = False
 		
 
 		######################################################################################################
@@ -157,6 +169,9 @@ def frompi():
 			# cap.release()
 			cv2.destroyAllWindows()
 			break
+		if "callibrate" in command.lower():
+			print("callibrate confirmed")
+			calledCallibrate = True
 		###########################################################################################
 		try:  # used try so that if user pressed other than the given key error will not be shown
 			if keyboard.is_pressed('r'):
@@ -218,13 +233,13 @@ def frompi():
 				print(error_x)
 				
 				# left and right motion
-				if (error_x>60): #TODO: include tolerances
+				if (error_x>70): #TODO: include tolerances
 					direction = b"RIGHT\n"
 					client_tracking_socket.sendall(direction)
 					print(direction)
 					moving = True
 					continue
-				elif (error_x<-60):
+				elif (error_x<-70):
 					#todo: directions might be wrong
 					direction = b"LEFT\n"
 					client_tracking_socket.sendall(direction)
@@ -241,9 +256,11 @@ def frompi():
 				# 	callibrated = True
 
 				try:  # used try so that if user pressed other than the given key error will not be shown
-					if keyboard.is_pressed('b'):
+					#if keyboard.is_pressed('b'):
+					if calledCallibrate:
 						desired_face_area = current_area
 						callibrated = True
+						calledCallibrate = False
 						sys.stdout = sys.__stdout__ 
 						print(desired_face_area)
 						print(callibrated)
@@ -258,12 +275,12 @@ def frompi():
 				print(current_area)
 				
 				if callibrated:
-					if (current_area - desired_face_area > 5000): #TODO: can change the tolerance
+					if (current_area - desired_face_area > 6000): #TODO: can change the tolerance
 						direction = b"BACK\n"
 						client_tracking_socket.sendall(direction)
 						print(direction)
 						moving = True
-					elif (current_area - desired_face_area<-1000):
+					elif (current_area - desired_face_area<-2000):
 						direction = b"FRONT\n"
 						client_tracking_socket.sendall(direction)
 						print(direction)
