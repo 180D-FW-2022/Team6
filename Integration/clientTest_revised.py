@@ -45,8 +45,8 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host_ip = '131.179.40.104' # paste your server ip address here
-remote_ip = '131.179.34.209'
+host_ip = '128.97.51.39' # paste your server ip address here
+remote_ip = '169.232.126.244'
 
 port = 9999
 tracking_port = 9998
