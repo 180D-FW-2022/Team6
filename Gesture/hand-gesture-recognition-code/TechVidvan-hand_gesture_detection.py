@@ -10,7 +10,8 @@ from tensorflow.keras.models import load_model
 
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) 
+min_detection_confidence=0.99
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.85) 
 mpDraw = mp.solutions.drawing_utils
 
 # Load the gesture recognizer model
@@ -59,9 +60,9 @@ while True:
 
             # Predict gesture
             prediction = model.predict([landmarks])
-            # print(prediction)
             classID = np.argmax(prediction)
-            className = classNames[classID]
+            if prediction[0][classID] > min_detection_confidence and classNames[classID] in ["stop","okay","rock"]:
+                className = classNames[classID]
 
     # show the prediction on the frame
     cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 

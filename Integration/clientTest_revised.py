@@ -25,7 +25,7 @@ from tensorflow.keras.models import load_model
 # sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.85) #Change this later
 mpDraw = mp.solutions.drawing_utils
 
 # Load the gesture recognizer model
@@ -52,9 +52,9 @@ port = 9999
 tracking_port = 9998
 remote_port = 9999
 
-client_socket.connect((host_ip,port)) # a tuple
-client_tracking_socket.connect((host_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
+# client_socket.connect((host_ip,port)) # a tuple
+# client_tracking_socket.connect((host_ip,tracking_port))
+# remote_socket.connect((remote_ip,remote_port))
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -76,35 +76,36 @@ def frompi():
 	callibrated = False
 	moving = False
 
-	manual_control = True
+	manual_control = False
+	min_detection_confidence=0.99
 
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	# vid = cv2.VideoCapture(0)
+	vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
 	while True:
 		current_time = time.time()
-		while len(data) < payload_size:
-			packet = client_socket.recv(4*1024) # 4K
-			if not packet: break
-			data+=packet
-		packed_msg_size = data[:payload_size]
-		data = data[payload_size:]
-		# print(packed_msg_size)
-		msg_size = struct.unpack("Q",packed_msg_size)[0]
+		# while len(data) < payload_size:
+		# 	packet = client_socket.recv(4*1024) # 4K
+		# 	if not packet: break
+		# 	data+=packet
+		# packed_msg_size = data[:payload_size]
+		# data = data[payload_size:]
+		# # print(packed_msg_size)
+		# msg_size = struct.unpack("Q",packed_msg_size)[0]
 		
-		while len(data) < msg_size:
-			data += client_socket.recv(4*1024)
-		frame_data = data[:msg_size]
-		data  = data[msg_size:]
-		frame = pickle.loads(frame_data)
+		# while len(data) < msg_size:
+		# 	data += client_socket.recv(4*1024)
+		# frame_data = data[:msg_size]
+		# data  = data[msg_size:]
+		# frame = pickle.loads(frame_data)
 
 
-		# img,frame = vid.read()
+		img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
 		sys.stdout = open(os.devnull, 'w')
@@ -137,9 +138,9 @@ def frompi():
 
 				# Predict gesture
 				prediction = model.predict([landmarks])
-				# print(prediction)
 				classID = np.argmax(prediction)
-				className = classNames[classID]
+				if prediction[0][classID] > min_detection_confidence and classNames[classID] in ["stop","okay","rock"]:
+					className = classNames[classID]
 
 		# show the prediction on the frame
 		cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
@@ -173,8 +174,10 @@ def frompi():
 			# cap.release()
 			cv2.destroyAllWindows()
 			break
-		if "calibrate" in command.lower():
+		if "calibrate" in command.lower() and not calledCallibrate:
 			sys.stdout = sys.__stdout__ 
+			desired_face_area = current_area
+			callibrated = True
 			print("calibrate confirmed")
 			calledCallibrate = True
 			sys.stdout = open(os.devnull, 'w')
@@ -238,24 +241,23 @@ def frompi():
 				print("error_x")
 				print(error_x)
 				
+				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
 					direction = b"RIGHT\n"
-					if current_time - last_message_time > .25:
-						last_message_time = current_time
-						client_tracking_socket.sendall(direction)
-					# print(direction)
+					if current_time - last_message_time > 1.5:
+						# client_tracking_socket.sendall(direction)
+						print(direction)
 					moving = True
-					continue
+					# continue
 				elif (error_x<-70):
 					#todo: directions might be wrong
 					direction = b"LEFT\n"
-					if current_time - last_message_time > .25:
-						last_message_time = current_time
-						client_tracking_socket.sendall(direction)
-					# print(direction)
+					if current_time - last_message_time > 1.5:
+						# client_tracking_socket.sendall(direction)
+						print(direction)
 					moving = True
-					continue
+					# continue
 				else:
 					moving = False
 				
@@ -264,59 +266,48 @@ def frompi():
 				# if cv2.waitKey(1) & 0xFF == ord('b'):
 				# 	desired_face_area = current_area
 				# 	callibrated = True
-
-				try:  # used try so that if user pressed other than the given key error will not be shown
-					#if keyboard.is_pressed('b'):
-					if calledCallibrate:
-						desired_face_area = current_area
-						callibrated = True
-						calledCallibrate = False
-						sys.stdout = sys.__stdout__ 
-						print(desired_face_area)
-						print(callibrated)
-						sys.stdout = open(os.devnull, 'w')
-				except:
-					print('error')
-					
+				
 				print("desired_face_area")
 				print(desired_face_area)
 
 				print("current_face_area")
 				print(current_area)
 				
+
 				if callibrated:
-					if (current_area - desired_face_area > 250): #TODO: can change the tolerance
+					if (current_area - desired_face_area >150): #TODO: can change the tolerance
 						direction = b"BACK\n"
-						if current_time - last_message_time > .25:
-							last_message_time = current_time
-							client_tracking_socket.sendall(direction)
-						# print(direction)
+						if current_time - last_message_time > 1.5:
+							# client_tracking_socket.sendall(direction)
+							print(direction)
 						moving = True
-					elif (current_area - desired_face_area<-250):
+					elif (current_area - desired_face_area<-150):
 						direction = b"FRONT\n"
-						if current_time - last_message_time > .25:
-							last_message_time = current_time
-							client_tracking_socket.sendall(direction)
-						# print(direction)
+						if current_time - last_message_time > 1.5:
+							# client_tracking_socket.sendall(direction)
+							print(direction)
 						moving = True
 					else:
 						moving = False
 				else:
 					print ("not callibrated")
 				
+				if current_time - last_message_time > 1.5:
+					last_message_time = current_time
+
 				if not moving:
 					direction = b"STOP\n"
-					client_tracking_socket.sendall(direction)
+					# client_tracking_socket.sendall(direction)
 					# print(direction)
-
 			else: #faces empty
 				print("faces empty")
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
-
+			
 			
 			print(direction)
+			sys.stdout = open(os.devnull, 'w')
 
 			
 
@@ -328,10 +319,10 @@ def frompi():
 			# client_tracking_socket.sendall(b"test\n")
 			try:
 				from_IMU = ''
-				from_IMU = remote_socket.recv(4096)
+				# from_IMU = remote_socket.recv(4096)
 				if from_IMU:
 					print(from_IMU)
-					client_tracking_socket.sendall(from_IMU)
+					# client_tracking_socket.sendall(from_IMU)
 				else:
 					print("No IMU message 1")
 			except socket.error as e:
