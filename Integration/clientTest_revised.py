@@ -25,7 +25,7 @@ from tensorflow.keras.models import load_model
 # sys.stdout = open(os.devnull, 'w')
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.85) #Change this later
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
 mpDraw = mp.solutions.drawing_utils
 
 # Load the gesture recognizer model
@@ -45,8 +45,8 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-host_ip = '128.97.51.39' # paste your server ip address here
-remote_ip = '169.232.126.244'
+host_ip = '131.179.41.94' # paste your server ip address here
+remote_ip = '131.179.28.51'
 
 port = 9999
 tracking_port = 9998
@@ -76,8 +76,8 @@ def frompi():
 	callibrated = False
 	moving = False
 
-	manual_control = False
-	min_detection_confidence=0.99
+	manual_control = True
+	min_detection_confidence=0.8
 
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
@@ -244,7 +244,7 @@ def frompi():
 				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
-					direction = b"RIGHT\n"
+					direction = b"RIGHTFT\n"
 					if current_time - last_message_time > 1.5:
 						client_tracking_socket.sendall(direction)
 						# print(direction)
@@ -252,7 +252,7 @@ def frompi():
 					# continue
 				elif (error_x<-70):
 					#todo: directions might be wrong
-					direction = b"LEFT\n"
+					direction = b"LEFTFT\n"
 					if current_time - last_message_time > 1.5:
 						client_tracking_socket.sendall(direction)
 						# print(direction)
@@ -276,13 +276,13 @@ def frompi():
 
 				if callibrated:
 					if (current_area - desired_face_area >150): #TODO: can change the tolerance
-						direction = b"BACK\n"
+						direction = b"BACKFT\n"
 						if current_time - last_message_time > 1.5:
 							client_tracking_socket.sendall(direction)
 							# print(direction)
 						moving = True
 					elif (current_area - desired_face_area<-150):
-						direction = b"FRONT\n"
+						direction = b"FRONTFT\n"
 						if current_time - last_message_time > 1.5:
 							client_tracking_socket.sendall(direction)
 							# print(direction)
@@ -320,13 +320,11 @@ def frompi():
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
 				if from_IMU:
-					print(from_IMU)
+					# print(from_IMU)
 					client_tracking_socket.sendall(from_IMU)
-				else:
-					print("No IMU message 1")
 			except socket.error as e:
 				print("No IMU message 2")
-				break
+				# break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
 
