@@ -25,6 +25,7 @@ could record multiple recordings without having to rerun the voice_command.py fi
 References:
 
 https://www.instructables.com/Speech-Recognition-Using-Google-Speech-API-and-Pyt/
+https://github.com/JRodrigoF/AVrecordeR
 
 I used "Speech Recognition Using Google Speech API and Python" to help me figure out how to use Speech Recognition to listen for a the user's input and convert it to a
 string that I can work with.
