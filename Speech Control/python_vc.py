@@ -31,9 +31,6 @@ def hear():
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-
-        time.sleep(3)
-
 def respond():
     global command
 
