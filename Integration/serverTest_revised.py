@@ -107,7 +107,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host_name  = socket.gethostname()
 host_ip = '164.67.233.31' #socket.gethostbyname(host_name)
-print('HOST IP:',host_ip)
+# print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
 socket_address = (host_ip,port)

@@ -16,22 +16,32 @@
 #
 #    http://ozzmaker.com/
 
-
-
 import sys
 import time
 import math
 import IMU
 import datetime
-import os
-import csv
 
-######## Speech Recognition dependencies############
+# Speech Recognition Dependencies
 import speech_recognition as sr
 import threading
 
-# Communication imports
-import socket, pickle
+# Communication Dependencies
+import socket
+
+# Communication socket set up
+remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+remote_ip = '169.232.187.125'
+print('HOST IP:',remote_ip)
+remote_port = 9999
+remote_address = (remote_ip,remote_port)
+remote_socket.bind(remote_address)
+remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+# Socket Listen
+remote_socket.listen(5)
+print("LISTENING AT:",remote_address)
 
 # function for response to command
 command = "m"
@@ -73,6 +83,44 @@ Dont use the above values, these are just an example.
 '''
 ############### END Calibration offsets #################
 
+# IMU variable setup
+gyroXangle = 0.0
+gyroYangle = 0.0
+gyroZangle = 0.0
+CFangleX = 0.0
+CFangleY = 0.0
+CFangleXFiltered = 0.0
+CFangleYFiltered = 0.0
+kalmanX = 0.0
+kalmanY = 0.0
+oldXMagRawValue = 0
+oldYMagRawValue = 0
+oldZMagRawValue = 0
+oldXAccRawValue = 0
+oldYAccRawValue = 0
+oldZAccRawValue = 0
+
+a = datetime.datetime.now()
+
+#Setup the tables for the mdeian filter. Fill them all with '1' so we dont get devide by zero error
+acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
+acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
+acc_medianTable1Z = [1] * ACC_MEDIANTABLESIZE
+acc_medianTable2X = [1] * ACC_MEDIANTABLESIZE
+acc_medianTable2Y = [1] * ACC_MEDIANTABLESIZE
+acc_medianTable2Z = [1] * ACC_MEDIANTABLESIZE
+mag_medianTable1X = [1] * MAG_MEDIANTABLESIZE
+mag_medianTable1Y = [1] * MAG_MEDIANTABLESIZE
+mag_medianTable1Z = [1] * MAG_MEDIANTABLESIZE
+mag_medianTable2X = [1] * MAG_MEDIANTABLESIZE
+mag_medianTable2Y = [1] * MAG_MEDIANTABLESIZE
+mag_medianTable2Z = [1] * MAG_MEDIANTABLESIZE
+
+IMU.detectIMU()     #Detect if BerryIMU is connected.
+if(IMU.BerryIMUversion == 99):
+    print(" No BerryIMU found... exiting ")
+    sys.exit()
+IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
 
 #Kalman filter variables
 Q_angle = 0.02
@@ -164,62 +212,6 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 
     return KFangleX
 
-
-gyroXangle = 0.0
-gyroYangle = 0.0
-gyroZangle = 0.0
-CFangleX = 0.0
-CFangleY = 0.0
-CFangleXFiltered = 0.0
-CFangleYFiltered = 0.0
-kalmanX = 0.0
-kalmanY = 0.0
-oldXMagRawValue = 0
-oldYMagRawValue = 0
-oldZMagRawValue = 0
-oldXAccRawValue = 0
-oldYAccRawValue = 0
-oldZAccRawValue = 0
-
-a = datetime.datetime.now()
-
-
-
-#Setup the tables for the mdeian filter. Fill them all with '1' so we dont get devide by zero error
-acc_medianTable1X = [1] * ACC_MEDIANTABLESIZE
-acc_medianTable1Y = [1] * ACC_MEDIANTABLESIZE
-acc_medianTable1Z = [1] * ACC_MEDIANTABLESIZE
-acc_medianTable2X = [1] * ACC_MEDIANTABLESIZE
-acc_medianTable2Y = [1] * ACC_MEDIANTABLESIZE
-acc_medianTable2Z = [1] * ACC_MEDIANTABLESIZE
-mag_medianTable1X = [1] * MAG_MEDIANTABLESIZE
-mag_medianTable1Y = [1] * MAG_MEDIANTABLESIZE
-mag_medianTable1Z = [1] * MAG_MEDIANTABLESIZE
-mag_medianTable2X = [1] * MAG_MEDIANTABLESIZE
-mag_medianTable2Y = [1] * MAG_MEDIANTABLESIZE
-mag_medianTable2Z = [1] * MAG_MEDIANTABLESIZE
-
-IMU.detectIMU()     #Detect if BerryIMU is connected.
-if(IMU.BerryIMUversion == 99):
-    print(" No BerryIMU found... exiting ")
-    sys.exit()
-IMU.initIMU()       #Initialise the accelerometer, gyroscope and compass
-
-
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-#Avoid address in use error
-
-remote_ip = '169.232.187.125'
-print('HOST IP:',remote_ip)
-remote_port = 9999
-remote_address = (remote_ip,remote_port)
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_socket.bind(remote_address)
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# Socket Listen
-remote_socket.listen(5)
-print("LISTENING AT:",remote_address)
-
 # function to translate audio to command
 def hear():
     global begin
@@ -244,11 +236,50 @@ def hear():
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-
-        # time.sleep(3)
-
 def respond():
     global command
+    global a
+    global magXmin
+    global magYmin
+    global magZmin
+    global magXmax
+    global magYmax
+    global magZmax
+    global RAD_TO_DEG
+    global M_PI
+    global G_GAIN
+    global AA
+    global MAG_LPF_FACTOR
+    global ACC_LPF_FACTOR
+    global ACC_MEDIANTABLESIZE
+    global MAG_MEDIANTABLESIZE 
+    global gyroXangle
+    global gyroYangle
+    global gyroZangle
+    global CFangleX
+    global CFangleY
+    global CFangleXFiltered
+    global CFangleYFiltered
+    global kalmanX
+    global kalmanY
+    global oldXMagRawValue
+    global oldYMagRawValue
+    global oldZMagRawValue
+    global oldXAccRawValue
+    global oldYAccRawValue
+    global oldZAccRawValue
+    global acc_medianTable1X
+    global acc_medianTable1Y
+    global acc_medianTable1Z
+    global acc_medianTable2X
+    global acc_medianTable2Y
+    global acc_medianTable2Z
+    global mag_medianTable1X
+    global mag_medianTable1Y
+    global mag_medianTable1Z
+    global mag_medianTable2X
+    global mag_medianTable2Y
+    global mag_medianTable2Z
 
     try:
         # Socket Accept
@@ -446,27 +477,27 @@ def respond():
                     ##################### END Tilt Compensation ########################
 
 
-                    if 1:                       #Change to '0' to stop showing the angles from the accelerometer
-                        outputString += "#  ACCX Angle %5.2f ACCY Angle %5.2f  #  " % (AccXangle, AccYangle)
+                    # if 1:                       #Change to '0' to stop showing the angles from the accelerometer
+                    #     outputString += "#  ACCX Angle %5.2f ACCY Angle %5.2f  #  " % (AccXangle, AccYangle)
 
-                    if 1:                       #Change to '0' to stop  showing the angles from the gyro
-                        outputString +="\t# GRYX Angle %5.2f  GYRY Angle %5.2f  GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)
+                    # if 1:                       #Change to '0' to stop  showing the angles from the gyro
+                    #     outputString +="\t# GRYX Angle %5.2f  GYRY Angle %5.2f  GYRZ Angle %5.2f # " % (gyroXangle,gyroYangle,gyroZangle)
 
-                    if 1:                       #Change to '0' to stop  showing the angles from the complementary filter
-                        outputString +="\t#  CFangleX Angle %5.2f   CFangleY Angle %5.2f  #" % (CFangleX,CFangleY)
+                    # if 1:                       #Change to '0' to stop  showing the angles from the complementary filter
+                    #     outputString +="\t#  CFangleX Angle %5.2f   CFangleY Angle %5.2f  #" % (CFangleX,CFangleY)
 
-                    if 1:                       #Change to '0' to stop  showing the heading
-                        outputString +="\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)
+                    # if 1:                       #Change to '0' to stop  showing the heading
+                    #     outputString +="\t# HEADING %5.2f  tiltCompensatedHeading %5.2f #" % (heading,tiltCompensatedHeading)
 
-                    if 1:                       #Change to '0' to stop  showing the angles from the Kalman filter
-                        outputString +="# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)
+                    # if 1:                       #Change to '0' to stop  showing the angles from the Kalman filter
+                    #     outputString +="# kalmanX %5.2f   kalmanY %5.2f #" % (kalmanX,kalmanY)
 
 
                     # https://github.com/ozzmaker/BerryIMU/blob/master/python-BerryIMU-measure-G/berryIMU-measure-G.py#L36-L39
                     yG = (ACCx * 0.244)/1000
                     xG = (ACCy * 0.244)/1000
                     zG = (ACCz * 0.244)/1000
-                    outputString += "##### X = %fG  ##### Y =   %fG  ##### Z =  %fG  #####  " % ( yG, xG, zG)
+                    # outputString += "##### X = %fG  ##### Y =   %fG  ##### Z =  %fG  #####  " % ( yG, xG, zG)
 
                 #code to detect forward, backward, left, and right tilt  
                     tiltdetection = ""
