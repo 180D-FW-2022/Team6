@@ -77,7 +77,7 @@ def frompi():
 	moving = False
 
 	manual_control = True
-	min_detection_confidence=0.8
+	min_detection_confidence=0.5
 
 	##################### Face Tracking Code #################
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
@@ -196,7 +196,7 @@ def frompi():
 			
 
 		if not manual_control:
-			print("face tracking control")
+			# print("face tracking control")
 			################################################## Pan-Tilt Tracking Code #################################################
 			# Convert the frame to grayscale
 			# 
@@ -238,8 +238,8 @@ def frompi():
 				error_x = frame_center_x - face_center_x
 				error_y = frame_center_y - face_center_y
 				
-				print("error_x")
-				print(error_x)
+				# print("error_x")
+				# print(error_x)
 				
 				sys.stdout = sys.__stdout__	
 				# left and right motion
@@ -267,11 +267,11 @@ def frompi():
 				# 	desired_face_area = current_area
 				# 	callibrated = True
 				
-				print("desired_face_area")
-				print(desired_face_area)
+				# print("desired_face_area")
+				# print(desired_face_area)
 
-				print("current_face_area")
-				print(current_area)
+				# print("current_face_area")
+				# print(current_area)
 				
 
 				if callibrated:
@@ -300,13 +300,14 @@ def frompi():
 					client_tracking_socket.sendall(direction)
 					# print(direction)
 			else: #faces empty
+				sys.stdout = open(os.devnull, 'w')
 				print("faces empty")
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
 			
 			
-			print(direction)
+			# print(direction)
 			sys.stdout = open(os.devnull, 'w')
 
 			
@@ -315,7 +316,7 @@ def frompi():
 				break
 
 		elif manual_control:
-			print("IMU control")
+			# print("IMU control")
 			try:
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
