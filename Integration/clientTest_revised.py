@@ -341,9 +341,11 @@ def frompi():
 			try:
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
-				if from_IMU:
-					# print(from_IMU)
-					client_tracking_socket.sendall(from_IMU)
+				sys.stdout = sys.__stdout__ 
+				print(from_IMU)
+				sys.stdout = open(os.devnull, 'w')
+				# if from_IMU:
+				# 	client_tracking_socket.sendall(from_IMU)
 			except socket.error as e:
 				print("No IMU message 2")
 				# break
