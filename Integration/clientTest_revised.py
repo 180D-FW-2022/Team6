@@ -56,33 +56,12 @@ client_socket.connect((host_ip,port)) # a tuple
 client_tracking_socket.connect((host_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
 
-# Socket for command
-c_client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-c_client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-c_remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-
-c_port = 9997
-c_tracking_port = 9996
-c_remote_port = 9997
-
-c_client_socket.connect((host_ip,c_port)) # a tuple
-c_client_tracking_socket.connect((host_ip,c_tracking_port))
-c_remote_socket.connect((remote_ip,c_remote_port))
-#################################################
-
 data = b""
 payload_size = struct.calcsize("Q")
-
-#################################################
 
 # From Speech recognition code
 
 command = "m"
-
-### Added this
-commandData = b""
-commandPayloadSize = struct.calcsize("Q")
-###
 
 def frompi():
 	global command
@@ -356,37 +335,30 @@ def frompi():
 			manual_control =  not manual_control
 
 
-############################################ Speech Recognition #############################################
-
-### Changed this whole function
-
+############################################ Speech Recognition #############################################	
 def hear():
-	global commandData
-	global command
-	global commandPayloadSize
-
-	time.sleep(10)
+    time.sleep(10)
     
-	while True:
-		current_time = time.time()
-		while len(commandData) < commandPayloadSize:
-			packet = c_client_socket.recv(4*1024) # 4K
-			if not packet: break
-			commandData+=packet
-		packed_msg_size = commandData[:commandPayloadSize]
-		commandData = commandData[commandPayloadSize:]
-		# print(packed_msg_size)
-		msg_size = struct.unpack("Q",packed_msg_size)[0]
+    while(True):
+        
+        global command
 		
-		while len(commandData) < msg_size:
-			commandData += c_client_socket.recv(4*1024)
-		frame_data = commandData[:msg_size]
-		commandData  = commandData[msg_size:]
-		frame = pickle.loads(frame_data)
-    
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Say something!")
+            audio = r.listen(source)
+
+        try:
+            command = r.recognize_google(audio)
+            print("Google Speech Recognition thinks you said " + command)
+
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
-	time.sleep(3)
+        time.sleep(3)
 
 if __name__ == '__main__':
     t1 = threading.Thread(target=hear)
