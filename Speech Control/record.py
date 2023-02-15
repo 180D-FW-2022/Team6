@@ -6,30 +6,6 @@ import time
 import subprocess
 import os
 
-########################
-## JRF
-## VideoRecorder and AudioRecorder are two classes based on openCV and pyaudio, respectively. 
-## By using multithreading these two classes allow to record simultaneously video and audio.
-## ffmpeg is used for muxing the two signals
-## A timer loop is used to control the frame rate of the video recording. This timer as well as
-## the final encoding rate can be adjusted according to camera capabilities
-##
-
-########################
-## Usage:
-## 
-## numpy, PyAudio and Wave need to be installed
-## install openCV, make sure the file cv2.pyd is located in the same folder as the other libraries
-## install ffmpeg and make sure the ffmpeg .exe is in the working directory
-##
-## 
-## start_AVrecording(filename) # function to start the recording
-## stop_AVrecording(filename)  # "" ... to stop it
-##
-##
-########################
-
-
 
 class VideoRecorder():
 	
@@ -64,10 +40,8 @@ class VideoRecorder():
 			if (ret==True):
 				
 					self.video_out.write(video_frame)
-#					print str(counter) + " " + str(self.frame_counts) + " frames written " + str(timer_current)
 					self.frame_counts += 1
-#					counter += 1
-#					timer_current = time.time() - timer_start
+
 					time.sleep(0.16)
 					
 					# Uncomment the following three lines to make the video to be
@@ -77,11 +51,7 @@ class VideoRecorder():
 #					cv2.imshow('video_frame', gray)
 #					cv2.waitKey(1)
 			else:
-				break
-							
-				# 0.16 delay -> 6 fps
-				# 
-				
+				break				
 
 	# Finishes the video recording therefore the thread too
 	def stop(self):
@@ -256,17 +226,31 @@ def file_manager(filename):
 	if os.path.exists(str(local_path) + "/temp_video2.avi"):
 		os.remove(str(local_path) + "/temp_video2.avi")
 
-	if os.path.exists(str(local_path) + "/" + filename + ".avi"):
-		os.remove(str(local_path) + "/" + filename + ".avi")
-	
-	
+	while os.path.exists(str(local_path) + "/" + filename + ".avi"):
+		filename += "+"
 
+	return filename
+	
+	
 	
 if __name__== "__main__":
 	
 	filename = "Default_user"	
-	file_manager(filename)
+	filename = file_manager(filename)
 	
+	print(filename)
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
+	print()
 	start_AVrecording(filename)  
 	
 	time.sleep(10)
