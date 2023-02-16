@@ -237,6 +237,7 @@ def hear():
         with sr.Microphone() as source:
             print("Say something!")
             audio = r.listen(source)
+            print("not printed")
 
         try:
             print("asdfasdfasdfa")
