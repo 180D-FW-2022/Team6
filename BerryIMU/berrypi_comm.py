@@ -231,12 +231,11 @@ def hear():
     global begin
     global command
     time.sleep(5)
-
+    print("here")
     while(True):
         print("11111")
         r = sr.Recognizer()
         with sr.Microphone() as source:
-            
             print("Say something!")
             audio = r.listen(source)
 
@@ -302,9 +301,7 @@ def respond():
             print('GOT CONNECTION FROM:',laptop_addr)
             laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
             print('GOT CONNECTION FROM:',laptop_speech_addr)
-            print("4444")
             if laptop_socket and laptop_speech_socket:
-                print("222222")
                 # begin = True
                 laptop_socket.setblocking(0)
                 laptop_speech_socket.setblocking(0)
@@ -357,7 +354,6 @@ def respond():
                     #########################################
                     # cycle the table
                     for x in range (ACC_MEDIANTABLESIZE-1,0,-1 ):
-                        print("LLLLL")
                         acc_medianTable1X[x] = acc_medianTable1X[x-1]
                         acc_medianTable1Y[x] = acc_medianTable1Y[x-1]
                         acc_medianTable1Z[x] = acc_medianTable1Z[x-1]
@@ -389,7 +385,6 @@ def respond():
                     #########################################
                     # cycle the table
                     for x in range (MAG_MEDIANTABLESIZE-1,0,-1 ):
-                        print("asdfasd")
                         mag_medianTable1X[x] = mag_medianTable1X[x-1]
                         mag_medianTable1Y[x] = mag_medianTable1Y[x-1]
                         mag_medianTable1Z[x] = mag_medianTable1Z[x-1]
@@ -547,7 +542,6 @@ def respond():
                         tiltdetection = 'IMU is stationary.\t'
                         laptop_socket.sendall(b"STOP\n")
                     
-                    print("jojoj")
                     
                     #print(outputString)
                     # print(tiltdetection)
@@ -568,9 +562,7 @@ def respond():
                         laptop_speech_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
                         command = "m"
-                    print("made it")
-    finally:
-        print("5555")        
+    finally: 
         remote_socket.close()
         # remote_speech_socket.close()
         
