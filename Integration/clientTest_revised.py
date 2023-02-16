@@ -1,31 +1,46 @@
 #Source: https://pyshine.com/Socket-programming-and-openc/
-# lets make the client code
+# Communication Dependencies
 import socket,cv2, pickle,struct
 
-######################### Speech Recognition Dependencies ##################################
+# Speech Recognition Dependencies
 import speech_recognition as sr
 import threading
 import time
 import sys, os
-############################################################################################
 
-##########Face Tracking Dependencies###############3
-# from PCA9685 import PCA9685
+# Face Tracking Dependencies
 import pkg_resources
 import keyboard
 
-###################### Additional Gesture Recognition Dependencies and Setup Code ####################
+# Gesture Recognition Dependencies
 import cv2
 import numpy as np
-import numpy
 import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
-# sys.stdout = open(os.devnull, 'w')
+# Create sockets for communication
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+videographer_ip = '164.67.233.31' # paste your server ip address here
+remote_ip = '131.179.29.41'
+
+videographer_port = 9999
+tracking_port = 9998
+remote_port = 9999
+
+# client_socket.connect((videographer_ip,videographer_port))
+# client_tracking_socket.connect((videographer_ip,tracking_port))
+remote_socket.connect((remote_ip,remote_port))
+
+data = b""
+payload_size = struct.calcsize("Q")
+
 # initialize mediapipe
 mpHands = mp.solutions.hands
-hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7) #Change this later
+hands = mpHands.Hands(max_num_hands=1, min_detection_confidence=0.7)
 mpDraw = mp.solutions.drawing_utils
 
 # Load the gesture recognizer model
@@ -36,31 +51,9 @@ f = open('gesture.names', 'r')
 classNames = f.read().split('\n')
 f.close()
 direction = b''
-# print(classNames)
 ##########################################################################################
 
-
-# create socket
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-
-host_ip = '164.67.233.31' # paste your server ip address here
-remote_ip = '169.232.187.125'
-
-port = 9999
-tracking_port = 9998
-remote_port = 9999
-
-client_socket.connect((host_ip,port)) # a tuple
-client_tracking_socket.connect((host_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
-
-data = b""
-payload_size = struct.calcsize("Q")
-
 # From Speech recognition code
-
 command = "m"
 
 def frompi():
@@ -69,7 +62,6 @@ def frompi():
 	global direction
 	# Set the initial position of the motor
 	initial_position = 0
-
 	desired_face_area = 0
 	current_face_area = 0
 	calledCallibrate = False
@@ -83,12 +75,13 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	# vid = cv2.VideoCapture(0)
+	vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
 	while True:
 		current_time = time.time()
+		'''
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -103,12 +96,12 @@ def frompi():
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
 		frame = pickle.loads(frame_data)
-
-
-		# img,frame = vid.read()
+		'''
+		img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
 		sys.stdout = open(os.devnull, 'w')
+
 		################################ Gesture Recognition Code #########################################
 		x, y, c = frame.shape
 
@@ -139,6 +132,7 @@ def frompi():
 				# Predict gesture
 				prediction = model.predict([landmarks])
 				classID = np.argmax(prediction)
+				# Only print prediction if its "stop", "okay", or "rock"
 				if prediction[0][classID] > min_detection_confidence and classNames[classID] in ["stop","okay","rock"]:
 					className = classNames[classID]
 
@@ -166,8 +160,9 @@ def frompi():
 			manual_control = False
 		
 
-		######################################################################################################
+		############################### End of Gesture Recognition Code ###########################
 		sys.stdout = sys.__stdout__ 
+
 		#################################### Speech Recognition ###################################
 		if "stop" in command.lower():
 			print("stop camera")
@@ -182,6 +177,7 @@ def frompi():
 			calledCallibrate = True
 			sys.stdout = open(os.devnull, 'w')
 		###########################################################################################
+
 		try:  # used try so that if user pressed other than the given key error will not be shown
 			if keyboard.is_pressed('r'):
 				sys.stdout = sys.__stdout__ 
@@ -194,12 +190,11 @@ def frompi():
 		except:
 			print('error')
 			
-
+		'''
 		if not manual_control:
 			# print("face tracking control")
-			################################################## Pan-Tilt Tracking Code #################################################
+			################################################## Face Tracking Code #################################################
 			# Convert the frame to grayscale
-			# 
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 			faces = face_cascade.detectMultiScale(gray,scaleFactor=1.2, minNeighbors=4, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
@@ -314,8 +309,8 @@ def frompi():
 
 			if cv2.waitKey(1) == ord('q'):
 				break
-
-		elif manual_control:
+		'''
+		if manual_control:
 			# print("IMU control")
 			try:
 				from_IMU = ''
