@@ -23,6 +23,7 @@ from tensorflow.keras.models import load_model
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = '164.67.233.31' # paste your server ip address here
 remote_ip = '131.179.29.41'
@@ -37,6 +38,8 @@ remote_speech_port = 9998
 # client_tracking_socket.connect((videographer_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
+remote_socket.setblocking(0)
+remote_speech_socket.setblocking(0)
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -102,7 +105,7 @@ def frompi():
 		'''
 		img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
-
+		
 		sys.stdout = open(os.devnull, 'w')
 
 		################################ Gesture Recognition Code #########################################
@@ -172,13 +175,7 @@ def frompi():
 			# cap.release()
 			cv2.destroyAllWindows()
 			break
-		if "calibrate" in command.lower() and not calledCallibrate:
-			sys.stdout = sys.__stdout__ 
-			desired_face_area = current_area
-			callibrated = True
-			print("calibrate confirmed")
-			calledCallibrate = True
-			sys.stdout = open(os.devnull, 'w')
+		
 		###########################################################################################
 
 		try:  # used try so that if user pressed other than the given key error will not be shown
@@ -193,7 +190,7 @@ def frompi():
 		except:
 			print('error')
 			
-		'''
+		
 		if not manual_control:
 			# print("face tracking control")
 			################################################## Face Tracking Code #################################################
@@ -238,7 +235,7 @@ def frompi():
 				
 				# print("error_x")
 				# print(error_x)
-				
+				'''
 				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
@@ -270,7 +267,14 @@ def frompi():
 
 				# print("current_face_area")
 				# print(current_area)
-				
+				if "calibrate" in command.lower() and not calledCallibrate:
+					sys.stdout = sys.__stdout__ 
+					desired_face_area = current_area
+					callibrated = True
+					print("calibrate confirmed")
+					calledCallibrate = True
+					sys.stdout = open(os.devnull, 'w')
+
 
 				if callibrated:
 					if (current_area - desired_face_area >150): #TODO: can change the tolerance
@@ -289,10 +293,10 @@ def frompi():
 						moving = False
 				else:
 					print ("not callibrated")
-				
+				'''
 				if current_time - last_message_time > 1.5:
 					last_message_time = current_time
-
+				'''
 				if not moving:
 					direction = b"STOP\n"
 					client_tracking_socket.sendall(direction)
@@ -303,7 +307,7 @@ def frompi():
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
-			
+			'''
 			
 			# print(direction)
 			sys.stdout = open(os.devnull, 'w')
@@ -312,7 +316,7 @@ def frompi():
 
 			if cv2.waitKey(1) == ord('q'):
 				break
-		'''
+		
 		if manual_control:
 			# print("IMU control")
 			try:
@@ -326,22 +330,20 @@ def frompi():
 			except socket.error as e:
 				print("No IMU message 2")
 				# break
-		else:
-			print("Car control error: Neither Manual nor Face Tracking Control")
-
+		# else:
+		# 	print("Car control error: Neither Manual nor Face Tracking Control")
+		
 		# Speech commands from remote
 		try:
-				speech_command = ''
-				speech_command = remote_speech_socket.recv(4096)
-				sys.stdout = sys.__stdout__ 
-				print(speech_command)
-				sys.stdout = open(os.devnull, 'w')
-				# if from_IMU:
-				# 	client_tracking_socket.sendall(from_IMU)
+			speech_command = ''
+			speech_command = remote_speech_socket.recv(4096)
+			sys.stdout = sys.__stdout__ 
+			print(speech_command)
+			sys.stdout = open(os.devnull, 'w')
 		except socket.error as e:
-			print("")
+			print("error")
 			# break
-
+		
 		# Show the final output
 		cv2.imshow("Output", frame)
 
