@@ -23,17 +23,21 @@ from tensorflow.keras.models import load_model
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = '164.67.233.31' # paste your server ip address here
 remote_ip = '131.179.29.41'
 
 videographer_port = 9999
 tracking_port = 9998
+
 remote_port = 9999
+remote_speech_port = 9998
 
 # client_socket.connect((videographer_ip,videographer_port))
 # client_tracking_socket.connect((videographer_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
+remote_speech_socket.connect((remote_ip,remote_speech_port))
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -325,6 +329,19 @@ def frompi():
 				# break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
+
+		# Speech commands from remote
+		try:
+				speech_command = ''
+				speech_command = remote_speech_socket.recv(4096)
+				sys.stdout = sys.__stdout__ 
+				print(speech_command)
+				sys.stdout = open(os.devnull, 'w')
+				# if from_IMU:
+				# 	client_tracking_socket.sendall(from_IMU)
+		except socket.error as e:
+			print("")
+			# break
 
 		# Show the final output
 		cv2.imshow("Output", frame)

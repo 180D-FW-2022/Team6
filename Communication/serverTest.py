@@ -10,6 +10,7 @@
 import socket, cv2, pickle,struct,imutils
 import numpy as np
 
+'''
 ############################ NEW TEST CODE FOR THREADING #######################################
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -57,13 +58,14 @@ class PiVideoStream:
 		self.stopped = True
 
 print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-
+# vs = PiVideoStream().start()
+'''
 ###########################################################################################################################3
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 host_name  = socket.gethostname()
-host_ip = '131.179.29.169' #socket.gethostbyname(host_name)
+host_ip = '131.179.43.13' #socket.gethostbyname(host_name)
+server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 print('HOST IP:',host_ip)
 port = 9999
 socket_address = (host_ip,port)
@@ -75,6 +77,7 @@ server_socket.bind(socket_address)
 server_socket.listen(5)
 print("LISTENING AT:",socket_address)
 
+vs = cv2.VideoCapture(0)
 # Socket Accept
 while True:
 	client_socket,addr = server_socket.accept()
@@ -82,7 +85,7 @@ while True:
 	if client_socket:
 		while(vs):
 			frame = vs.read()
-			frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
+			# frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
 			
 			a = pickle.dumps(frame)
 			message = struct.pack("Q",len(a))+a

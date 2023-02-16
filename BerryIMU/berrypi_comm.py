@@ -31,17 +31,30 @@ import socket
 
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
 remote_ip = '131.179.29.41'
+
 print('HOST IP:',remote_ip)
 remote_port = 9999
+remote_speech_port = 9998
+
 remote_address = (remote_ip,remote_port)
+remote_speech_address = (remote_ip,remote_speech_port)
+
 remote_socket.bind(remote_address)
+remote_speech_socket.bind(remote_speech_address)
+
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # Socket Listen
 remote_socket.listen(5)
 print("LISTENING AT:",remote_address)
+remote_speech_socket.listen(5)
+print("LISTENING AT:",remote_speech_address)
 
 # function for response to command
 command = "m"
@@ -286,7 +299,10 @@ def respond():
         while True:
             laptop_socket,laptop_addr = remote_socket.accept()
             print('GOT CONNECTION FROM:',laptop_addr)
-            if laptop_socket:
+            laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
+            print('GOT CONNECTION FROM:',laptop_speech_addr)
+
+            if laptop_socket and laptop_speech_socket:
                 laptop_socket.setblocking(0)
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
@@ -531,18 +547,19 @@ def respond():
                     # time.sleep(0.03)
 
                     if "start" in command:
-                        laptop_socket.sendall(b"Start Recording\n")
+                        laptop_speech_socket.sendall(b"Start Recording\n")
                         print("Start Recording")
 
                     if "stop" in command:
-                        laptop_socket.sendall(b"Stop Recording\n")
+                        laptop_speech_socket.sendall(b"Stop Recording\n")
                         print("Stop Recording")
 
                     if "calibrate" in command:
-                        laptop_socket.sendall(b"Calibrate\n")
+                        laptop_speech_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
     finally:
         remote_socket.close()
+        remote_speech_socket.close()
         
 
 if __name__ == '__main__':
