@@ -32,6 +32,7 @@ import socket
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 remote_ip = '131.179.29.41'
