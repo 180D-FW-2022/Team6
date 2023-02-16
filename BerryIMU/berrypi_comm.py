@@ -240,12 +240,15 @@ def hear():
             audio = r.listen(source)
 
         try:
+            print("asdfasdfasdfa")
             command = r.recognize_google(audio)
             print("Google Speech Recognition thinks you said " + command)
 
         except sr.UnknownValueError:
+            print("ojjojojoj")
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
+            print("woooooo")
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 def respond():
