@@ -528,7 +528,7 @@ def respond():
                     stationary=1 #unless tilting at specific angles ouput will read stationary
                     
 
-                    
+                    '''
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
                         laptop_socket.sendall(b"FRONT\n")
@@ -564,6 +564,7 @@ def respond():
                         laptop_speech_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
                         command = "m"
+                    '''
     finally:
         print("5555")        
         remote_socket.close()
