@@ -228,7 +228,6 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 
 # function to translate audio to command
 def hear():
-    global begin
     global command
     time.sleep(5)
     print("here")
@@ -237,7 +236,7 @@ def hear():
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Say something!")
-            audio = r.listen(source)
+            # audio = r.listen(source)
 
         try:
             print("asdfasdfasdfa")

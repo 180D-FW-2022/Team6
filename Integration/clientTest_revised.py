@@ -235,7 +235,7 @@ def frompi():
 				
 				# print("error_x")
 				# print(error_x)
-				
+				'''
 				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
@@ -275,6 +275,7 @@ def frompi():
 					calledCallibrate = True
 					sys.stdout = open(os.devnull, 'w')
 
+
 				if callibrated:
 					if (current_area - desired_face_area >150): #TODO: can change the tolerance
 						direction = b"BACKFT\n"
@@ -292,10 +293,10 @@ def frompi():
 						moving = False
 				else:
 					print ("not callibrated")
-				
+				'''
 				if current_time - last_message_time > 1.5:
 					last_message_time = current_time
-
+				'''
 				if not moving:
 					direction = b"STOP\n"
 					client_tracking_socket.sendall(direction)
@@ -306,7 +307,7 @@ def frompi():
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
-			
+			'''
 			
 			# print(direction)
 			sys.stdout = open(os.devnull, 'w')
