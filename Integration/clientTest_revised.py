@@ -80,8 +80,6 @@ def frompi():
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
 	vid = cv2.VideoCapture(0)
-	vid.release()
-	vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
@@ -105,7 +103,7 @@ def frompi():
 		'''
 		img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
-
+		
 		sys.stdout = open(os.devnull, 'w')
 
 		################################ Gesture Recognition Code #########################################
@@ -175,13 +173,7 @@ def frompi():
 			# cap.release()
 			cv2.destroyAllWindows()
 			break
-		if "calibrate" in command.lower() and not calledCallibrate:
-			sys.stdout = sys.__stdout__ 
-			desired_face_area = current_area
-			callibrated = True
-			print("calibrate confirmed")
-			calledCallibrate = True
-			sys.stdout = open(os.devnull, 'w')
+		
 		###########################################################################################
 
 		try:  # used try so that if user pressed other than the given key error will not be shown
@@ -196,7 +188,7 @@ def frompi():
 		except:
 			print('error')
 			
-		'''
+		
 		if not manual_control:
 			# print("face tracking control")
 			################################################## Face Tracking Code #################################################
@@ -273,7 +265,13 @@ def frompi():
 
 				# print("current_face_area")
 				# print(current_area)
-				
+				if "calibrate" in command.lower() and not calledCallibrate:
+					sys.stdout = sys.__stdout__ 
+					desired_face_area = current_area
+					callibrated = True
+					print("calibrate confirmed")
+					calledCallibrate = True
+					sys.stdout = open(os.devnull, 'w')
 
 				if callibrated:
 					if (current_area - desired_face_area >150): #TODO: can change the tolerance
@@ -315,7 +313,7 @@ def frompi():
 
 			if cv2.waitKey(1) == ord('q'):
 				break
-		'''
+		
 		if manual_control:
 			# print("IMU control")
 			try:

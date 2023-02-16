@@ -306,6 +306,7 @@ def respond():
             if laptop_socket and laptop_speech_socket:
                 begin = True
                 laptop_socket.setblocking(0)
+                laptop_speech_socket.setblocking(0)
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
                     ACCx = IMU.readACCx()
