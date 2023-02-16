@@ -240,6 +240,7 @@ def hear():
 
         try:
             print("asdfasdfasdfa")
+            audio = True
             command = r.recognize_google(audio)
             print("Google Speech Recognition thinks you said " + command)
 
