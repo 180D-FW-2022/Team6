@@ -552,7 +552,7 @@ def respond():
                     # print(tiltdetection)
                     #slow program down a bit, makes the output more readable
                     # time.sleep(0.03)
-
+                    laptop_speech_socket.sendall(b"test\n")
                     if "start" in command:
                         laptop_speech_socket.sendall(b"Start Recording\n")
                         print("Start Recording")

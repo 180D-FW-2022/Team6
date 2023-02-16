@@ -104,7 +104,8 @@ def frompi():
 		frame = pickle.loads(frame_data)
 		'''
 		img,frame = vid.read()
-		cv2.imshow("RECEIVING VIDEO",frame)
+
+		# cv2.imshow("RECEIVING VIDEO",frame)
 		
 		sys.stdout = open(os.devnull, 'w')
 
@@ -170,11 +171,11 @@ def frompi():
 		sys.stdout = sys.__stdout__ 
 
 		#################################### Speech Recognition ###################################
-		if "stop" in command.lower():
-			print("stop camera")
-			# cap.release()
-			cv2.destroyAllWindows()
-			break
+		# if "stop" in command.lower():
+		# 	print("stop camera")
+		# 	# cap.release()
+		# 	cv2.destroyAllWindows()
+		# 	break
 		
 		###########################################################################################
 
@@ -377,13 +378,13 @@ def hear():
         time.sleep(3)
 
 if __name__ == '__main__':
-    t1 = threading.Thread(target=hear)
+    # t1 = threading.Thread(target=hear)
     t2 = threading.Thread(target=frompi)
 
-    t1.start()
+    # t1.start()
     t2.start()
 
-    t1.join()
+    # t1.join()
     t2.join()
 
 ############################################################################################################################
