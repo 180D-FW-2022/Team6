@@ -47,17 +47,12 @@ remote_speech_address = (remote_ip,remote_speech_port)
 remote_socket.bind(remote_address)
 remote_speech_socket.bind(remote_speech_address)
 
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
 # Socket Listen
 remote_socket.listen(5)
 print("LISTENING AT:",remote_address)
 remote_speech_socket.listen(5)
 print("LISTENING AT:",remote_speech_address)
 
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # function for response to command
 command = "m"
