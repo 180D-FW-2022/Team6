@@ -236,11 +236,11 @@ def hear():
         r = sr.Recognizer()
         with sr.Microphone() as source:
             print("Say something!")
-            # audio = r.listen(source)
+            audio = r.listen(source)
 
         try:
             print("asdfasdfasdfa")
-            audio = True
+            # audio = True
             command = r.recognize_google(audio)
             print("Google Speech Recognition thinks you said " + command)
 
