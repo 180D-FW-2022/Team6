@@ -32,7 +32,7 @@ import socket
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_ip = '169.232.187.125'
+remote_ip = '131.179.29.41'
 print('HOST IP:',remote_ip)
 remote_port = 9999
 remote_address = (remote_ip,remote_port)
