@@ -23,6 +23,7 @@ from tensorflow.keras.models import load_model
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = '164.67.233.31' # paste your server ip address here
 remote_ip = '131.179.29.41'
@@ -78,6 +79,8 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
+	vid = cv2.VideoCapture(0)
+	vid.release()
 	vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
@@ -331,13 +334,13 @@ def frompi():
 
 		# Speech commands from remote
 		try:
-				speech_command = ''
-				speech_command = remote_speech_socket.recv(4096)
-				sys.stdout = sys.__stdout__ 
-				print(speech_command)
-				sys.stdout = open(os.devnull, 'w')
-				# if from_IMU:
-				# 	client_tracking_socket.sendall(from_IMU)
+			speech_command = ''
+			speech_command = remote_speech_socket.recv(4096)
+			sys.stdout = sys.__stdout__ 
+			print(speech_command)
+			sys.stdout = open(os.devnull, 'w')
+			# if from_IMU:
+			# 	client_tracking_socket.sendall(from_IMU)
 		except socket.error as e:
 			print("")
 			# break
