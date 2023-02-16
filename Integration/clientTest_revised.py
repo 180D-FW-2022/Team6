@@ -329,7 +329,7 @@ def frompi():
 				# break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
-
+		'''
 		# Speech commands from remote
 		try:
 			speech_command = ''
@@ -342,7 +342,7 @@ def frompi():
 		except socket.error as e:
 			print("")
 			# break
-
+		'''
 		# Show the final output
 		cv2.imshow("Output", frame)
 

@@ -233,21 +233,20 @@ def hear():
     time.sleep(5)
 
     while(True):
-        if begin:
-            r = sr.Recognizer()
-            with sr.Microphone() as source:
-                
-                print("Say something!")
-                audio = r.listen(source)
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            
+            print("Say something!")
+            audio = r.listen(source)
 
-            try:
-                command = r.recognize_google(audio)
-                print("Google Speech Recognition thinks you said " + command)
+        try:
+            command = r.recognize_google(audio)
+            print("Google Speech Recognition thinks you said " + command)
 
-            except sr.UnknownValueError:
-                print("Google Speech Recognition could not understand audio")
-            except sr.RequestError as e:
-                print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 def respond():
     global command
@@ -293,7 +292,7 @@ def respond():
     global mag_medianTable2X
     global mag_medianTable2Y
     global mag_medianTable2Z
-    global begin
+    # global begin
 
     try:
         # Socket Accept
@@ -304,7 +303,7 @@ def respond():
             print('GOT CONNECTION FROM:',laptop_speech_addr)
 
             if laptop_socket and laptop_speech_socket:
-                begin = True
+                # begin = True
                 laptop_socket.setblocking(0)
                 laptop_speech_socket.setblocking(0)
                 while True:
