@@ -565,8 +565,9 @@ def respond():
                         print("Calibrating")
                         command = "m"
     finally:
+        print("5555")        
         remote_socket.close()
-        remote_speech_socket.close()
+        # remote_speech_socket.close()
         
 
 if __name__ == '__main__':
