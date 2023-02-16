@@ -534,19 +534,19 @@ def respond():
                     
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
-                        laptop_socket.sendall(b"FRONT\n")
+                        # laptop_socket.sendall(b"FRONT\n")
                     elif backwardtilt:
                         tiltdetection = 'IMU is tilting backward.\t'
-                        laptop_socket.sendall(b"BACK\n")
+                        # laptop_socket.sendall(b"BACK\n")
                     elif righttilt:
                         tiltdetection = 'IMU is tilting right.\t'
-                        laptop_socket.sendall(b"RIGHT\n")
+                        # laptop_socket.sendall(b"RIGHT\n")
                     elif lefttilt:
                         tiltdetection = 'IMU is tilting left.\t'
-                        laptop_socket.sendall(b"LEFT\n")
+                        # laptop_socket.sendall(b"LEFT\n")
                     elif stationary:
                         tiltdetection = 'IMU is stationary.\t'
-                        laptop_socket.sendall(b"STOP\n")
+                        # laptop_socket.sendall(b"STOP\n")
                     
                     
                     #print(outputString)
