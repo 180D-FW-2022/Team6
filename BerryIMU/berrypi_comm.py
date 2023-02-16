@@ -251,6 +251,8 @@ def hear():
             print("woooooo")
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
+        print("awooga")
+
 def respond():
     global command
     global a
