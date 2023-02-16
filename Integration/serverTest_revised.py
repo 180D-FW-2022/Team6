@@ -8,13 +8,7 @@ import numpy as np
 import serial
 import time
 
-#################################################### Pan-Tilt Tracking Initializations ######################################################################
-
-import numpy
 import cv2
-# from PCA9685 import PCA9685
-
-
 import pkg_resources
 
 ############################ NEW TEST CODE FOR THREADING #######################################
@@ -23,12 +17,6 @@ import pkg_resources
 from threading import Thread
 # from imutils.video.pivideostream import PiVideoStream
 
-###### troubleshooting hanging receive
-# import sys, fcntl, os, errno
-# from time import sleep
-
-
-######################################################################### End of Pan-Tilt Tracking Initializations ####################################################################################
 
 class PiVideoStream:
 	def __init__(self, resolution=(320, 240), framerate=32):
@@ -77,26 +65,6 @@ class PiVideoStream:
 		# indicate that the thread should be stopped
 		self.stopped = True
 
-#setting start up serrvo positions
-# ========================================================================
-# pwm = PCA9685()
-# pwm.setPWMFreq(50)
-
-current_PAN  = 90
-current_TILT = 60
-payload_size = struct.calcsize("Q")
-previous_message = b''
-# pwm.setRotationAngle(1, current_PAN) #PAN    
-# pwm.setRotationAngle(0, current_TILT) #TILT
-
-# Setting up serial communication to robot car
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-ser.reset_input_buffer()
-
-print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-# vs = cv2.VideoCapture(0)
-
 ###########################################################################################################################3
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -107,6 +75,7 @@ server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host_name  = socket.gethostname()
 host_ip = '164.67.233.31' #socket.gethostbyname(host_name)
+
 # print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
@@ -122,6 +91,17 @@ server_socket.listen(5)
 print("LISTENING AT:",socket_address)
 tracking_socket.listen(5)
 print("LISTENING AT:",tracking_address)
+
+payload_size = struct.calcsize("Q")
+previous_message = b''
+
+# Setting up serial communication to robot car
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
+
+print("[INFO] sampling THREADED frames from `picamera` module...")
+vs = PiVideoStream().start()
+# vs = cv2.VideoCapture(0)
 
 try:
 	# Socket Accept
@@ -144,10 +124,7 @@ try:
 				client_socket.sendall(message)
 				
 				while True:
-					
-					# print('1')
 					try:
-						# print('2')
 						from_client = ''
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:# != previous_message:
@@ -172,9 +149,6 @@ try:
 						# 	sys.exit(1)
 											
 finally:
-	# shut down cleanly
-    # pwm.exit_PCA9685()
-    
     # vs.release()
 	cv2.destroyAllWindows()
 	server_socket.close()
