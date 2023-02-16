@@ -357,6 +357,7 @@ def respond():
                     #########################################
                     # cycle the table
                     for x in range (ACC_MEDIANTABLESIZE-1,0,-1 ):
+                        print("LLLLL")
                         acc_medianTable1X[x] = acc_medianTable1X[x-1]
                         acc_medianTable1Y[x] = acc_medianTable1Y[x-1]
                         acc_medianTable1Z[x] = acc_medianTable1Z[x-1]
@@ -388,6 +389,7 @@ def respond():
                     #########################################
                     # cycle the table
                     for x in range (MAG_MEDIANTABLESIZE-1,0,-1 ):
+                        print("asdfasd")
                         mag_medianTable1X[x] = mag_medianTable1X[x-1]
                         mag_medianTable1Y[x] = mag_medianTable1Y[x-1]
                         mag_medianTable1Z[x] = mag_medianTable1Z[x-1]
@@ -528,7 +530,7 @@ def respond():
                     stationary=1 #unless tilting at specific angles ouput will read stationary
                     
 
-                    '''
+                    
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
                         laptop_socket.sendall(b"FRONT\n")
@@ -544,6 +546,8 @@ def respond():
                     elif stationary:
                         tiltdetection = 'IMU is stationary.\t'
                         laptop_socket.sendall(b"STOP\n")
+                    
+                    print("jojoj")
                     
                     #print(outputString)
                     # print(tiltdetection)
@@ -564,7 +568,7 @@ def respond():
                         laptop_speech_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
                         command = "m"
-                    '''
+                    print("made it")
     finally:
         print("5555")        
         remote_socket.close()
