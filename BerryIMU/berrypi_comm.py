@@ -502,14 +502,17 @@ def respond():
                     if "start" in command:
                         laptop_socket.sendall(b"Start Recording\n")
                         print("Start Recording")
+                        command = "m"
 
                     if "stop" in command:
                         laptop_socket.sendall(b"Stop Recording\n")
                         print("Stop Recording")
+                        command = "m"
 
                     if "calibrate" in command:
                         laptop_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
+                        command = "m"
     finally:
         remote_socket.close()
         
