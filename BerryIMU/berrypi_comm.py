@@ -31,7 +31,6 @@ import socket
 
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
@@ -549,14 +548,17 @@ def respond():
                     if "start" in command:
                         laptop_speech_socket.sendall(b"Start Recording\n")
                         print("Start Recording")
+                        command = "m"
 
                     if "stop" in command:
                         laptop_speech_socket.sendall(b"Stop Recording\n")
                         print("Stop Recording")
+                        command = "m"
 
                     if "calibrate" in command:
                         laptop_speech_socket.sendall(b"Calibrate\n")
                         print("Calibrating")
+                        command = "m"
     finally:
         remote_socket.close()
         remote_speech_socket.close()

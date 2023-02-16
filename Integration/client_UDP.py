@@ -1,3 +1,6 @@
+### CLIENT
+
+
 #Source: https://pyshine.com/Socket-programming-and-openc/
 # Communication Dependencies
 import socket,cv2, pickle,struct
@@ -20,23 +23,30 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Create sockets for communication
-client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+### TCP
+
+#client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+#client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+#remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+
+### UDP
+
+client_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+remote_socket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+
 
 videographer_ip = '164.67.233.31' # paste your server ip address here
-remote_ip = '131.179.29.41'
+remote_ip = '169.232.187.125'
 
 videographer_port = 9999
 tracking_port = 9998
-
 remote_port = 9999
-remote_speech_port = 9998
 
-# client_socket.connect((videographer_ip,videographer_port))
-# client_tracking_socket.connect((videographer_ip,tracking_port))
+client_socket.connect((videographer_ip,videographer_port))
+client_tracking_socket.connect((videographer_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
-remote_speech_socket.connect((remote_ip,remote_speech_port))
 
 data = b""
 payload_size = struct.calcsize("Q")
@@ -78,13 +88,12 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	vid = cv2.VideoCapture(0)
+	# vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
 	while True:
 		current_time = time.time()
-		'''
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -99,8 +108,8 @@ def frompi():
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
 		frame = pickle.loads(frame_data)
-		'''
-		img,frame = vid.read()
+
+		# img,frame = vid.read()
 		cv2.imshow("RECEIVING VIDEO",frame)
 
 		sys.stdout = open(os.devnull, 'w')
@@ -193,7 +202,7 @@ def frompi():
 		except:
 			print('error')
 			
-		'''
+
 		if not manual_control:
 			# print("face tracking control")
 			################################################## Face Tracking Code #################################################
@@ -312,14 +321,14 @@ def frompi():
 
 			if cv2.waitKey(1) == ord('q'):
 				break
-		'''
-		if manual_control:
+
+		elif manual_control:
 			# print("IMU control")
 			try:
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
 				sys.stdout = sys.__stdout__ 
-				# print(from_IMU)
+				print(from_IMU)
 				sys.stdout = open(os.devnull, 'w')
 				# if from_IMU:
 				# 	client_tracking_socket.sendall(from_IMU)
@@ -328,19 +337,6 @@ def frompi():
 				# break
 		else:
 			print("Car control error: Neither Manual nor Face Tracking Control")
-
-		# Speech commands from remote
-		try:
-				speech_command = ''
-				speech_command = remote_speech_socket.recv(4096)
-				sys.stdout = sys.__stdout__ 
-				print(speech_command)
-				sys.stdout = open(os.devnull, 'w')
-				# if from_IMU:
-				# 	client_tracking_socket.sendall(from_IMU)
-		except socket.error as e:
-			print("")
-			# break
 
 		# Show the final output
 		cv2.imshow("Output", frame)
