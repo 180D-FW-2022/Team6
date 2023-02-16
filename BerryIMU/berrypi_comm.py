@@ -233,6 +233,7 @@ def hear():
     time.sleep(5)
 
     while(True):
+        print("11111")
         r = sr.Recognizer()
         with sr.Microphone() as source:
             
@@ -301,8 +302,9 @@ def respond():
             print('GOT CONNECTION FROM:',laptop_addr)
             laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
             print('GOT CONNECTION FROM:',laptop_speech_addr)
-
+            print("4444")
             if laptop_socket and laptop_speech_socket:
+                print("222222")
                 # begin = True
                 laptop_socket.setblocking(0)
                 laptop_speech_socket.setblocking(0)

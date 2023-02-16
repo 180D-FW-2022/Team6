@@ -39,6 +39,8 @@ remote_speech_port = 9998
 remote_socket.connect((remote_ip,remote_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
 
+remote_speech_socket.setblocking(0)
+
 data = b""
 payload_size = struct.calcsize("Q")
 
@@ -327,9 +329,9 @@ def frompi():
 			except socket.error as e:
 				print("No IMU message 2")
 				# break
-		else:
-			print("Car control error: Neither Manual nor Face Tracking Control")
-		'''
+		# else:
+		# 	print("Car control error: Neither Manual nor Face Tracking Control")
+		
 		# Speech commands from remote
 		try:
 			speech_command = ''
@@ -337,12 +339,10 @@ def frompi():
 			sys.stdout = sys.__stdout__ 
 			print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
-			# if from_IMU:
-			# 	client_tracking_socket.sendall(from_IMU)
 		except socket.error as e:
-			print("")
+			print("error")
 			# break
-		'''
+		
 		# Show the final output
 		cv2.imshow("Output", frame)
 
