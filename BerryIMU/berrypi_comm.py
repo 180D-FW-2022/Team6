@@ -240,8 +240,10 @@ def hear():
                 with sr.Microphone() as source:
                     print("Say something!")
                     r.adjust_for_ambient_noise(source)
-                    audio = r.listen(source, timeout=3)
-                    print("here")
+                    try:
+                        audio = r.listen(source, timeout=3)
+                    except:
+                        pass
 
                 try:
                     command = r.recognize_google(audio)
