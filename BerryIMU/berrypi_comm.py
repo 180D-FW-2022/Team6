@@ -238,7 +238,7 @@ def hear():
                 # print("11111")
                 r = sr.Recognizer()
                 r.dynamic_energy_threshold = False
-                r.energy_threshold = 400
+                r.energy_threshold = 500
                 
                 with sr.Microphone() as source:
                     print("Say something!")
