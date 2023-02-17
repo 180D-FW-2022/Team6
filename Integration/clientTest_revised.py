@@ -379,14 +379,15 @@ def hear():
         time.sleep(3)
 
 if __name__ == '__main__':
-    # t1 = threading.Thread(target=hear)
-    t2 = threading.Thread(target=frompi)
+	frompi()
+#     # t1 = threading.Thread(target=hear)
+#     t2 = threading.Thread(target=frompi)
 
-    # t1.start()
-    t2.start()
+#     # t1.start()
+#     t2.start()
 
-    # t1.join()
-    t2.join()
+#     # t1.join()
+#     t2.join()
 
 ############################################################################################################################
 
