@@ -27,7 +27,7 @@ import speech_recognition as sr
 import threading
 
 # Communication Dependencies
-import socket
+import socket, os
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -558,7 +558,7 @@ def respond():
                     # print(tiltdetection)
                     #slow program down a bit, makes the output more readable
                     # time.sleep(0.03)
-                    laptop_speech_socket.sendall(b"test\n")
+                    # laptop_speech_socket.sendall(b"test\n")
                     if "start" in command:
                         laptop_speech_socket.sendall(b"Start Recording\n")
                         print("Start Recording")
