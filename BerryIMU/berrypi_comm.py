@@ -46,6 +46,8 @@ remote_speech_address = (remote_ip,remote_speech_port)
 remote_socket.bind(remote_address)
 remote_speech_socket.bind(remote_speech_address)
 
+remote_socket.setblocking(0)
+remote_speech_socket.setblocking(0)
 # function for response to command
 command = "m"
 begin = False
@@ -235,12 +237,9 @@ def hear():
             while(True):
                 # print("11111")
                 r = sr.Recognizer()
-                try:
-                    with sr.Microphone() as source:
-                        print("Say something!")
-                        audio = r.listen(source)
-                except:
-                    pass
+                with sr.Microphone() as source:
+                    print("Say something!")
+                    audio = r.listen(source)
 
                 try:
                     command = r.recognize_google(audio)
