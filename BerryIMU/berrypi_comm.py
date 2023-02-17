@@ -232,8 +232,8 @@ def hear():
     # print("here")
     while(True):
         if begin:
-            remote_socket.setblocking(0)
-            remote_speech_socket.setblocking(0)
+            # remote_socket.setblocking(0)
+            # remote_speech_socket.setblocking(0)
             while(True):
                 # print("11111")
                 r = sr.Recognizer()
