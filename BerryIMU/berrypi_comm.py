@@ -241,6 +241,7 @@ def hear():
                     print("Say something!")
                     r.adjust_for_ambient_noise(source)
                     audio = r.listen(source, timeout=3)
+                    print("here")
 
                 try:
                     command = r.recognize_google(audio)
