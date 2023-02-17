@@ -246,7 +246,7 @@ def hear():
                     try:
                         audio = r.listen(source, timeout=3)
                     except:
-                        pass
+                        continue
 
                 try:
                     command = r.recognize_google(audio)
