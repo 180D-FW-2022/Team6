@@ -26,7 +26,7 @@ remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = '164.67.233.31' # paste your server ip address here
-remote_ip = '131.179.29.41'
+remote_ip = '169.232.126.235'
 
 videographer_port = 9999
 tracking_port = 9998
