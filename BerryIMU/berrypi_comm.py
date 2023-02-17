@@ -28,6 +28,23 @@ import threading
 
 # Communication Dependencies
 import socket
+# Communication socket set up
+remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+remote_ip = '169.232.126.235'
+
+print('HOST IP:',remote_ip)
+remote_port = 9999
+remote_speech_port = 9998
+
+remote_address = (remote_ip,remote_port)
+remote_speech_address = (remote_ip,remote_speech_port)
+
+remote_socket.bind(remote_address)
+remote_speech_socket.bind(remote_speech_address)
 
 # function for response to command
 command = "m"
@@ -203,23 +220,8 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 def hear():
     global command
     global begin
-    # Communication socket set up
-    remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-    remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-    remote_ip = '169.232.126.235'
-
-    print('HOST IP:',remote_ip)
-    remote_port = 9999
-    remote_speech_port = 9998
-
-    remote_address = (remote_ip,remote_port)
-    remote_speech_address = (remote_ip,remote_speech_port)
-
-    remote_socket.bind(remote_address)
-    remote_speech_socket.bind(remote_speech_address)
+    global remote_socket
+    global remote_speech_socket
 
     # Socket Listen
     remote_socket.listen(5)
@@ -298,6 +300,8 @@ def respond():
     global mag_medianTable2Y
     global mag_medianTable2Z
     global begin
+    global remote_socket
+    global remote_speech_socket
 
     try:
         # Socket Accept
@@ -570,17 +574,25 @@ def respond():
     finally: 
         remote_socket.close()
         # remote_speech_socket.close()
-        
 
-if __name__ == '__main__':
-    t1 = threading.Thread(target=hear)
-    t2 = threading.Thread(target=respond)
+t1 = threading.Thread(target=hear)
+t2 = threading.Thread(target=respond)
 
-    t1.start()
-    t2.start()
+t1.start()
+t2.start()
 
-    t1.join()
-    t2.join()
+t1.join()
+t2.join()        
+
+# if __name__ == '__main__':
+    # t1 = threading.Thread(target=hear)
+    # t2 = threading.Thread(target=respond)
+
+    # t1.start()
+    # t2.start()
+
+    # t1.join()
+    # t2.join()
 
 
 
