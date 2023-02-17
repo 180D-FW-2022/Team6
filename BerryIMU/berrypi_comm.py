@@ -227,30 +227,33 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 # function to translate audio to command
 def hear():
     global command
+    global begin
     time.sleep(5)
     print("here")
     while(True):
-        print("11111")
-        r = sr.Recognizer()
-        with sr.Microphone() as source:
-            print("Say something!")
-            audio = r.listen(source)
-            print("not printed")
+        if begin:
+            while(True):
+                print("11111")
+                r = sr.Recognizer()
+                with sr.Microphone() as source:
+                    print("Say something!")
+                    audio = r.listen(source)
+                    print("not printed")
 
-        try:
-            print("asdfasdfasdfa")
-            # audio = True
-            command = r.recognize_google(audio)
-            print("Google Speech Recognition thinks you said " + command)
+                try:
+                    # print("asdfasdfasdfa")
+                    # audio = True
+                    command = r.recognize_google(audio)
+                    print("Google Speech Recognition thinks you said " + command)
 
-        except sr.UnknownValueError:
-            print("ojjojojoj")
-            print("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print("woooooo")
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+                except sr.UnknownValueError:
+                    # print("ojjojojoj")
+                    print("Google Speech Recognition could not understand audio")
+                except sr.RequestError as e:
+                    # print("woooooo")
+                    print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
-        print("awooga")
+                # print("awooga")
 
 def respond():
     global command
@@ -296,7 +299,7 @@ def respond():
     global mag_medianTable2X
     global mag_medianTable2Y
     global mag_medianTable2Z
-    # global begin
+    global begin
 
     try:
         # Socket Accept
@@ -306,7 +309,7 @@ def respond():
             laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
             print('GOT CONNECTION FROM:',laptop_speech_addr)
             if laptop_socket and laptop_speech_socket:
-                # begin = True
+                begin = True
                 laptop_socket.setblocking(0)
                 laptop_speech_socket.setblocking(0)
                 while True:
