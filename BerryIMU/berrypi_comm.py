@@ -243,7 +243,7 @@ def hear():
                 with sr.Microphone() as source:
                     print("Say something!")
                     print(r.energy_threshold)
-                    # r.adjust_for_ambient_noise(source)
+                    r.adjust_for_ambient_noise(source)
                     print(r.energy_threshold)
                     try:
                         audio = r.listen(source, timeout=3)
