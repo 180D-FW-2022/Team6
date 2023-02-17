@@ -190,7 +190,7 @@ def frompi():
 					print("Face Tracking")
 				sys.stdout = open(os.devnull, 'w')
 		except:
-			print('error')
+			pass
 			
 		
 		if not manual_control:
@@ -330,7 +330,7 @@ def frompi():
 				# if from_IMU:
 				# 	client_tracking_socket.sendall(from_IMU)
 			except socket.error as e:
-				print("No IMU message 2")
+				pass
 				# break
 		# else:
 		# 	print("Car control error: Neither Manual nor Face Tracking Control")

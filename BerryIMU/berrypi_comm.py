@@ -233,12 +233,12 @@ def hear():
     while(True):
         if begin:
             while(True):
-                print("11111")
+                # print("11111")
                 r = sr.Recognizer()
                 with sr.Microphone() as source:
                     print("Say something!")
                     audio = r.listen(source)
-                    print("not printed")
+                    # print("not printed")
 
                 try:
                     # print("asdfasdfasdfa")
