@@ -237,11 +237,13 @@ def hear():
             while(True):
                 # print("11111")
                 r = sr.Recognizer()
+                r.dynamic_energy_threshold = False
+                r.energy_threshold = 400
                 
                 with sr.Microphone() as source:
                     print("Say something!")
                     print(r.energy_threshold)
-                    r.adjust_for_ambient_noise(source)
+                    # r.adjust_for_ambient_noise(source)
                     print(r.energy_threshold)
                     try:
                         audio = r.listen(source, timeout=3)
