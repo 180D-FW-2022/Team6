@@ -234,18 +234,15 @@ def hear():
         if begin:
             while(True):
                 # print("11111")
+                r = sr.Recognizer()
                 try:
-                    r = sr.Recognizer()
+                    with sr.Microphone() as source:
+                        print("Say something!")
+                        audio = r.listen(source)
                 except:
                     pass
-                with sr.Microphone() as source:
-                    print("Say something!")
-                    audio = r.listen(source)
-                    # print("not printed")
 
                 try:
-                    # print("asdfasdfasdfa")
-                    # audio = True
                     command = r.recognize_google(audio)
                     print("Google Speech Recognition thinks you said " + command)
 
