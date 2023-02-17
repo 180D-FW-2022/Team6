@@ -574,25 +574,17 @@ def respond():
     finally: 
         remote_socket.close()
         # remote_speech_socket.close()
+        
 
-t1 = threading.Thread(target=hear)
-t2 = threading.Thread(target=respond)
+if __name__ == '__main__':
+    t1 = threading.Thread(target=hear)
+    t2 = threading.Thread(target=respond)
 
-t1.start()
-t2.start()
+    t1.start()
+    t2.start()
 
-t1.join()
-t2.join()        
-
-# if __name__ == '__main__':
-    # t1 = threading.Thread(target=hear)
-    # t2 = threading.Thread(target=respond)
-
-    # t1.start()
-    # t2.start()
-
-    # t1.join()
-    # t2.join()
+    t1.join()
+    t2.join()
 
 
 
