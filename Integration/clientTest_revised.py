@@ -343,7 +343,7 @@ def frompi():
 			print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
 		except socket.error as e:
-			print("error")
+			pass
 			# break
 		
 		# Show the final output

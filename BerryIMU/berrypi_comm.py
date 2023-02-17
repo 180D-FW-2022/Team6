@@ -234,9 +234,10 @@ def hear():
         if begin:
             while(True):
                 # print("11111")
-                sys.stdout = open(os.devnull, 'w')
-                r = sr.Recognizer()
-                sys.stdout = sys.__stdout__ 
+                try:
+                    r = sr.Recognizer()
+                except:
+                    pass
                 with sr.Microphone() as source:
                     print("Say something!")
                     audio = r.listen(source)
