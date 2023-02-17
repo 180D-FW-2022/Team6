@@ -33,6 +33,7 @@ tracking_port = 9998
 
 remote_port = 9999
 remote_speech_port = 9998
+print('1')
 
 # client_socket.connect((videographer_ip,videographer_port))
 # client_tracking_socket.connect((videographer_ip,tracking_port))
@@ -40,7 +41,7 @@ remote_socket.connect((remote_ip,remote_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.setblocking(0)
 remote_speech_socket.setblocking(0)
-
+print('2')
 data = b""
 payload_size = struct.calcsize("Q")
 

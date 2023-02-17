@@ -29,31 +29,6 @@ import threading
 # Communication Dependencies
 import socket
 
-# Communication socket set up
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-remote_ip = '169.232.126.235'
-
-print('HOST IP:',remote_ip)
-remote_port = 9999
-remote_speech_port = 9998
-
-remote_address = (remote_ip,remote_port)
-remote_speech_address = (remote_ip,remote_speech_port)
-
-remote_socket.bind(remote_address)
-remote_speech_socket.bind(remote_speech_address)
-
-# Socket Listen
-remote_socket.listen(5)
-print("LISTENING AT:",remote_address)
-remote_speech_socket.listen(5)
-print("LISTENING AT:",remote_speech_address)
-
-
 # function for response to command
 command = "m"
 begin = False
@@ -228,8 +203,31 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
 def hear():
     global command
     global begin
+    # Communication socket set up
+    remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    remote_ip = '169.232.126.235'
+
+    print('HOST IP:',remote_ip)
+    remote_port = 9999
+    remote_speech_port = 9998
+
+    remote_address = (remote_ip,remote_port)
+    remote_speech_address = (remote_ip,remote_speech_port)
+
+    remote_socket.bind(remote_address)
+    remote_speech_socket.bind(remote_speech_address)
+
+    # Socket Listen
+    remote_socket.listen(5)
+    print("LISTENING AT:",remote_address)
+    remote_speech_socket.listen(5)
+    print("LISTENING AT:",remote_speech_address)
     time.sleep(5)
-    print("here")
+    # print("here")
     while(True):
         if begin:
             while(True):
