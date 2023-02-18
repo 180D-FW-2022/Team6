@@ -1,6 +1,6 @@
 #Source: https://pyshine.com/Socket-programming-and-openc/
 # Communication Dependencies
-import socket,cv2, pickle,struct
+import socket,cv2,pickle,struct
 
 # Speech Recognition Dependencies
 import speech_recognition as sr
@@ -37,8 +37,8 @@ print('1')
 
 # client_socket.connect((videographer_ip,videographer_port))
 # client_tracking_socket.connect((videographer_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
-remote_speech_socket.connect((remote_ip,remote_speech_port))
+# remote_socket.connect((remote_ip,remote_port))
+# remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.setblocking(0)
 remote_speech_socket.setblocking(0)
 print('2')
@@ -86,6 +86,10 @@ def frompi():
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
+	if manual_control:
+		print("IMU Control")
+	else:
+		print("Face Tracking")
 	while True:
 		current_time = time.time()
 		'''
@@ -156,16 +160,18 @@ def frompi():
 		# 	break
 		
 		if "rock" in className.lower():
-			sys.stdout = sys.__stdout__ 
-			print("IMU Control")
-			sys.stdout = open(os.devnull, 'w')
-			manual_control = True
+			if not manual_control:
+				sys.stdout = sys.__stdout__ 
+				print("IMU Control")
+				sys.stdout = open(os.devnull, 'w')
+				manual_control = True
 
 		if "okay" in className.lower():
-			sys.stdout = sys.__stdout__ 
-			print("Face Tracking")
-			sys.stdout = open(os.devnull, 'w')
-			manual_control = False
+			if manual_control:
+				sys.stdout = sys.__stdout__ 
+				print("Face Tracking")
+				sys.stdout = open(os.devnull, 'w')
+				manual_control = False
 		
 
 		############################### End of Gesture Recognition Code ###########################
@@ -179,22 +185,9 @@ def frompi():
 		# 	break
 		
 		###########################################################################################
-
-		try:  # used try so that if user pressed other than the given key error will not be shown
-			if keyboard.is_pressed('r'):
-				sys.stdout = sys.__stdout__ 
-				manual_control = not manual_control
-				if manual_control:
-					print("IMU Control")
-				else:
-					print("Face Tracking")
-				sys.stdout = open(os.devnull, 'w')
-		except:
-			pass
 			
 		
 		if not manual_control:
-			# print("face tracking control")
 			################################################## Face Tracking Code #################################################
 			# Convert the frame to grayscale
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -323,7 +316,7 @@ def frompi():
 			# print("IMU control")
 			try:
 				from_IMU = ''
-				from_IMU = remote_socket.recv(4096)
+				# from_IMU = remote_socket.recv(4096)
 				sys.stdout = sys.__stdout__ 
 				# print(from_IMU)
 				sys.stdout = open(os.devnull, 'w')
@@ -338,9 +331,9 @@ def frompi():
 		# Speech commands from remote
 		try:
 			speech_command = ''
-			speech_command = remote_speech_socket.recv(4096)
+			# speech_command = remote_speech_socket.recv(4096)
 			sys.stdout = sys.__stdout__ 
-			print(speech_command)
+			# print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
 		except socket.error as e:
 			pass
