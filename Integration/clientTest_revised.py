@@ -20,7 +20,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Import IPs
-import ip_address
+import userUI
 
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -28,8 +28,8 @@ client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-videographer_ip = ip_address.videographer_ip # paste your server ip address here
-remote_ip = ip_address.remote_ip
+videographer_ip = userUI.videographer_ip # paste your server ip address here
+remote_ip = userUI.remote_ip
 
 videographer_port = 9999
 tracking_port = 9998

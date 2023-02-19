@@ -12,7 +12,7 @@ import cv2
 import pkg_resources
 
 # Import IPs
-import ip_address
+import userUI
 
 ############################ NEW TEST CODE FOR THREADING #######################################
 # from picamera.array import PiRGBArray
@@ -77,7 +77,7 @@ tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host_name  = socket.gethostname()
-host_ip = ip_address.videographer_ip  #socket.gethostbyname(host_name)
+host_ip = userUI.videographer_ip  #socket.gethostbyname(host_name)
 # print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
