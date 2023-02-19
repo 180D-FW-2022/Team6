@@ -37,8 +37,8 @@ print('1')
 
 # client_socket.connect((videographer_ip,videographer_port))
 # client_tracking_socket.connect((videographer_ip,tracking_port))
-# remote_socket.connect((remote_ip,remote_port))
-# remote_speech_socket.connect((remote_ip,remote_speech_port))
+remote_socket.connect((remote_ip,remote_port))
+remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.setblocking(0)
 remote_speech_socket.setblocking(0)
 print('2')
@@ -109,12 +109,13 @@ def frompi():
 		frame = pickle.loads(frame_data)
 		'''
 		img,frame = vid.read()
-
+		
 		# cv2.imshow("RECEIVING VIDEO",frame)
 		
 		sys.stdout = open(os.devnull, 'w')
 
 		################################ Gesture Recognition Code #########################################
+		
 		x, y, c = frame.shape
 
 		# Flip the frame vertically
@@ -230,7 +231,7 @@ def frompi():
 				
 				# print("error_x")
 				# print(error_x)
-				'''
+				
 				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
@@ -288,10 +289,10 @@ def frompi():
 						moving = False
 				else:
 					print ("not callibrated")
-				'''
-				if current_time - last_message_time > 1.5:
-					last_message_time = current_time
-				'''
+				
+				# if current_time - last_message_time > 1.5:
+				# 	last_message_time = current_time
+				
 				if not moving:
 					direction = b"STOP\n"
 					client_tracking_socket.sendall(direction)
@@ -302,15 +303,15 @@ def frompi():
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
-			'''
+			
 			
 			# print(direction)
-			sys.stdout = open(os.devnull, 'w')
+			# sys.stdout = open(os.devnull, 'w')
 
 			
 
-			if cv2.waitKey(1) == ord('q'):
-				break
+			# if cv2.waitKey(1) == ord('q'):
+			# 	break
 		
 		if manual_control:
 			# print("IMU control")
@@ -331,16 +332,16 @@ def frompi():
 		# Speech commands from remote
 		try:
 			speech_command = ''
-			# speech_command = remote_speech_socket.recv(4096)
+			speech_command = remote_speech_socket.recv(4096)
 			sys.stdout = sys.__stdout__ 
-			# print(speech_command)
+			print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
 		except socket.error as e:
 			pass
 			# break
 		
 		# Show the final output
-		cv2.imshow("Output", frame)
+		# cv2.imshow("Output", frame)
 
 		if cv2.waitKey(1) & 0xFF == ord('r'):
 			manual_control =  not manual_control
