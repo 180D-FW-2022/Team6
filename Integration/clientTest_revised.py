@@ -19,14 +19,17 @@ import mediapipe as mp
 import tensorflow as tf
 from tensorflow.keras.models import load_model
 
+# Import IPs
+from Team6 import ip_address
+
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-videographer_ip = '164.67.233.31' # paste your server ip address here
-remote_ip = '131.179.29.41'
+videographer_ip = ip_address.videographer_ip # paste your server ip address here
+remote_ip = ip_address.remote_ip
 
 videographer_port = 9999
 tracking_port = 9998

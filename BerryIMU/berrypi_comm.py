@@ -29,13 +29,16 @@ import threading
 # Communication Dependencies
 import socket
 
+# Import IPs
+from Team6 import ip_address
+
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-remote_ip = '131.179.29.41'
+remote_ip = ip_address.remote_ip
 
 print('HOST IP:',remote_ip)
 remote_port = 9999

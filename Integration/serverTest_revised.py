@@ -11,6 +11,9 @@ import time
 import cv2
 import pkg_resources
 
+# Import IPs
+from Team6 import ip_address
+
 ############################ NEW TEST CODE FOR THREADING #######################################
 # from picamera.array import PiRGBArray
 # from picamera import PiCamera
@@ -74,7 +77,7 @@ tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 # host_name  = socket.gethostname()
-host_ip = '164.67.233.31' #socket.gethostbyname(host_name)
+host_ip = ip_address.videographer_ip  #socket.gethostbyname(host_name)
 # print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
