@@ -30,8 +30,7 @@ import threading
 import socket
 
 # Import IPs
-sys.path.insert(0,'/Team6/IPs')
-from ip_address import get_videographer_ip, get_remote_ip
+import ip_address
 
 import socket, os
 # Communication socket set up

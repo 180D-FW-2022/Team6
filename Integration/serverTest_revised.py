@@ -12,7 +12,7 @@ import cv2
 import pkg_resources
 
 # Import IPs
-from Team6 import ip_address
+import ip_address
 
 ############################ NEW TEST CODE FOR THREADING #######################################
 # from picamera.array import PiRGBArray

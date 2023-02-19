@@ -20,7 +20,7 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 
 # Import IPs
-from Team6 import ip_address
+import ip_address
 
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
