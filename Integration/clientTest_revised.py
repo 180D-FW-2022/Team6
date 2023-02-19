@@ -1,6 +1,6 @@
 #Source: https://pyshine.com/Socket-programming-and-openc/
 # Communication Dependencies
-import socket,cv2, pickle,struct
+import socket,cv2,pickle,struct
 
 # Speech Recognition Dependencies
 import speech_recognition as sr
@@ -36,6 +36,7 @@ tracking_port = 9998
 
 remote_port = 9999
 remote_speech_port = 9998
+print('1')
 
 # client_socket.connect((videographer_ip,videographer_port))
 # client_tracking_socket.connect((videographer_ip,tracking_port))
@@ -43,7 +44,7 @@ remote_socket.connect((remote_ip,remote_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.setblocking(0)
 remote_speech_socket.setblocking(0)
-
+print('2')
 data = b""
 payload_size = struct.calcsize("Q")
 
@@ -88,6 +89,10 @@ def frompi():
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
+	if manual_control:
+		print("IMU Control")
+	else:
+		print("Face Tracking")
 	while True:
 		current_time = time.time()
 		'''
@@ -107,11 +112,13 @@ def frompi():
 		frame = pickle.loads(frame_data)
 		'''
 		img,frame = vid.read()
-		cv2.imshow("RECEIVING VIDEO",frame)
+		
+		# cv2.imshow("RECEIVING VIDEO",frame)
 		
 		sys.stdout = open(os.devnull, 'w')
 
 		################################ Gesture Recognition Code #########################################
+		
 		x, y, c = frame.shape
 
 		# Flip the frame vertically
@@ -157,45 +164,34 @@ def frompi():
 		# 	break
 		
 		if "rock" in className.lower():
-			sys.stdout = sys.__stdout__ 
-			print("IMU Control")
-			sys.stdout = open(os.devnull, 'w')
-			manual_control = True
+			if not manual_control:
+				sys.stdout = sys.__stdout__ 
+				print("IMU Control")
+				sys.stdout = open(os.devnull, 'w')
+				manual_control = True
 
 		if "okay" in className.lower():
-			sys.stdout = sys.__stdout__ 
-			print("Face Tracking")
-			sys.stdout = open(os.devnull, 'w')
-			manual_control = False
+			if manual_control:
+				sys.stdout = sys.__stdout__ 
+				print("Face Tracking")
+				sys.stdout = open(os.devnull, 'w')
+				manual_control = False
 		
 
 		############################### End of Gesture Recognition Code ###########################
 		sys.stdout = sys.__stdout__ 
 
 		#################################### Speech Recognition ###################################
-		if "stop" in command.lower():
-			print("stop camera")
-			# cap.release()
-			cv2.destroyAllWindows()
-			break
+		# if "stop" in command.lower():
+		# 	print("stop camera")
+		# 	# cap.release()
+		# 	cv2.destroyAllWindows()
+		# 	break
 		
 		###########################################################################################
-
-		try:  # used try so that if user pressed other than the given key error will not be shown
-			if keyboard.is_pressed('r'):
-				sys.stdout = sys.__stdout__ 
-				manual_control = not manual_control
-				if manual_control:
-					print("IMU Control")
-				else:
-					print("Face Tracking")
-				sys.stdout = open(os.devnull, 'w')
-		except:
-			print('error')
 			
 		
 		if not manual_control:
-			# print("face tracking control")
 			################################################## Face Tracking Code #################################################
 			# Convert the frame to grayscale
 			gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -238,7 +234,7 @@ def frompi():
 				
 				# print("error_x")
 				# print(error_x)
-				'''
+				
 				sys.stdout = sys.__stdout__	
 				# left and right motion
 				if (error_x>70): #TODO: include tolerances
@@ -296,10 +292,10 @@ def frompi():
 						moving = False
 				else:
 					print ("not callibrated")
-				'''
-				if current_time - last_message_time > 1.5:
-					last_message_time = current_time
-				'''
+				
+				# if current_time - last_message_time > 1.5:
+				# 	last_message_time = current_time
+				
 				if not moving:
 					direction = b"STOP\n"
 					client_tracking_socket.sendall(direction)
@@ -310,28 +306,28 @@ def frompi():
 				# direction = b"STOP\n"
 				# client_tracking_socket.sendall(direction)
 				# print(direction)
-			'''
+			
 			
 			# print(direction)
-			sys.stdout = open(os.devnull, 'w')
+			# sys.stdout = open(os.devnull, 'w')
 
 			
 
-			if cv2.waitKey(1) == ord('q'):
-				break
+			# if cv2.waitKey(1) == ord('q'):
+			# 	break
 		
 		if manual_control:
 			# print("IMU control")
 			try:
 				from_IMU = ''
-				from_IMU = remote_socket.recv(4096)
+				# from_IMU = remote_socket.recv(4096)
 				sys.stdout = sys.__stdout__ 
 				# print(from_IMU)
 				sys.stdout = open(os.devnull, 'w')
 				# if from_IMU:
 				# 	client_tracking_socket.sendall(from_IMU)
 			except socket.error as e:
-				print("No IMU message 2")
+				pass
 				# break
 		# else:
 		# 	print("Car control error: Neither Manual nor Face Tracking Control")
@@ -344,11 +340,11 @@ def frompi():
 			print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
 		except socket.error as e:
-			print("error")
+			pass
 			# break
 		
 		# Show the final output
-		cv2.imshow("Output", frame)
+		# cv2.imshow("Output", frame)
 
 		if cv2.waitKey(1) & 0xFF == ord('r'):
 			manual_control =  not manual_control
@@ -380,14 +376,15 @@ def hear():
         time.sleep(3)
 
 if __name__ == '__main__':
-    t1 = threading.Thread(target=hear)
-    t2 = threading.Thread(target=frompi)
+	frompi()
+#     # t1 = threading.Thread(target=hear)
+#     t2 = threading.Thread(target=frompi)
 
-    t1.start()
-    t2.start()
+#     # t1.start()
+#     t2.start()
 
-    t1.join()
-    t2.join()
+#     # t1.join()
+#     t2.join()
 
 ############################################################################################################################
 
