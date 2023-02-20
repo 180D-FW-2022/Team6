@@ -328,7 +328,7 @@ def respond():
             if laptop_socket and laptop_speech_socket:
                 begin = True
                 laptop_socket.setblocking(0)
-                # laptop_speech_socket.setblocking(0)
+                laptop_speech_socket.setblocking(0)
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
                     ACCx = IMU.readACCx()
@@ -552,23 +552,23 @@ def respond():
                     
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
-                        laptop_socket.sendall(b"FRONT\n")
+                        # laptop_socket.sendall(b"FRONT\n")
                         # print("front")
                     elif backwardtilt:
                         tiltdetection = 'IMU is tilting backward.\t'
-                        laptop_socket.sendall(b"BACK\n")
+                        # laptop_socket.sendall(b"BACK\n")
                         # print("back")
                     elif righttilt:
                         tiltdetection = 'IMU is tilting right.\t'
-                        laptop_socket.sendall(b"RIGHT\n")
+                        # laptop_socket.sendall(b"RIGHT\n")
                         # print("right")
                     elif lefttilt:
                         tiltdetection = 'IMU is tilting left.\t'
-                        laptop_socket.sendall(b"LEFT\n")
+                        # laptop_socket.sendall(b"LEFT\n")
                         # print("left")
                     elif stationary:
                         tiltdetection = 'IMU is stationary.\t'
-                        laptop_socket.sendall(b"STOP\n")
+                        # laptop_socket.sendall(b"STOP\n")
                         # print("stop")
                     
                     
