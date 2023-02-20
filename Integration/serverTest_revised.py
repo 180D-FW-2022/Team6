@@ -155,16 +155,6 @@ def server():
 							# 	print("nope")
 						except socket.error as e:
 							break
-							# err = e.args[0]
-							# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-							# 	# sleep(1)
-							# 	# print ('No data available')
-							# 	break
-							# 	# continue
-							# else:
-							# 	# a "real" error occurred
-							# 	# print (e)
-							# 	sys.exit(1)
 
 						if "start" in command:
 							client_speech_socket.sendall(b"Start Recording\n")
