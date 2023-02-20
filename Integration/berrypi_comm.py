@@ -222,7 +222,7 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
     return KFangleX
 
 # function to translate audio to command
-'''
+
 def hear():
     global command
     global begin
@@ -232,8 +232,8 @@ def hear():
     # print("here")
     while(True):
         if begin:
-            # remote_socket.setblocking(0)
-            # remote_speech_socket.setblocking(0)
+            remote_socket.setblocking(0)
+            remote_speech_socket.setblocking(0)
             while(True):
                 # print("11111")
                 r = sr.Recognizer()
@@ -262,7 +262,7 @@ def hear():
                     print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
                 # print("awooga")
-'''
+
 def respond():
     global command
     global a
@@ -307,7 +307,7 @@ def respond():
     global mag_medianTable2X
     global mag_medianTable2Y
     global mag_medianTable2Z
-    # global begin
+    global begin
     global remote_socket
     global remote_speech_socket
 
@@ -323,10 +323,10 @@ def respond():
         while True:
             laptop_socket,laptop_addr = remote_socket.accept()
             print('GOT CONNECTION FROM:',laptop_addr)
-            # laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
-            # print('GOT CONNECTION FROM:',laptop_speech_addr)
-            if laptop_socket: # and laptop_speech_socket:
-                # begin = True
+            laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
+            print('GOT CONNECTION FROM:',laptop_speech_addr)
+            if laptop_socket and laptop_speech_socket:
+                begin = True
                 laptop_socket.setblocking(0)
                 # laptop_speech_socket.setblocking(0)
                 while True:
@@ -572,41 +572,41 @@ def respond():
                         print("stop")
                     
                     
-                    #print(outputString)
-                    # print(tiltdetection)
-                    #slow program down a bit, makes the output more readable
-                    # time.sleep(0.03)
-                    # laptop_speech_socket.sendall(b"test\n")
+                    print(outputString)
+                    print(tiltdetection)
+                    # slow program down a bit, makes the output more readable
+                    time.sleep(0.03)
+                    laptop_speech_socket.sendall(b"test\n")
 
-                    # if "start" in command:
-                    #     laptop_speech_socket.sendall(b"Start Recording\n")
-                    #     print("Start Recording")
-                    #     command = "m"
+                    if "start" in command:
+                        laptop_speech_socket.sendall(b"Start Recording\n")
+                        print("Start Recording")
+                        command = "m"
 
-                    # if "stop" in command:
-                    #     laptop_speech_socket.sendall(b"Stop Recording\n")
-                    #     print("Stop Recording")
-                    #     command = "m"
+                    if "stop" in command:
+                        laptop_speech_socket.sendall(b"Stop Recording\n")
+                        print("Stop Recording")
+                        command = "m"
 
-                    # if "calibrate" in command:
-                    #     laptop_speech_socket.sendall(b"Calibrate\n")
-                    #     print("Calibrating")
-                    #     command = "m"
+                    if "calibrate" in command:
+                        laptop_speech_socket.sendall(b"Calibrate\n")
+                        print("Calibrating")
+                        command = "m"
     finally: 
         remote_socket.close()
         # remote_speech_socket.close()
         
 
 if __name__ == '__main__':
-    respond()
-    # t1 = threading.Thread(target=hear)
-    # t2 = threading.Thread(target=respond)
+    # respond()
+    t1 = threading.Thread(target=hear)
+    t2 = threading.Thread(target=respond)
 
-    # t1.start()
-    # t2.start()
+    t1.start()
+    t2.start()
 
-    # t1.join()
-    # t2.join()
+    t1.join()
+    t2.join()
 
 
 

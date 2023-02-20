@@ -25,7 +25,8 @@ import userUI
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-client_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+# client_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = userUI.videographer_ip # paste your server ip address here
@@ -33,18 +34,21 @@ remote_ip = userUI.remote_ip
 
 videographer_port = 9999
 tracking_port = 9998
-client_speech_port = 9997
+# client_speech_port = 9997
 
 remote_port = 9999
+remote_speech_port = 9998
 
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-client_speech_socket.connect((videographer_ip,client_speech_port))
+# client_speech_socket.connect((videographer_ip,client_speech_port))
+remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.connect((remote_ip,remote_port))
 
 remote_socket.setblocking(0)
-client_speech_socket.setblocking(0)
+remote_speech_socket.setblocking(0)
+# client_speech_socket.setblocking(0)
 data = b""
 payload_size = struct.calcsize("Q")
 
@@ -96,15 +100,18 @@ def frompi():
 
 	while True:
 		current_time = time.time()
-		
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
 			data+=packet
+
 		packed_msg_size = data[:payload_size]
 		data = data[payload_size:]
 		# print(packed_msg_size)
-		msg_size = struct.unpack("Q",packed_msg_size)[0]
+		try:
+			msg_size = struct.unpack("Q",packed_msg_size)[0]
+		except:
+			continue
 		
 		while len(data) < msg_size:
 			data += client_socket.recv(4*1024)
@@ -324,9 +331,10 @@ def frompi():
 		# Speech commands from remote
 		try:
 			speech_command = ''
-			speech_command = client_speech_socket.recv(4096)
+			speech_command = remote_speech_socket.recv(4096)
 			sys.stdout = sys.__stdout__ 
 			print(speech_command)
+			command = speech_command
 			sys.stdout = open(os.devnull, 'w')
 		except:
 			pass
