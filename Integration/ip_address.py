@@ -1,5 +1,5 @@
 
 
-videographer_ip = '164.67.233.31'
+videographer_ip = '128.97.51.195'
 
 remote_ip = '169.232.126.235'

@@ -38,8 +38,8 @@ remote_port = 9999
 remote_speech_port = 9998
 print('1')
 
-# client_socket.connect((videographer_ip,videographer_port))
-# client_tracking_socket.connect((videographer_ip,tracking_port))
+client_socket.connect((videographer_ip,videographer_port))
+client_tracking_socket.connect((videographer_ip,tracking_port))
 remote_socket.connect((remote_ip,remote_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.setblocking(0)
@@ -85,7 +85,7 @@ def frompi():
 	haar_xml = pkg_resources.resource_filename('cv2', 'data/haarcascade_frontalface_default.xml')
 	face_cascade = cv2.CascadeClassifier('../Tracking/Haarcascades/haarcascade_frontalface_default.xml')
 
-	vid = cv2.VideoCapture(0)
+	# vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
 	# current_time = time.time()
 	###########################################################
@@ -95,7 +95,7 @@ def frompi():
 		print("Face Tracking")
 	while True:
 		current_time = time.time()
-		'''
+		
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -110,10 +110,10 @@ def frompi():
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
 		frame = pickle.loads(frame_data)
-		'''
-		img,frame = vid.read()
 		
-		# cv2.imshow("RECEIVING VIDEO",frame)
+		# img,frame = vid.read()
+		
+		cv2.imshow("RECEIVING VIDEO",frame)
 		
 		sys.stdout = open(os.devnull, 'w')
 
@@ -256,16 +256,6 @@ def frompi():
 					moving = False
 				
 				# callibrate
-				# #Delete later
-				# if cv2.waitKey(1) & 0xFF == ord('b'):
-				# 	desired_face_area = current_area
-				# 	callibrated = True
-				
-				# print("desired_face_area")
-				# print(desired_face_area)
-
-				# print("current_face_area")
-				# print(current_area)
 				if "calibrate" in command.lower() and not calledCallibrate:
 					sys.stdout = sys.__stdout__ 
 					desired_face_area = current_area
@@ -293,8 +283,8 @@ def frompi():
 				else:
 					print ("not callibrated")
 				
-				# if current_time - last_message_time > 1.5:
-				# 	last_message_time = current_time
+				if current_time - last_message_time > 1.5:
+					last_message_time = current_time
 				
 				if not moving:
 					direction = b"STOP\n"
@@ -303,8 +293,8 @@ def frompi():
 			else: #faces empty
 				sys.stdout = open(os.devnull, 'w')
 				print("faces empty")
-				# direction = b"STOP\n"
-				# client_tracking_socket.sendall(direction)
+				direction = b"STOP\n"
+				client_tracking_socket.sendall(direction)
 				# print(direction)
 			
 			
@@ -320,12 +310,12 @@ def frompi():
 			# print("IMU control")
 			try:
 				from_IMU = ''
-				# from_IMU = remote_socket.recv(4096)
+				from_IMU = remote_socket.recv(4096)
 				sys.stdout = sys.__stdout__ 
-				# print(from_IMU)
+				print(from_IMU)
 				sys.stdout = open(os.devnull, 'w')
-				# if from_IMU:
-				# 	client_tracking_socket.sendall(from_IMU)
+				if from_IMU:
+					client_tracking_socket.sendall(from_IMU)
 			except socket.error as e:
 				pass
 				# break
@@ -344,7 +334,7 @@ def frompi():
 			# break
 		
 		# Show the final output
-		# cv2.imshow("Output", frame)
+		cv2.imshow("Output", frame)
 
 		if cv2.waitKey(1) & 0xFF == ord('r'):
 			manual_control =  not manual_control
