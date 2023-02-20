@@ -7,12 +7,13 @@ import socket, cv2, pickle,struct, imutils, select
 import numpy as np
 import serial
 import time
+import speech_recognition as sr
 
 import cv2
 import pkg_resources
 
 # Import IPs
-import ip_address
+import userUI
 
 ############################ NEW TEST CODE FOR THREADING #######################################
 # from picamera.array import PiRGBArray
@@ -72,27 +73,37 @@ class PiVideoStream:
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 #Avoid address in use error
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
 # host_name  = socket.gethostname()
-host_ip = ip_address.videographer_ip  #socket.gethostbyname(host_name)
+host_ip = userUI.videographer_ip  #socket.gethostbyname(host_name)
 # print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
+speech_port = 9997
+
 socket_address = (host_ip,port)
 tracking_address = (host_ip,tracking_port)
+speech_address = (host_ip,speech_port)
 
 # Socket Bind
 server_socket.bind(socket_address)
 tracking_socket.bind(tracking_address)
+speech_socket.bind(speech_address)
 
 # Socket Listen
 server_socket.listen(5)
 print("LISTENING AT:",socket_address)
 tracking_socket.listen(5)
 print("LISTENING AT:",tracking_address)
+speech_socket.listen(5)
+print("LISTENING AT:",speech_address)
+
 
 payload_size = struct.calcsize("Q")
 previous_message = b''
@@ -105,53 +116,93 @@ print("[INFO] sampling THREADED frames from `picamera` module...")
 vs = PiVideoStream().start()
 # vs = cv2.VideoCapture(0)
 
-try:
-	# Socket Accept
-	while True:
-		client_socket,addr = server_socket.accept()
-		client_tracking_socket,tracking_addr = tracking_socket.accept()
-		print('GOT CONNECTION FROM:',addr)
-		print('GOT CONNECTION FROM:',tracking_addr)
-		if client_socket and client_tracking_socket:
-			client_tracking_socket.setblocking(0)
-			while(vs):
-				frame = vs.read()
-				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
-				
-				a = pickle.dumps(frame)
-				message = struct.pack("Q",len(a))+a
-				if( np.shape(frame)==()):
-					# print(message)
-					continue
-				client_socket.sendall(message)
-				
-				while True:
-					try:
-						from_client = ''
-						client_message = client_tracking_socket.recv(4096)
-						if client_message:# != previous_message:
-							# client_socket.setblocking(1)
-							# from_client = str(client_message)
-							# previous_message = client_message
-							ser.write(client_message)
-							# print(client_message)
-						# else:
-						# 	print("nope")
-					except socket.error as e:
-						break
-						# err = e.args[0]
-						# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
-						# 	# sleep(1)
-						# 	# print ('No data available')
-						# 	break
-						# 	# continue
-						# else:
-						# 	# a "real" error occurred
-						# 	# print (e)
-						# 	sys.exit(1)
-											
-finally:
-    # vs.release()
-	cv2.destroyAllWindows()
-	server_socket.close()
+def server():
+	global command
+	try:
+		# Socket Accept
+		while True:
+			client_socket,addr = server_socket.accept()
+			client_tracking_socket,tracking_addr = tracking_socket.accept()
+			client_speech_socket,speech_addr = speech_socket.accept()
+			print('GOT CONNECTION FROM:',addr)
+			print('GOT CONNECTION FROM:',tracking_addr)
+			print('GOT CONNECTION FROM:',speech_addr)
+			if client_socket and client_tracking_socket and client_speech_socket:
+				client_tracking_socket.setblocking(0)
+				client_speech_socket.setblocking(0)
+				while(vs):
+					frame = vs.read()
+					frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
+					
+					a = pickle.dumps(frame)
+					message = struct.pack("Q",len(a))+a
+					if( np.shape(frame)==()):
+						# print(message)
+						continue
+					client_socket.sendall(message)
+					
+					while True:
+						try:
+							from_client = ''
+							client_message = client_tracking_socket.recv(4096)
+							if client_message:# != previous_message:
+								# client_socket.setblocking(1)
+								# from_client = str(client_message)
+								# previous_message = client_message
+								ser.write(client_message)
+								# print(client_message)
+							# else:
+							# 	print("nope")
+						except socket.error as e:
+							break
+							# err = e.args[0]
+							# if err == errno.EAGAIN or err == errno.EWOULDBLOCK:
+							# 	# sleep(1)
+							# 	# print ('No data available')
+							# 	break
+							# 	# continue
+							# else:
+							# 	# a "real" error occurred
+							# 	# print (e)
+							# 	sys.exit(1)
+
+						if "start" in command:
+							client_speech_socket.sendall(b"Start Recording\n")
+							print("Start Recording")
+							command = "m"
+
+						if "stop" in command:
+							client_speech_socket.sendall(b"Stop Recording\n")
+							print("Stop Recording")
+							command = "m"
+
+						if "calibrate" in command:
+							client_speech_socket.sendall(b"Calibrate\n")
+							print("Calibrating")
+							command = "m"
+												
+	finally:
+		# vs.release()
+		cv2.destroyAllWindows()
+		server_socket.close()
     
+def hear():
+    time.sleep(10)
+    
+    while(True):
+        
+        global command
+		
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Say something!")
+            audio = r.listen(source)
+
+        try:
+            command = r.recognize_google(audio)
+            print("Google Speech Recognition thinks you said " + command)
+
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
