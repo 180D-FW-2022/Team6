@@ -323,12 +323,12 @@ def respond():
         while True:
             laptop_socket,laptop_addr = remote_socket.accept()
             print('GOT CONNECTION FROM:',laptop_addr)
-            laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
-            print('GOT CONNECTION FROM:',laptop_speech_addr)
-            if laptop_socket and laptop_speech_socket:
+            # laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
+            # print('GOT CONNECTION FROM:',laptop_speech_addr)
+            if laptop_socket: # and laptop_speech_socket:
                 # begin = True
                 laptop_socket.setblocking(0)
-                laptop_speech_socket.setblocking(0)
+                # laptop_speech_socket.setblocking(0)
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
                     ACCx = IMU.readACCx()

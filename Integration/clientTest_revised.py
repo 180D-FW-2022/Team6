@@ -37,6 +37,7 @@ client_speech_port = 9997
 
 remote_port = 9999
 
+
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
 client_speech_socket.connect((videographer_ip,client_speech_port))
