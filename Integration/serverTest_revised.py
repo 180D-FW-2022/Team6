@@ -150,7 +150,7 @@ def server():
 								# from_client = str(client_message)
 								# previous_message = client_message
 								ser.write(client_message)
-								print(client_message)
+								# print(client_message)
 							# else:
 							# 	print("nope")
 						except socket.error as e:

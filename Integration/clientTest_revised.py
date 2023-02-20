@@ -319,7 +319,7 @@ def frompi():
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
 				sys.stdout = sys.__stdout__ 
-				print(from_IMU)
+				# print(from_IMU)
 				sys.stdout = open(os.devnull, 'w')
 				if from_IMU:
 					client_tracking_socket.sendall(from_IMU)
