@@ -553,30 +553,29 @@ def respond():
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
                         laptop_socket.sendall(b"FRONT\n")
-                        print("front")
+                        # print("front")
                     elif backwardtilt:
                         tiltdetection = 'IMU is tilting backward.\t'
                         laptop_socket.sendall(b"BACK\n")
-                        print("back")
+                        # print("back")
                     elif righttilt:
                         tiltdetection = 'IMU is tilting right.\t'
                         laptop_socket.sendall(b"RIGHT\n")
-                        print("right")
+                        # print("right")
                     elif lefttilt:
                         tiltdetection = 'IMU is tilting left.\t'
                         laptop_socket.sendall(b"LEFT\n")
-                        print("left")
+                        # print("left")
                     elif stationary:
                         tiltdetection = 'IMU is stationary.\t'
                         laptop_socket.sendall(b"STOP\n")
-                        print("stop")
+                        # print("stop")
                     
                     
-                    print(outputString)
-                    print(tiltdetection)
-                    # slow program down a bit, makes the output more readable
-                    time.sleep(0.03)
-                    laptop_speech_socket.sendall(b"test\n")
+                    # print(outputString)
+                    # print(tiltdetection)
+                    # # slow program down a bit, makes the output more readable
+                    # time.sleep(0.03)
 
                     if "start" in command:
                         laptop_speech_socket.sendall(b"Start Recording\n")
