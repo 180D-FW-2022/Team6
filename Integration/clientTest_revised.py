@@ -36,15 +36,14 @@ tracking_port = 9998
 client_speech_port = 9997
 
 remote_port = 9999
-print('1')
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
 client_speech_socket.connect((videographer_ip,client_speech_port))
+remote_socket.connect((remote_ip,remote_port))
+
 remote_socket.setblocking(0)
 client_speech_socket.setblocking(0)
-print('2')
 data = b""
 payload_size = struct.calcsize("Q")
 
@@ -93,6 +92,7 @@ def frompi():
 		print("IMU Control")
 	else:
 		print("Face Tracking")
+
 	while True:
 		current_time = time.time()
 		
@@ -303,11 +303,10 @@ def frompi():
 
 			
 
-			# if cv2.waitKey(1) == ord('q'):
-			# 	break
+			if cv2.waitKey(1) == ord('q'):
+				break
 		
 		if manual_control:
-			# print("IMU control")
 			try:
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
@@ -316,9 +315,8 @@ def frompi():
 				sys.stdout = open(os.devnull, 'w')
 				if from_IMU:
 					client_tracking_socket.sendall(from_IMU)
-			except socket.error as e:
+			except:
 				pass
-				# break
 		# else:
 		# 	print("Car control error: Neither Manual nor Face Tracking Control")
 		
@@ -329,9 +327,8 @@ def frompi():
 			sys.stdout = sys.__stdout__ 
 			print(speech_command)
 			sys.stdout = open(os.devnull, 'w')
-		except socket.error as e:
+		except:
 			pass
-			# break
 		
 		# Show the final output
 		cv2.imshow("Output", frame)
@@ -341,29 +338,29 @@ def frompi():
 
 
 ############################################ Speech Recognition #############################################	
-def hear():
-    time.sleep(10)
+# def hear():
+#     time.sleep(10)
     
-    while(True):
+#     while(True):
         
-        global command
+#         global command
 		
-        r = sr.Recognizer()
-        with sr.Microphone() as source:
-            print("Say something!")
-            audio = r.listen(source)
+#         r = sr.Recognizer()
+#         with sr.Microphone() as source:
+#             print("Say something!")
+#             audio = r.listen(source)
 
-        try:
-            command = r.recognize_google(audio)
-            print("Google Speech Recognition thinks you said " + command)
+#         try:
+#             command = r.recognize_google(audio)
+#             print("Google Speech Recognition thinks you said " + command)
 
-        except sr.UnknownValueError:
-            print("Google Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print("Could not request results from Google Speech Recognition service; {0}".format(e))
+#         except sr.UnknownValueError:
+#             print("Google Speech Recognition could not understand audio")
+#         except sr.RequestError as e:
+#             print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
-        time.sleep(3)
+#         time.sleep(3)
 
 if __name__ == '__main__':
 	frompi()
@@ -375,7 +372,3 @@ if __name__ == '__main__':
 
 #     # t1.join()
 #     t2.join()
-
-############################################################################################################################
-
-# client_socket.close()

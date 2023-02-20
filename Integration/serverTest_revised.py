@@ -3,7 +3,7 @@
 
 # This code is for the server 
 # Lets import the libraries
-import socket, cv2, pickle,struct, imutils, select
+import socket, cv2, pickle,struct, imutils, select, threading
 import numpy as np
 import serial
 import time
@@ -206,3 +206,13 @@ def hear():
             print("Google Speech Recognition could not understand audio")
         except sr.RequestError as e:
             print("Could not request results from Google Speech Recognition service; {0}".format(e))
+
+if __name__ == '__main__':
+    t1 = threading.Thread(target=server)
+    t2 = threading.Thread(target=hear)
+
+    t1.start()
+    t2.start()
+
+    t1.join()
+    t2.join()

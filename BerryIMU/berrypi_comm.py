@@ -229,12 +229,12 @@ def hear():
     global remote_socket
     global remote_speech_socket
 
-    # Socket Listen
-    remote_socket.listen(5)
-    print("LISTENING AT:",remote_address)
-    remote_speech_socket.listen(5)
-    print("LISTENING AT:",remote_speech_address)
-    time.sleep(5)
+    # # Socket Listen
+    # remote_socket.listen(5)
+    # print("LISTENING AT:",remote_address)
+    # remote_speech_socket.listen(5)
+    # print("LISTENING AT:",remote_speech_address)
+    # time.sleep(5)
     # print("here")
     while(True):
         if begin:
@@ -316,6 +316,13 @@ def respond():
     global begin
     global remote_socket
     global remote_speech_socket
+
+    # Socket Listen
+    remote_socket.listen(5)
+    print("LISTENING AT:",remote_address)
+    remote_speech_socket.listen(5)
+    print("LISTENING AT:",remote_speech_address)
+    time.sleep(5)
 
     try:
         # Socket Accept
@@ -591,6 +598,7 @@ def respond():
         
 
 if __name__ == '__main__':
+
     t1 = threading.Thread(target=hear)
     t2 = threading.Thread(target=respond)
 
