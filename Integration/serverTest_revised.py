@@ -116,65 +116,65 @@ print("[INFO] sampling THREADED frames from `picamera` module...")
 vs = PiVideoStream().start()
 # vs = cv2.VideoCapture(0)
 
-def server():
-	global command
-	try:
-		# Socket Accept
-		while True:
-			client_socket,addr = server_socket.accept()
-			client_tracking_socket,tracking_addr = tracking_socket.accept()
-			# client_speech_socket,speech_addr = speech_socket.accept()
-			print('GOT CONNECTION FROM:',addr)
-			print('GOT CONNECTION FROM:',tracking_addr)
-			# print('GOT CONNECTION FROM:',speech_addr)
-			if client_socket and client_tracking_socket: # and client_speech_socket:
-				client_tracking_socket.setblocking(0)
-				# client_speech_socket.setblocking(0)
-				while(vs):
-					frame = vs.read()
-					frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
-					
-					a = pickle.dumps(frame)
-					message = struct.pack("Q",len(a))+a
-					if( np.shape(frame)==()):
-						# print(message)
-						continue
+# def server():
+# 	global command
+try:
+	# Socket Accept
+	while True:
+		client_socket,addr = server_socket.accept()
+		client_tracking_socket,tracking_addr = tracking_socket.accept()
+		# client_speech_socket,speech_addr = speech_socket.accept()
+		print('GOT CONNECTION FROM:',addr)
+		print('GOT CONNECTION FROM:',tracking_addr)
+		# print('GOT CONNECTION FROM:',speech_addr)
+		if client_socket and client_tracking_socket: # and client_speech_socket:
+			client_tracking_socket.setblocking(0)
+			client_socket.setblocking(0)
+			# client_speech_socket.setblocking(0)
+			while(vs):
+				frame = vs.read()
+				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
+				
+				a = pickle.dumps(frame)
+				message = struct.pack("Q",len(a))+a
+				if( np.shape(frame)==()):
+					# print(message)
+					continue
+				try:
 					client_socket.sendall(message)
-					
-					while True:
-						try:
-							from_client = ''
-							client_message = client_tracking_socket.recv(4096)
-							if client_message:# != previous_message:
-								# client_socket.setblocking(1)
-								# from_client = str(client_message)
-								# previous_message = client_message
-								ser.write(client_message)
-								# print(client_message)
-							# else:
-							# 	print("nope")
-						except socket.error as e:
-							break
+				except:
+					pass
+				
+				while True:
+					try:
+						client_message = client_tracking_socket.recv(4096)
+						if client_message:
+							ser.write(client_message)
+							# print(client_message)
+						# else:
+						# 	print("nope")
+					except socket.error as e:
+						break
 
-						# if "start" in command:
-						# 	client_speech_socket.sendall(b"Start Recording\n")
-						# 	print("Start Recording")
-						# 	command = "m"
+					# if "start" in command:
+					# 	client_speech_socket.sendall(b"Start Recording\n")
+					# 	print("Start Recording")
+					# 	command = "m"
 
-						# if "stop" in command:
-						# 	client_speech_socket.sendall(b"Stop Recording\n")
-						# 	print("Stop Recording")
-						# 	command = "m"
+					# if "stop" in command:
+					# 	client_speech_socket.sendall(b"Stop Recording\n")
+					# 	print("Stop Recording")
+					# 	command = "m"
 
-						# if "calibrate" in command:
-						# 	client_speech_socket.sendall(b"Calibrate\n")
-						# 	print("Calibrating")
-						# 	command = "m"
-												
-	finally:
-		# vs.release()
-		cv2.destroyAllWindows()
-		server_socket.close()
+					# if "calibrate" in command:
+					# 	client_speech_socket.sendall(b"Calibrate\n")
+					# 	print("Calibrating")
+					# 	command = "m"
+											
+finally:
+	# vs.release()
+	cv2.destroyAllWindows()
+	server_socket.close()
 '''   
 def hear():
     time.sleep(10)
