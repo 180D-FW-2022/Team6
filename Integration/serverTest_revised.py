@@ -112,15 +112,18 @@ previous_message = b''
 ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 ser.reset_input_buffer()
 
+print('1')
 print("[INFO] sampling THREADED frames from `picamera` module...")
 vs = PiVideoStream().start()
 # vs = cv2.VideoCapture(0)
-
+print('2')
 # def server():
 # 	global command
 try:
+	print('3')
 	# Socket Accept
 	while True:
+		print('4')
 		client_socket,addr = server_socket.accept()
 		client_tracking_socket,tracking_addr = tracking_socket.accept()
 		# client_speech_socket,speech_addr = speech_socket.accept()
@@ -129,6 +132,7 @@ try:
 		# print('GOT CONNECTION FROM:',speech_addr)
 		if client_socket and client_tracking_socket: # and client_speech_socket:
 			client_tracking_socket.setblocking(0)
+			print('5')
 			# client_socket.setblocking(0)
 			# client_speech_socket.setblocking(0)
 			while(vs):
@@ -141,7 +145,7 @@ try:
 				if( np.shape(frame)==()):
 					# print(message)
 					continue
-				
+
 				client_socket.sendall(message)
 				
 				while True:
