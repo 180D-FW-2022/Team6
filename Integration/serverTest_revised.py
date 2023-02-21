@@ -113,13 +113,13 @@ ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 ser.reset_input_buffer()
 
 print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-time.sleep(5)
+# vs = PiVideoStream().start()
 # vs = cv2.VideoCapture(0)
 
 # def server():
 # 	global command
 try:
+	vs = cv2.VideoCapture(0)
 	# Socket Accept
 	while True:
 		client_socket,addr = server_socket.accept()
