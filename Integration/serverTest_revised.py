@@ -129,11 +129,11 @@ try:
 		# print('GOT CONNECTION FROM:',speech_addr)
 		if client_socket and client_tracking_socket: # and client_speech_socket:
 			client_tracking_socket.setblocking(0)
-			client_socket.setblocking(0)
+			# client_socket.setblocking(0)
 			# client_speech_socket.setblocking(0)
 			while(vs):
 				frame = vs.read()
-				
+				print('here')
 				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
 				
 				a = pickle.dumps(frame)
@@ -141,10 +141,8 @@ try:
 				if( np.shape(frame)==()):
 					# print(message)
 					continue
-				try:
-					client_socket.sendall(message)
-				except:
-					pass
+				
+				client_socket.sendall(message)
 				
 				while True:
 					try:
