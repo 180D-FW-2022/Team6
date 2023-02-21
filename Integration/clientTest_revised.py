@@ -107,11 +107,8 @@ def frompi():
 
 		packed_msg_size = data[:payload_size]
 		data = data[payload_size:]
-		# print(packed_msg_size)
-		try:
-			msg_size = struct.unpack("Q",packed_msg_size)[0]
-		except:
-			continue
+
+		msg_size = struct.unpack("Q",packed_msg_size)[0]
 		
 		while len(data) < msg_size:
 			data += client_socket.recv(4*1024)
@@ -121,7 +118,7 @@ def frompi():
 		
 		# img,frame = vid.read()
 		
-		cv2.imshow("RECEIVING VIDEO",frame)
+		# cv2.imshow("RECEIVING VIDEO",frame)
 		
 		sys.stdout = open(os.devnull, 'w')
 
@@ -318,9 +315,9 @@ def frompi():
 			try:
 				from_IMU = ''
 				from_IMU = remote_socket.recv(4096)
-				sys.stdout = sys.__stdout__ 
+				# sys.stdout = sys.__stdout__ 
 				# print(from_IMU)
-				sys.stdout = open(os.devnull, 'w')
+				# sys.stdout = open(os.devnull, 'w')
 				if from_IMU:
 					client_tracking_socket.sendall(from_IMU)
 			except:
@@ -342,8 +339,8 @@ def frompi():
 		# Show the final output
 		cv2.imshow("Output", frame)
 
-		if cv2.waitKey(1) & 0xFF == ord('r'):
-			manual_control =  not manual_control
+		# if cv2.waitKey(1) & 0xFF == ord('r'):
+		# 	manual_control =  not manual_control
 
 
 ############################################ Speech Recognition #############################################	
