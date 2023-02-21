@@ -114,8 +114,8 @@ ser.reset_input_buffer()
 
 print('1')
 print("[INFO] sampling THREADED frames from `picamera` module...")
-vs = PiVideoStream().start()
-# vs = cv2.VideoCapture(0)
+# vs = PiVideoStream().start()
+vs = cv2.VideoCapture(0)
 print('2')
 # def server():
 # 	global command
