@@ -34,7 +34,7 @@ class PiVideoStream:
 		self.stream = cv2.VideoCapture(0)
 		self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
 		self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
-		# self.stream.set(cv2.CAP_PROP_FPS, 10)
+		self.stream.set(cv2.CAP_PROP_FPS, 10)
 		# initialize the frame and the variable used to indicate
 		# if the thread should be stopped
 		self.frame = None
@@ -109,8 +109,8 @@ payload_size = struct.calcsize("Q")
 previous_message = b''
 
 # Setting up serial communication to robot car
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-ser.reset_input_buffer()
+# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+# ser.reset_input_buffer()
 
 print('1')
 print("[INFO] sampling THREADED frames from `picamera` module...")
@@ -133,11 +133,11 @@ try:
 		if client_socket and client_tracking_socket: # and client_speech_socket:
 			client_tracking_socket.setblocking(0)
 			print('5')
-			# client_socket.setblocking(0)
+			client_socket.setblocking(0)
 			# client_speech_socket.setblocking(0)
 			while(vs):
-				frame = vs.read()
-				print('here')
+				_,frame = vs.read()
+				# print('here')
 				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
 				
 				a = pickle.dumps(frame)
@@ -145,18 +145,22 @@ try:
 				if( np.shape(frame)==()):
 					# print(message)
 					continue
-
-				client_socket.sendall(message)
+				try:
+					client_socket.sendall(message)
+				except:
+					# print("error")
+					continue
 				
 				while True:
 					try:
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:
-							ser.write(client_message)
+							a=1 #dummy placeholder
+							# ser.write(client_message)
 							# print(client_message)
 						# else:
 						# 	print("nope")
-					except socket.error as e:
+					except:
 						break
 
 					# if "start" in command:

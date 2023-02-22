@@ -100,7 +100,6 @@ def frompi():
 
 	while True:
 		current_time = time.time()
-		cv2.waitKey()
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -289,8 +288,8 @@ def frompi():
 						moving = True
 					else:
 						moving = False
-				else:
-					print ("not callibrated")
+				# else:
+				# 	print ("not callibrated")
 				
 				if current_time - last_message_time > 1.5:
 					last_message_time = current_time
@@ -343,6 +342,8 @@ def frompi():
 		# Show the final output
 		cv2.imshow("Output", frame)
 
+		if cv2.waitKey(1) == ord('q'):
+				break
 		# if cv2.waitKey(1) & 0xFF == ord('r'):
 		# 	manual_control =  not manual_control
 
