@@ -25,7 +25,7 @@ import userUI
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-# client_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+client_audio_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
@@ -34,7 +34,7 @@ remote_ip = userUI.remote_ip
 
 videographer_port = 9999
 tracking_port = 9998
-# client_speech_port = 9997
+client_audio_port = 9997
 
 remote_port = 9999
 remote_speech_port = 9998
@@ -42,14 +42,16 @@ remote_speech_port = 9998
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-# client_speech_socket.connect((videographer_ip,client_speech_port))
+client_audio_socket.connect((videographer_ip,client_audio_port))
 remote_speech_socket.connect((remote_ip,remote_speech_port))
 remote_socket.connect((remote_ip,remote_port))
 
 remote_socket.setblocking(0)
 remote_speech_socket.setblocking(0)
-# client_speech_socket.setblocking(0)
+client_audio_socket.setblocking(0)
+
 data = b""
+audio_data = b""
 payload_size = struct.calcsize("Q")
 
 # initialize mediapipe
@@ -86,6 +88,7 @@ def frompi():
 	global fourcc
 	global fps
 	global frame_counts
+	global audio_data
 	# Set the initial position of the motor
 	initial_position = 0
 	desired_face_area = 0
@@ -114,7 +117,9 @@ def frompi():
 		current_time = time.time()
 		if current_time - start_time > 10:
 			video_out.release()
-			print(frame_counts)
+			# print(frame_counts)
+
+		##### Camera Frame Handler ######
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -129,6 +134,7 @@ def frompi():
 			data += client_socket.recv(4*1024)
 		frame_data = data[:msg_size]
 		data  = data[msg_size:]
+
 		try:
 			frame = pickle.loads(frame_data)
 			video_out.write(frame)
@@ -136,7 +142,34 @@ def frompi():
 			time.sleep(0.16)
 		except:
 			continue
-		
+		###################################
+
+		##### Audio Frame Handler ######
+		try:
+			while len(audio_data) < payload_size:
+				audio_packet = client_audio_socket.recv(4*1024) # 4K
+				if not audio_packet: break
+				audio_data +=audio_packet
+
+			audio_packed_msg_size = audio_data[:payload_size]
+			audio_data = audio_data[payload_size:]
+
+			audio_msg_size = struct.unpack("Q",packed_msg_size)[0]
+			
+			while len(audio_data) < audio_msg_size:
+				audio_data += client_audio_socket.recv(4*1024)
+			audio_frame_data = audio_data[:msg_size]
+			audio_data  = audio_data[audio_msg_size:]
+
+			audio_frame = pickle.loads(audio_frame_data)
+			print("success")
+			# audio_frames.append(audio_frame)
+			# frame_counts += 1
+			# time.sleep(0.16)
+		except:
+			pass
+		###################################
+
 		# img,frame = vid.read()
 		
 		# cv2.imshow("RECEIVING VIDEO",frame)

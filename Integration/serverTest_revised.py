@@ -8,7 +8,8 @@ import numpy as np
 import serial
 import time
 import speech_recognition as sr
-
+import pyaudio
+import wave
 import cv2
 import pkg_resources
 
@@ -73,36 +74,36 @@ class PiVideoStream:
 # Socket Create
 server_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-# speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+audio_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 #Avoid address in use error
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 tracking_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-# speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+audio_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 # host_name  = socket.gethostname()
 host_ip = userUI.videographer_ip  #socket.gethostbyname(host_name)
 # print('HOST IP:',host_ip)
 port = 9999
 tracking_port = 9998
-# speech_port = 9997
+audio_port = 9997
 
 socket_address = (host_ip,port)
 tracking_address = (host_ip,tracking_port)
-# speech_address = (host_ip,speech_port)
+audio_address = (host_ip,audio_port)
 
 # Socket Bind
 server_socket.bind(socket_address)
 tracking_socket.bind(tracking_address)
-# speech_socket.bind(speech_address)
+audio_socket.bind(audio_address)
 
 # Socket Listen
 server_socket.listen(5)
 print("LISTENING AT:",socket_address)
 tracking_socket.listen(5)
 print("LISTENING AT:",tracking_address)
-# speech_socket.listen(5)
-# print("LISTENING AT:",speech_address)
+audio_socket.listen(5)
+print("LISTENING AT:",audio_address)
 
 
 payload_size = struct.calcsize("Q")
@@ -112,10 +113,19 @@ previous_message = b''
 # ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 # ser.reset_input_buffer()
 
-print('1')
-print("[INFO] sampling THREADED frames from `picamera` module...")
+
+print("[INFO] sampling THREADED frames")
+
+####### Audio visual set up #######
 # vs = PiVideoStream().start()
 vs = cv2.VideoCapture(0)
+audio = pyaudio.PyAudio()
+audio_format = pyaudio.paInt16
+audio_stream = audio.open(format=audio_format,channels=userUI.channels, rate=userUI.rate,input=True,frames_per_buffer=userUI.frames_per_buffer)
+audio_frames = []
+audio_stream.start_stream()
+
+
 print('2')
 # def server():
 # 	global command
@@ -126,16 +136,17 @@ try:
 		print('4')
 		client_socket,addr = server_socket.accept()
 		client_tracking_socket,tracking_addr = tracking_socket.accept()
-		# client_speech_socket,speech_addr = speech_socket.accept()
+		client_audio_socket,audio_addr = audio_socket.accept()
 		print('GOT CONNECTION FROM:',addr)
 		print('GOT CONNECTION FROM:',tracking_addr)
-		# print('GOT CONNECTION FROM:',speech_addr)
-		if client_socket and client_tracking_socket: # and client_speech_socket:
+		print('GOT CONNECTION FROM:',audio_addr)
+		if client_socket and client_tracking_socket and client_audio_socket:
 			client_tracking_socket.setblocking(0)
 			print('5')
 			client_socket.setblocking(0)
-			# client_speech_socket.setblocking(0)
+			client_audio_socket.setblocking(0)
 			while(vs):
+				#### Camera frame capture and transmission ####
 				ret,frame = vs.read()
 				if ret != True:
 					continue
@@ -153,11 +164,23 @@ try:
 					# print("error")
 					continue
 				
+				#### Audio capture and transmission ###
+				audio_data = audio_stream.read(userUI.frames_per_buffer)
+				audio_a = pickle.dumps(audio_data)
+				audio_message = struct.pack("Q",len(audio_a)) + audio_a
+				try:
+					client_audio_socket.sendall(audio_message)
+				except:
+					# print("error")
+					continue
+
+
+
 				while True:
 					try:
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:
-							a=1 #dummy placeholder
+							dummy=1 #dummy placeholder
 							# ser.write(client_message)
 							# print(client_message)
 						# else:
