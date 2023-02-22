@@ -110,8 +110,8 @@ payload_size = struct.calcsize("Q")
 previous_message = b''
 
 # Setting up serial communication to robot car
-# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-# ser.reset_input_buffer()
+ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+ser.reset_input_buffer()
 
 
 print("[INFO] sampling THREADED frames")
@@ -126,15 +126,9 @@ audio_stream = audio.open(format=audio_format,channels=userUI.channels, rate=use
 audio_frames = []
 audio_stream.start_stream()
 
-
-print('2')
-# def server():
-# 	global command
 try:
-	print('3')
 	# Socket Accept
 	while True:
-		print('4')
 		client_socket,addr = server_socket.accept()
 		client_tracking_socket,tracking_addr = tracking_socket.accept()
 		client_audio_socket,audio_addr = audio_socket.accept()
@@ -143,12 +137,11 @@ try:
 		print('GOT CONNECTION FROM:',audio_addr)
 		if client_socket and client_tracking_socket and client_audio_socket:
 			client_tracking_socket.setblocking(0)
-			print('5')
 			# client_socket.setblocking(0)
 			# client_audio_socket.setblocking(0)
 			while(vs):
-				print("sample size: ")
-				print(audio.get_sample_size(audio_format))
+				# print("sample size: ")
+				# print(audio.get_sample_size(audio_format))
 				#### Camera frame capture and transmission ####
 				ret,frame = vs.read()
 				if ret != True:
@@ -185,9 +178,8 @@ try:
 					try:
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:
-							dummy=1 #dummy placeholder
-							# ser.write(client_message)
-							# print(client_message)
+							ser.write(client_message)
+							print(client_message)
 						# else:
 						# 	print("nope")
 					except:

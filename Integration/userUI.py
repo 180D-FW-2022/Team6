@@ -1,8 +1,8 @@
 
 
-videographer_ip = '131.179.43.203'
+videographer_ip = '131.179.29.201'
 
-remote_ip = '131.179.43.203'
+remote_ip = '131.179.40.25'
 
 # Don't call this temp_video, temp_video2, or temp_audio
 filename = 'Video' 

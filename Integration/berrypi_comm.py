@@ -578,17 +578,17 @@ def respond():
                     # time.sleep(0.03)
 
                     if "start" in command:
-                        laptop_speech_socket.sendall(b"Start Recording\n")
+                        laptop_speech_socket.sendall("Start Recording")
                         print("Start Recording")
                         command = "m"
 
                     if "stop" in command:
-                        laptop_speech_socket.sendall(b"Stop Recording\n")
+                        laptop_speech_socket.sendall("Stop Recording")
                         print("Stop Recording")
                         command = "m"
 
                     if "calibrate" in command:
-                        laptop_speech_socket.sendall(b"Calibrate\n")
+                        laptop_speech_socket.sendall("calibrate")
                         print("Calibrating")
                         command = "m"
     finally: 
