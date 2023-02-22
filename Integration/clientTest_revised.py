@@ -43,11 +43,11 @@ remote_speech_port = 9998
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
 client_audio_socket.connect((videographer_ip,client_audio_port))
-remote_speech_socket.connect((remote_ip,remote_speech_port))
-remote_socket.connect((remote_ip,remote_port))
+# remote_speech_socket.connect((remote_ip,remote_speech_port))
+# remote_socket.connect((remote_ip,remote_port))
 
-remote_socket.setblocking(0)
-remote_speech_socket.setblocking(0)
+# remote_socket.setblocking(0)
+# remote_speech_socket.setblocking(0)
 client_audio_socket.setblocking(0)
 
 data = b""
@@ -141,6 +141,7 @@ def frompi():
 			frame_counts += 1
 			time.sleep(0.16)
 		except:
+			print('camera error')
 			continue
 		###################################
 

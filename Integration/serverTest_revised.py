@@ -161,7 +161,7 @@ try:
 				try:
 					client_socket.sendall(message)
 				except:
-					# print("error")
+					print("camera error")
 					continue
 				
 				#### Audio capture and transmission ###
@@ -171,7 +171,7 @@ try:
 				try:
 					client_audio_socket.sendall(audio_message)
 				except:
-					# print("error")
+					print("microphone error")
 					continue
 
 
