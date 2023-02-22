@@ -147,21 +147,22 @@ def frompi():
 
 		##### Audio Frame Handler ######
 		try:
+			print("audio 1")
 			while len(audio_data) < payload_size:
 				audio_packet = client_audio_socket.recv(4*1024) # 4K
 				if not audio_packet: break
 				audio_data +=audio_packet
-
+			print("audio 2")
 			audio_packed_msg_size = audio_data[:payload_size]
 			audio_data = audio_data[payload_size:]
 
 			audio_msg_size = struct.unpack("Q",packed_msg_size)[0]
-			
+			print("audio 3")
 			while len(audio_data) < audio_msg_size:
 				audio_data += client_audio_socket.recv(4*1024)
 			audio_frame_data = audio_data[:msg_size]
 			audio_data  = audio_data[audio_msg_size:]
-
+			print("audio 4")
 			audio_frame = pickle.loads(audio_frame_data)
 			print("success")
 			# audio_frames.append(audio_frame)

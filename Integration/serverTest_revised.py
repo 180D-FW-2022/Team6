@@ -143,8 +143,8 @@ try:
 		if client_socket and client_tracking_socket and client_audio_socket:
 			client_tracking_socket.setblocking(0)
 			print('5')
-			client_socket.setblocking(0)
-			client_audio_socket.setblocking(0)
+			# client_socket.setblocking(0)
+			# client_audio_socket.setblocking(0)
 			while(vs):
 				#### Camera frame capture and transmission ####
 				ret,frame = vs.read()
