@@ -121,6 +121,7 @@ print("[INFO] sampling THREADED frames")
 vs = cv2.VideoCapture(0)
 audio = pyaudio.PyAudio()
 audio_format = pyaudio.paInt16
+
 audio_stream = audio.open(format=audio_format,channels=userUI.channels, rate=userUI.rate,input=True,frames_per_buffer=userUI.frames_per_buffer)
 audio_frames = []
 audio_stream.start_stream()
@@ -146,6 +147,8 @@ try:
 			# client_socket.setblocking(0)
 			# client_audio_socket.setblocking(0)
 			while(vs):
+				print("sample size: ")
+				print(audio.get_sample_size(audio_format))
 				#### Camera frame capture and transmission ####
 				ret,frame = vs.read()
 				if ret != True:

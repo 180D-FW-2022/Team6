@@ -6,6 +6,7 @@ import socket,cv2,pickle,struct
 import speech_recognition as sr
 import threading
 import time
+import wave
 import sys, os
 
 # Face Tracking Dependencies
@@ -74,6 +75,7 @@ frameSize = (320,240) # video formats and sizes also depend and vary according t
 video_writer = cv2.VideoWriter_fourcc(*fourcc)
 video_out = cv2.VideoWriter("temp_video.avi", video_writer, fps, frameSize)
 frame_counts = 1
+audio_frames = []
 
 # From Speech recognition code
 command = "m"
@@ -89,6 +91,7 @@ def frompi():
 	global fps
 	global frame_counts
 	global audio_data
+	global audio_frames
 	# Set the initial position of the motor
 	initial_position = 0
 	desired_face_area = 0
@@ -112,12 +115,20 @@ def frompi():
 		print("IMU Control")
 	else:
 		print("Face Tracking")
-
+	stopped = False
 	while True:
 		current_time = time.time()
-		if current_time - start_time > 10:
+		if current_time - start_time > 10 and not stopped:
 			video_out.release()
+
+			waveFile = wave.open(userUI.audio_filename, 'wb')
+			waveFile.setnchannels(userUI.channels)
+			waveFile.setsampwidth(2)
+			waveFile.setframerate(userUI.rate)
+			waveFile.writeframes(b''.join(audio_frames))
+			waveFile.close()
 			# print(frame_counts)
+			stopped = True
 
 		##### Camera Frame Handler ######
 		while len(data) < payload_size:
@@ -156,18 +167,22 @@ def frompi():
 			audio_packed_msg_size = audio_data[:payload_size]
 			audio_data = audio_data[payload_size:]
 
-			audio_msg_size = struct.unpack("Q",packed_msg_size)[0]
+			audio_msg_size = struct.unpack("Q",audio_packed_msg_size)[0]
 			print("audio 3")
 			while len(audio_data) < audio_msg_size:
 				audio_data += client_audio_socket.recv(4*1024)
-			audio_frame_data = audio_data[:msg_size]
+				print("1st")
+			print("tasdasfd")
+			audio_frame_data = audio_data[:audio_msg_size]
+			print("asdfa")
 			audio_data  = audio_data[audio_msg_size:]
 			print("audio 4")
 			audio_frame = pickle.loads(audio_frame_data)
 			print("success")
-			# audio_frames.append(audio_frame)
-			# frame_counts += 1
-			# time.sleep(0.16)
+
+			audio_frames.append(audio_frame)
+			frame_counts += 1
+			time.sleep(0.16)
 		except:
 			pass
 		###################################
