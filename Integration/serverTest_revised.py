@@ -136,7 +136,9 @@ try:
 			client_socket.setblocking(0)
 			# client_speech_socket.setblocking(0)
 			while(vs):
-				_,frame = vs.read()
+				ret,frame = vs.read()
+				if ret != True:
+					continue
 				# print('here')
 				frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
 				

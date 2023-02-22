@@ -66,6 +66,12 @@ classNames = f.read().split('\n')
 f.close()
 direction = b''
 ##########################################################################################
+fps = 5.6               # fps should be the minimum constant rate at which the camera can
+fourcc = "MJPG"       # capture images (with no decrease in speed over time; testing is required)
+frameSize = (320,240) # video formats and sizes also depend and vary according to the camera used
+video_writer = cv2.VideoWriter_fourcc(*fourcc)
+video_out = cv2.VideoWriter("temp_video.avi", video_writer, fps, frameSize)
+frame_counts = 1
 
 # From Speech recognition code
 command = "m"
@@ -74,6 +80,12 @@ def frompi():
 	global command
 	global data
 	global direction
+	global video_out
+	global video_writer
+	global frameSize
+	global fourcc
+	global fps
+	global frame_counts
 	# Set the initial position of the motor
 	initial_position = 0
 	desired_face_area = 0
@@ -91,7 +103,7 @@ def frompi():
 
 	# vid = cv2.VideoCapture(0)
 	last_message_time = time.time()
-	# current_time = time.time()
+	start_time = time.time()
 	###########################################################
 	if manual_control:
 		print("IMU Control")
@@ -100,6 +112,9 @@ def frompi():
 
 	while True:
 		current_time = time.time()
+		if current_time - start_time > 10:
+			video_out.release()
+			print(frame_counts)
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
 			if not packet: break
@@ -116,6 +131,9 @@ def frompi():
 		data  = data[msg_size:]
 		try:
 			frame = pickle.loads(frame_data)
+			video_out.write(frame)
+			frame_counts += 1
+			time.sleep(0.16)
 		except:
 			continue
 		
