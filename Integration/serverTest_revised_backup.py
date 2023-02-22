@@ -126,6 +126,7 @@ audio_stream = audio.open(format=audio_format,channels=userUI.channels, rate=use
 audio_frames = []
 audio_stream.start_stream()
 
+
 try:
 	# Socket Accept
 	while True:
@@ -179,7 +180,7 @@ try:
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:
 							ser.write(client_message)
-							print(client_message)
+							# print(client_message)
 						# else:
 						# 	print("nope")
 					except:

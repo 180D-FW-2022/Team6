@@ -118,7 +118,7 @@ def frompi():
 	stopped = False
 	while True:
 		current_time = time.time()
-		if current_time - start_time > 10 and not stopped:
+		if current_time - start_time > 30 and not stopped:
 			video_out.release()
 
 			waveFile = wave.open(userUI.audio_filename, 'wb')
