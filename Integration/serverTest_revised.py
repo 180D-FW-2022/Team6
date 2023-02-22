@@ -160,9 +160,10 @@ try:
 					continue
 				try:
 					client_socket.sendall(message)
+					print("camera success")
 				except:
 					print("camera error")
-					continue
+					pass
 				
 				#### Audio capture and transmission ###
 				audio_data = audio_stream.read(userUI.frames_per_buffer)
@@ -170,9 +171,10 @@ try:
 				audio_message = struct.pack("Q",len(audio_a)) + audio_a
 				try:
 					client_audio_socket.sendall(audio_message)
+					print("microphone success")
 				except:
 					print("microphone error")
-					continue
+					pass
 
 
 
