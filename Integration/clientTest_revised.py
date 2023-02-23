@@ -118,7 +118,7 @@ def frompi():
 	stopped = False
 	while True:
 		current_time = time.time()
-		if current_time - start_time > 30 and not stopped:
+		if current_time - start_time > userUI.video_length *2 and not stopped:
 			video_out.release()
 
 			waveFile = wave.open(userUI.audio_filename, 'wb')
@@ -127,7 +127,7 @@ def frompi():
 			waveFile.setframerate(userUI.rate)
 			waveFile.writeframes(b''.join(audio_frames))
 			waveFile.close()
-			# print(frame_counts)
+			print(audio_frames)
 			stopped = True
 
 		##### Camera Frame Handler ######

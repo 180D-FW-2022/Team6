@@ -2,7 +2,7 @@
 
 videographer_ip = '131.179.29.201'
 
-remote_ip = '131.179.40.25'
+remote_ip = '131.179.41.74'
 
 # Don't call this temp_video, temp_video2, or temp_audio
 filename = 'Video' 
@@ -10,4 +10,6 @@ filename = 'Video'
 rate = 44100
 frames_per_buffer = 1024
 channels = 2
-audio_filename = "temp_audio.wav"
+audio_filename = "temp_audio3.wav"
+
+video_length = 30
