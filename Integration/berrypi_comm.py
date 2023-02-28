@@ -36,8 +36,8 @@ import socket, os
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+#remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+#remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
 remote_ip = userUI.remote_ip
 
@@ -49,7 +49,7 @@ remote_address = (remote_ip,remote_port)
 remote_speech_address = (remote_ip,remote_speech_port)
 
 remote_socket.bind(remote_address)
-remote_speech_socket.bind(remote_speech_address)
+#remote_speech_socket.bind(remote_speech_address)
 
 # function for response to command
 command = "m"
@@ -227,13 +227,13 @@ def hear():
     global command
     global begin
     global remote_socket
-    global remote_speech_socket
+    #global remote_speech_socket
 
     # print("here")
     while(True):
         if begin:
             remote_socket.setblocking(0)
-            remote_speech_socket.setblocking(0)
+            #remote_speech_socket.setblocking(0)
             while(True):
                 # print("11111")
                 r = sr.Recognizer()
@@ -309,12 +309,12 @@ def respond():
     global mag_medianTable2Z
     global begin
     global remote_socket
-    global remote_speech_socket
+    #global remote_speech_socket
 
     # Socket Listen
     remote_socket.listen(5)
     print("LISTENING AT:",remote_address)
-    remote_speech_socket.listen(5)
+    #remote_speech_socket.listen(5)
     print("LISTENING AT:",remote_speech_address)
     time.sleep(5)
 
@@ -323,12 +323,12 @@ def respond():
         while True:
             laptop_socket,laptop_addr = remote_socket.accept()
             print('GOT CONNECTION FROM:',laptop_addr)
-            laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
-            print('GOT CONNECTION FROM:',laptop_speech_addr)
-            if laptop_socket and laptop_speech_socket:
+            #laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
+            #print('GOT CONNECTION FROM:',laptop_speech_addr)
+            if laptop_socket:
                 begin = True
                 laptop_socket.setblocking(0)
-                laptop_speech_socket.setblocking(0)
+                
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
                     ACCx = IMU.readACCx()
@@ -577,20 +577,20 @@ def respond():
                     # # slow program down a bit, makes the output more readable
                     # time.sleep(0.03)
 
-                    if "start" in command:
-                        laptop_speech_socket.sendall("Start Recording")
-                        print("Start Recording")
-                        command = "m"
+                    # if "start" in command:
+                    #     laptop_speech_socket.sendall("Start Recording")
+                    #     print("Start Recording")
+                    #     command = "m"
 
-                    if "stop" in command:
-                        laptop_speech_socket.sendall("Stop Recording")
-                        print("Stop Recording")
-                        command = "m"
+                    # if "stop" in command:
+                    #     laptop_speech_socket.sendall("Stop Recording")
+                    #     print("Stop Recording")
+                    #     command = "m"
 
-                    if "calibrate" in command:
-                        laptop_speech_socket.sendall("calibrate")
-                        print("Calibrating")
-                        command = "m"
+                    # if "calibrate" in command:
+                    #     laptop_speech_socket.sendall("calibrate")
+                    #     print("Calibrating")
+                    #     command = "m"
     finally: 
         remote_socket.close()
         # remote_speech_socket.close()
