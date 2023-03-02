@@ -147,8 +147,8 @@ try:
 			# client_socket.setblocking(0)
 			# client_audio_socket.setblocking(0)
 			while(vs):
-				print("sample size: ")
-				print(audio.get_sample_size(audio_format))
+				#print("sample size: ")
+				#print(audio.get_sample_size(audio_format))
 				#### Camera frame capture and transmission ####
 				ret,frame = vs.read()
 				if ret != True:
