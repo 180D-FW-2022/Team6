@@ -1,3 +1,5 @@
+
+
 #http://ozzmaker.com/
 #!/usr/bin/python
 #
@@ -29,31 +31,22 @@ import threading
 # Communication Dependencies
 import socket
 
-# Import IPs
-import userUI
-
-import socket, os
 # Communication socket set up
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-#remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-#remote_speech_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-remote_ip = userUI.remote_ip
-
+remote_ip = '169.232.187.125'
 print('HOST IP:',remote_ip)
 remote_port = 9999
-remote_speech_port = 9998
-
 remote_address = (remote_ip,remote_port)
-remote_speech_address = (remote_ip,remote_speech_port)
-
 remote_socket.bind(remote_address)
-#remote_speech_socket.bind(remote_speech_address)
+remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+# Socket Listen
+remote_socket.listen(5)
+print("LISTENING AT:",remote_address)
 
 # function for response to command
 command = "m"
-begin = False
 
 ################### IMU Control Prep ##################################
 RAD_TO_DEG = 57.29578
@@ -222,46 +215,28 @@ def kalmanFilterX ( accAngle, gyroRate, DT):
     return KFangleX
 
 # function to translate audio to command
-
 def hear():
-    global command
     global begin
-    global remote_socket
-    #global remote_speech_socket
-
-    # print("here")
+    time.sleep(5)
+    
     while(True):
-        if begin:
-            remote_socket.setblocking(0)
-            #remote_speech_socket.setblocking(0)
-            while(True):
-                # print("11111")
-                r = sr.Recognizer()
-                # r.dynamic_energy_threshold = False
-                # r.energy_threshold = 50
-                
-                with sr.Microphone() as source:
-                    print("Say something!")
-                    # print(r.energy_threshold)
-                    r.adjust_for_ambient_noise(source)
-                    # print(r.energy_threshold)
-                    try:
-                        audio = r.listen(source, timeout=1)
-                    except:
-                        continue
+        
+        global command
 
-                try:
-                    command = r.recognize_google(audio)
-                    print("Google Speech Recognition thinks you said " + command)
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            
+            print("Say something!")
+            audio = r.listen(source)
 
-                except sr.UnknownValueError:
-                    # print("ojjojojoj")
-                    print("Google Speech Recognition could not understand audio")
-                except sr.RequestError as e:
-                    # print("woooooo")
-                    print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        try:
+            command = r.recognize_google(audio)
+            print("Google Speech Recognition thinks you said " + command)
 
-                # print("awooga")
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 def respond():
     global command
@@ -307,28 +282,14 @@ def respond():
     global mag_medianTable2X
     global mag_medianTable2Y
     global mag_medianTable2Z
-    global begin
-    global remote_socket
-    #global remote_speech_socket
-
-    # Socket Listen
-    remote_socket.listen(5)
-    print("LISTENING AT:",remote_address)
-    #remote_speech_socket.listen(5)
-    print("LISTENING AT:",remote_speech_address)
-    time.sleep(5)
 
     try:
         # Socket Accept
         while True:
             laptop_socket,laptop_addr = remote_socket.accept()
             print('GOT CONNECTION FROM:',laptop_addr)
-            #laptop_speech_socket, laptop_speech_addr = remote_speech_socket.accept()
-            #print('GOT CONNECTION FROM:',laptop_speech_addr)
             if laptop_socket:
-                begin = True
                 laptop_socket.setblocking(0)
-                
                 while True:
                     #Read the accelerometer,gyroscope and magnetometer values
                     ACCx = IMU.readACCx()
@@ -553,51 +514,40 @@ def respond():
                     if forwardtilt:
                         tiltdetection = 'IMU is tilting forward.\t'
                         laptop_socket.sendall(b"FRONT\n")
-                        # print("front")
                     elif backwardtilt:
                         tiltdetection = 'IMU is tilting backward.\t'
                         laptop_socket.sendall(b"BACK\n")
-                        # print("back")
                     elif righttilt:
                         tiltdetection = 'IMU is tilting right.\t'
                         laptop_socket.sendall(b"RIGHT\n")
-                        # print("right")
                     elif lefttilt:
                         tiltdetection = 'IMU is tilting left.\t'
                         laptop_socket.sendall(b"LEFT\n")
-                        # print("left")
                     elif stationary:
                         tiltdetection = 'IMU is stationary.\t'
                         laptop_socket.sendall(b"STOP\n")
-                        # print("stop")
                     
-                    
-                    # print(outputString)
+                    #print(outputString)
                     # print(tiltdetection)
-                    # # slow program down a bit, makes the output more readable
+                    #slow program down a bit, makes the output more readable
                     # time.sleep(0.03)
 
-                    # if "start" in command:
-                    #     laptop_speech_socket.sendall("Start Recording")
-                    #     print("Start Recording")
-                    #     command = "m"
+                    if "start" in command:
+                        laptop_socket.sendall(b"Start Recording\n")
+                        print("Start Recording")
 
-                    # if "stop" in command:
-                    #     laptop_speech_socket.sendall("Stop Recording")
-                    #     print("Stop Recording")
-                    #     command = "m"
+                    if "stop" in command:
+                        laptop_socket.sendall(b"Stop Recording\n")
+                        print("Stop Recording")
 
-                    # if "calibrate" in command:
-                    #     laptop_speech_socket.sendall("calibrate")
-                    #     print("Calibrating")
-                    #     command = "m"
-    finally: 
+                    if "calibrate" in command:
+                        laptop_socket.sendall(b"Calibrate\n")
+                        print("Calibrating")
+    finally:
         remote_socket.close()
-        # remote_speech_socket.close()
         
 
 if __name__ == '__main__':
-    # respond()
     t1 = threading.Thread(target=hear)
     t2 = threading.Thread(target=respond)
 
@@ -606,7 +556,6 @@ if __name__ == '__main__':
 
     t1.join()
     t2.join()
-
 
 
 

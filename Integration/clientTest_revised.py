@@ -27,8 +27,8 @@ import userUI
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_audio_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+#remote_speech_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+#remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = userUI.videographer_ip # paste your server ip address here
 remote_ip = userUI.remote_ip
@@ -44,11 +44,11 @@ remote_speech_port = 9998
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
 client_audio_socket.connect((videographer_ip,client_audio_port))
-remote_speech_socket.connect((remote_ip,remote_speech_port))
-remote_socket.connect((remote_ip,remote_port))
+#remote_speech_socket.connect((remote_ip,remote_speech_port))
+#remote_socket.connect((remote_ip,remote_port))
 
-remote_socket.setblocking(0)
-remote_speech_socket.setblocking(0)
+#remote_socket.setblocking(0)
+#remote_speech_socket.setblocking(0)
 client_audio_socket.setblocking(0)
 
 data = b""
@@ -241,16 +241,16 @@ def frompi():
 		
 		if "rock" in className.lower():
 			if not manual_control:
-				sys.stdout = sys.__stdout__ 
+				# sys.stdout = sys.__stdout__ 
 				print("IMU Control")
-				sys.stdout = open(os.devnull, 'w')
+				# sys.stdout = open(os.devnull, 'w')
 				manual_control = True
 
 		if "okay" in className.lower():
 			if manual_control:
-				sys.stdout = sys.__stdout__ 
+				# sys.stdout = sys.__stdout__ 
 				print("Face Tracking")
-				sys.stdout = open(os.devnull, 'w')
+				# sys.stdout = open(os.devnull, 'w')
 				manual_control = False
 		
 
@@ -338,7 +338,7 @@ def frompi():
 					callibrated = True
 					print("calibrate confirmed")
 					calledCallibrate = True
-					sys.stdout = open(os.devnull, 'w')
+					# sys.stdout = open(os.devnull, 'w')
 
 
 				if callibrated:
@@ -367,7 +367,7 @@ def frompi():
 					client_tracking_socket.sendall(direction)
 					# print(direction)
 			else: #faces empty
-				sys.stdout = open(os.devnull, 'w')
+				# sys.stdout = open(os.devnull, 'w')
 				print("faces empty")
 				direction = b"STOP\n"
 				client_tracking_socket.sendall(direction)
@@ -385,7 +385,7 @@ def frompi():
 		if manual_control:
 			try:
 				from_IMU = ''
-				from_IMU = remote_socket.recv(4096)
+				#from_IMU = remote_socket.recv(4096)
 				# sys.stdout = sys.__stdout__ 
 				# print(from_IMU)
 				# sys.stdout = open(os.devnull, 'w')
@@ -397,15 +397,15 @@ def frompi():
 		# 	print("Car control error: Neither Manual nor Face Tracking Control")
 		
 		# Speech commands from remote
-		try:
-			speech_command = ''
-			speech_command = remote_speech_socket.recv(4096)
-			sys.stdout = sys.__stdout__ 
-			print(speech_command)
-			command = speech_command
-			sys.stdout = open(os.devnull, 'w')
-		except:
-			pass
+		# try:
+		# 	speech_command = ''
+		# 	speech_command = remote_speech_socket.recv(4096)
+		# 	sys.stdout = sys.__stdout__ 
+		# 	print(speech_command)
+		# 	command = speech_command
+		# 	sys.stdout = open(os.devnull, 'w')
+		# except:
+		# 	pass
 		
 		# Show the final output
 		cv2.imshow("Output", frame)
@@ -417,37 +417,38 @@ def frompi():
 
 
 ############################################ Speech Recognition #############################################	
-# def hear():
-#     time.sleep(10)
+def hear():
+    time.sleep(10)
     
-#     while(True):
+    while(True):
         
-#         global command
+        global command
 		
-#         r = sr.Recognizer()
-#         with sr.Microphone() as source:
-#             print("Say something!")
-#             audio = r.listen(source)
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print("Say something!")
+            audio = r.listen(source)
 
-#         try:
-#             command = r.recognize_google(audio)
-#             print("Google Speech Recognition thinks you said " + command)
+        try:
+            command = r.recognize_google(audio)
+            print("Google Speech Recognition thinks you said " + command)
 
-#         except sr.UnknownValueError:
-#             print("Google Speech Recognition could not understand audio")
-#         except sr.RequestError as e:
-#             print("Could not request results from Google Speech Recognition service; {0}".format(e))
+        except sr.UnknownValueError:
+            print("Google Speech Recognition could not understand audio")
+        except sr.RequestError as e:
+            print("Could not request results from Google Speech Recognition service; {0}".format(e))
 
 
 #         time.sleep(3)
 
 if __name__ == '__main__':
-	frompi()
-#     # t1 = threading.Thread(target=hear)
-#     t2 = threading.Thread(target=frompi)
+	#frompi()
 
-#     # t1.start()
-#     t2.start()
+	t1 = threading.Thread(target=hear)
+	t2 = threading.Thread(target=frompi)
 
-#     # t1.join()
-#     t2.join()
+	t1.start()
+	t2.start()
+
+	t1.join()
+	t2.join()
