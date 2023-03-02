@@ -8,6 +8,7 @@ import threading
 import time
 import wave
 import sys, os
+import subprocess
 
 # Face Tracking Dependencies
 import pkg_resources
@@ -74,7 +75,7 @@ fourcc = "MJPG"       # capture images (with no decrease in speed over time; tes
 frameSize = (320,240) # video formats and sizes also depend and vary according to the camera used
 video_writer = cv2.VideoWriter_fourcc(*fourcc)
 video_out = cv2.VideoWriter("temp_video.avi", video_writer, fps, frameSize)
-frame_counts = 1
+audio_frame_count = 0
 audio_frames = []
 
 # From Speech recognition code
@@ -89,7 +90,7 @@ def frompi():
 	global frameSize
 	global fourcc
 	global fps
-	global frame_counts
+	global audio_frame_count
 	global audio_data
 	global audio_frames
 	# Set the initial position of the motor
@@ -119,16 +120,54 @@ def frompi():
 	while True:
 		current_time = time.time()
 		if current_time - start_time > userUI.video_length *2 and not stopped:
-			video_out.release()
+			# local_path = os.getcwd()
+			filename = userUI.filename
+			# if os.path.exists(str(local_path) + "/temp_audio.wav"):
+			# 	os.remove(str(local_path) + "/temp_audio.wav")
+			
+			# if os.path.exists(str(local_path) + "/temp_video.avi"):
+			# 	os.remove(str(local_path) + "/temp_video.avi")
 
+			# if os.path.exists(str(local_path) + "/temp_video2.avi"):
+			# 	os.remove(str(local_path) + "/temp_video2.avi")
+
+			# while os.path.exists(str(local_path) + "/" + filename + ".avi"):
+			# 	filename += "+"
+
+			recorded_fps = audio_frame_count / (current_time - start_time)
+
+			video_out.release()
 			waveFile = wave.open(userUI.audio_filename, 'wb')
 			waveFile.setnchannels(userUI.channels)
 			waveFile.setsampwidth(2)
-			waveFile.setframerate(userUI.rate)
+			waveFile.setframerate(recorded_fps)
 			waveFile.writeframes(b''.join(audio_frames))
 			waveFile.close()
-			print(audio_frames)
+			
+			print("Stopped")
 			stopped = True
+
+			
+			
+			#	 Merging audio and video signal
+	
+			if abs(recorded_fps - 6) >= 0.01:    # If the fps rate was higher/lower than expected, re-encode it to the expected
+												
+				print( "Re-encoding")
+				cmd = "ffmpeg -r " + str(recorded_fps) + " -i temp_video.avi -pix_fmt yuv420p -r 6 temp_video2.avi"
+				subprocess.call(cmd, shell=True)
+			
+				print( "Muxing")
+				cmd = "ffmpeg -ac 2 -channel_layout stereo -i temp_audio.wav -i temp_video2.avi -pix_fmt yuv420p " + filename + ".avi"
+				subprocess.call(cmd, shell=True)
+			
+			else:
+				
+				print( "Normal recording\nMuxing")
+				cmd = "ffmpeg -ac 2 -channel_layout stereo -i temp_audio.wav -i temp_video.avi -pix_fmt yuv420p " + filename + ".avi"
+				subprocess.call(cmd, shell=True)
+
+				print( "..")
 
 		##### Camera Frame Handler ######
 		while len(data) < payload_size:
@@ -149,7 +188,7 @@ def frompi():
 		try:
 			frame = pickle.loads(frame_data)
 			video_out.write(frame)
-			frame_counts += 1
+			audio_frame_count += 1
 			time.sleep(0.16)
 		except:
 			print('camera error')
@@ -181,7 +220,7 @@ def frompi():
 			# print("success")
 
 			audio_frames.append(audio_frame)
-			frame_counts += 1
+			audio_frame_count += 1
 			# time.sleep(0.16)
 		except:
 			pass

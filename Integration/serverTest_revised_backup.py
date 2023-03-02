@@ -110,8 +110,8 @@ payload_size = struct.calcsize("Q")
 previous_message = b''
 
 # Setting up serial communication to robot car
-ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-ser.reset_input_buffer()
+# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+# ser.reset_input_buffer()
 
 
 print("[INFO] sampling THREADED frames")
@@ -179,8 +179,9 @@ try:
 					try:
 						client_message = client_tracking_socket.recv(4096)
 						if client_message:
-							ser.write(client_message)
+							# ser.write(client_message)
 							# print(client_message)
+							pass
 						# else:
 						# 	print("nope")
 					except:
