@@ -25,7 +25,7 @@ import userUI
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-#remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
 videographer_ip = userUI.videographer_ip
 remote_ip = userUI.remote_ip
@@ -38,7 +38,7 @@ remote_port = 9999
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-# remote_socket.connect((remote_ip,remote_port))
+remote_socket.connect((remote_ip,remote_port))
 
 #remote_socket.setblocking(0)
 
@@ -59,11 +59,13 @@ classNames = f.read().split('\n')
 f.close()
 direction = b''
 ##########################################################################################
-fps = 5.6               # fps should be the minimum constant rate at which the camera can
+# fps = 5.6               # fps should be the minimum constant rate at which the camera can
+fps = 300
 fourcc = "MJPG"       # capture images (with no decrease in speed over time; testing is required)
 frameSize = (320,240) # video formats and sizes also depend and vary according to the camera used
 video_writer = cv2.VideoWriter_fourcc(*fourcc)
 video_out = cv2.VideoWriter("temp_video.avi", video_writer, fps, frameSize)
+temp_frame = None
 
 # From Speech recognition code
 command = "m"
@@ -77,9 +79,8 @@ def frompi():
 	global frameSize
 	global fourcc
 	global fps
-	global audio_frame_count
-	global audio_data
-	global audio_frames
+	global temp_frame
+	global payload_size
 	# Set the initial position of the motor
 	initial_position = 0
 	desired_face_area = 0
@@ -104,35 +105,11 @@ def frompi():
 
 	stopped = False
 	while True:
+		frame = temp_frame
 		current_time = time.time()
 		if current_time - start_time > userUI.video_length *2 and not stopped:
 			video_out.release()
 			stopped = True
-
-		##### Camera Frame Handler ######
-		while len(data) < payload_size:
-			packet = client_socket.recv(4*1024) # 4K
-			if not packet: break
-			data+=packet
-
-		packed_msg_size = data[:payload_size]
-		data = data[payload_size:]
-
-		msg_size = struct.unpack("Q",packed_msg_size)[0]
-		
-		while len(data) < msg_size:
-			data += client_socket.recv(4*1024)
-		frame_data = data[:msg_size]
-		data  = data[msg_size:]
-
-		try:
-			frame = pickle.loads(frame_data)
-			video_out.write(frame)
-		except:
-			continue
-		###################################
-		
-		
 
 		################################ Gesture Recognition Code #########################################
 		# Temporarily block all system output
@@ -297,9 +274,9 @@ def frompi():
 		if manual_control:
 			try:
 				from_IMU = ''
-				#from_IMU = remote_socket.recv(4096)
-				# if from_IMU:
-				# 	client_tracking_socket.sendall(from_IMU)
+				from_IMU = remote_socket.recv(4096)
+				if from_IMU:
+					client_tracking_socket.sendall(from_IMU)
 			except:
 				pass
 		
@@ -309,6 +286,35 @@ def frompi():
 		if cv2.waitKey(1) == ord('q'):
 			break
 
+def frame_capture():
+	global temp_frame
+	global data
+	global payload_size
+	global video_out
+
+	while(True):
+		##### Camera Frame Handler ######
+		while len(data) < payload_size:
+			packet = client_socket.recv(4*1024) # 4K
+			if not packet: break
+			data+=packet
+
+		packed_msg_size = data[:payload_size]
+		data = data[payload_size:]
+
+		msg_size = struct.unpack("Q",packed_msg_size)[0]
+		
+		while len(data) < msg_size:
+			data += client_socket.recv(4*1024)
+		frame_data = data[:msg_size]
+		data  = data[msg_size:]
+
+		try:
+			temp_frame = pickle.loads(frame_data)
+			video_out.write(temp_frame)
+		except:
+			continue
+		###################################
 
 ############################################ Speech Recognition #############################################	
 def hear():
@@ -336,9 +342,12 @@ def hear():
 if __name__ == '__main__':
 	t1 = threading.Thread(target=hear)
 	t2 = threading.Thread(target=frompi)
+	t3 = threading.Thread(target=frame_capture)
 
 	t1.start()
 	t2.start()
+	t3.start()
 
 	t1.join()
 	t2.join()
+	t3.join()

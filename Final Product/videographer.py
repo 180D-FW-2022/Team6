@@ -1,5 +1,5 @@
 #Source: https://pyshine.com/Socket-programming-and-openc/
-#FIRST
+
 # Import the libraries
 import socket, cv2, pickle, struct, imutils, threading
 import numpy as np
