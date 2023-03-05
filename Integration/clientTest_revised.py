@@ -140,11 +140,14 @@ def frompi():
 			waveFile = wave.open(userUI.audio_filename, 'wb')
 			waveFile.setnchannels(userUI.channels)
 			waveFile.setsampwidth(2)
-			waveFile.setframerate(recorded_fps)
+			waveFile.setframerate(2000)
 			waveFile.writeframes(b''.join(audio_frames))
 			waveFile.close()
 			
 			print("Stopped")
+			print(audio_frame_count)
+			print(current_time - start_time)
+			print(len(audio_frames))
 			stopped = True
 
 			
@@ -220,8 +223,8 @@ def frompi():
 			# print("success")
 
 			audio_frames.append(audio_frame)
-			audio_frame_count += 1
-			# time.sleep(0.16)
+			
+			time.sleep(0.16)
 		except:
 			pass
 		###################################
