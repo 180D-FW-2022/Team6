@@ -54,8 +54,8 @@ def frame_transmission():
 	previous_message = b''
 
 	# Configure serial communication to videographer
-	# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-	# ser.reset_input_buffer()
+	ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+	ser.reset_input_buffer()
 
 	try:
 		# Socket Accept
@@ -72,7 +72,7 @@ def frame_transmission():
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
-							# ser.write(direction)
+							ser.write(direction)
 							pass
 					except:
 						pass
