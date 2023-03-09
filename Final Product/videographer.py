@@ -65,7 +65,6 @@ def frame_transmission():
 			print('GOT CONNECTION FROM:',camera_addr)
 			print('GOT CONNECTION FROM:',instruction_addr)
 			if laptop_camera_socket and laptop_instruction_socket:
-				# vs = cv2.VideoCapture(0)
 				laptop_instruction_socket.setblocking(0)
 				# laptop_camera_socket.setblocking(0)
 				while(vs):
@@ -78,7 +77,6 @@ def frame_transmission():
 						pass
 
 					#### Camera frame capture and transmission ####
-					# ret,frame = vs.read()
 					if( np.shape(frame)==()):
 						continue
 					if ret != True:
