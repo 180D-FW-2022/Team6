@@ -1,1 +1,8 @@
-Final Product README
+This is the folder with the files that the user will use and interact with. The only file that should be changed by the user is userUI.py. This UI allows the 
+user to modify the name of the video file they want to save to the computer as well as some other parameters affecting the video. It also allows the user to 
+input the ip address of their computer and of the two devices that make up our hardware. These two devices are the berrypi comm and the videographer. It is
+important to determine the ip address of each device and update the userUI.py variables accordingly. The instructions on how to do this is clearly detailed
+in the user manual.
+
+Once the userUI.py is updated by the user, they can begin to run the programs. The user should run the videographer.py on the videographer, the berrypi_comm.py
+on the berrypi comm, and the laptop.py on the computer. There are instructions on how to do this in the user manual.
