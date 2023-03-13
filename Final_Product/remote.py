@@ -24,17 +24,7 @@ import datetime
 import socket
 import os
 import userUI
-
-# Communication socket set up
-remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-
-remote_ip = userUI.remote_ip
-print('HOST IP:',remote_ip)
-
-remote_port = 9999
-remote_address = (remote_ip,remote_port)
-remote_socket.bind(remote_address)
+import fcntl, struct
 
 ################### IMU Control Prep ##################################
 RAD_TO_DEG = 57.29578
@@ -130,6 +120,13 @@ KFangleX = 0.0
 KFangleY = 0.0
 
 
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 def kalmanFilterY ( accAngle, gyroRate, DT):
     y=0.0
@@ -247,8 +244,19 @@ def respond():
     global mag_medianTable2Y
     global mag_medianTable2Z
     global begin
-    global remote_socket
-    #global remote_speech_socket
+    # global remote_socket
+
+    # Communication socket set up
+    remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+    remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+    remote_ip = userUI.remote_ip
+    print( get_ip_address("wlan0") )
+    print('HOST IP:',remote_ip)
+
+    remote_port = 9999
+    remote_address = (remote_ip,remote_port)
+    remote_socket.bind(remote_address)
 
     # Socket Listen
     remote_socket.listen(5)

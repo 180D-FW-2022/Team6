@@ -1,15 +1,23 @@
-#Source: https://pyshine.com/Socket-programming-and-openc/
-
+# Source: https://pyshine.com/Socket-programming-and-openc/
+# Source: https://raspberrypi.stackexchange.com/questions/6714/how-to-get-the-raspberry-pis-ip-address-for-ssh
 # Import the libraries
 import socket, cv2, pickle, struct, imutils, threading
 import numpy as np
 import serial
 import cv2
 import userUI
+import fcntl, struct
 
 frame = None
 ret = None
 vs = None
+def get_ip_address(ifname):
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    return socket.inet_ntoa(fcntl.ioctl(
+        s.fileno(),
+        0x8915,  # SIOCGIFADDR
+        struct.pack('256s', ifname[:15])
+    )[20:24])
 
 def camera_capture():
 	global frame
@@ -36,6 +44,7 @@ def frame_transmission():
 	camera_port = 9999
 	instruction_port = 9998
 
+	print("Dynamic IP: ", get_ip_address("wlan0"))
 	camera_address = (userUI.videographer_ip,camera_port)
 	instruction_address = (userUI.videographer_ip,instruction_port)
 
