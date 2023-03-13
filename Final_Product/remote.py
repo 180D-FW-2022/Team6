@@ -250,8 +250,8 @@ def respond():
     remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    remote_ip = userUI.remote_ip
-    print( get_ip_address("wlan0") )
+    # remote_ip = userUI.remote_ip
+    remote_ip = get_ip_address("wlan0")
     print('HOST IP:',remote_ip)
 
     remote_port = 9999
