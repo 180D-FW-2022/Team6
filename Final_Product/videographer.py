@@ -49,10 +49,6 @@ def frame_transmission():
 	print("LISTENING AT:",camera_address)
 	print("LISTENING AT:",instruction_address)
 
-	########## Prepare for data transmission ##########
-	payload_size = struct.calcsize("Q")
-	previous_message = b''
-
 	# Configure serial communication to videographer
 	ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 	ser.reset_input_buffer()
