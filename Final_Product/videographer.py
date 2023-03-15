@@ -5,7 +5,7 @@ import socket, cv2, pickle, struct, imutils, threading
 import numpy as np
 import serial
 import cv2
-# import fcntl, struct
+import fcntl, struct
 
 frame = None
 ret = None
