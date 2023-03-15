@@ -66,6 +66,7 @@ def frame_transmission():
 	ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
 	ser.reset_input_buffer()
 
+	counter = 1
 	try:
 		# Socket Accept
 		while True:
@@ -77,6 +78,8 @@ def frame_transmission():
 				laptop_instruction_socket.setblocking(0)
 				# laptop_camera_socket.setblocking(0)
 				while(vs):
+					counter += 1
+					print(counter)
 					if end_program:
 						break
 					try:
