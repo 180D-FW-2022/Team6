@@ -10,6 +10,3 @@ filename = 'team_switch_testing'
 rate = 44100
 frames_per_buffer = 1024
 channels = 2
-audio_filename = "temp_audio.wav"
-
-video_length = 10

@@ -23,7 +23,6 @@ import IMU
 import datetime
 import socket
 import os
-import userUI
 import fcntl, struct
 
 ################### IMU Control Prep ##################################
@@ -250,7 +249,6 @@ def respond():
     remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     remote_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
-    # remote_ip = userUI.remote_ip
     remote_ip = get_ip_address("wlan0")
     print('HOST IP:',remote_ip)
 
@@ -477,6 +475,8 @@ def respond():
                         laptop_socket.sendall(b"LEFT\n")
                     elif stationary:
                         laptop_socket.sendall(b"STOP\n")
+    except ConnectionResetError:
+        remote_socket.close()
     finally: 
         remote_socket.close()
         

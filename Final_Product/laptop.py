@@ -6,7 +6,7 @@ import socket,cv2,pickle,struct
 import speech_recognition as sr
 import threading
 import time
-import sys, os
+import sys, os, keyboard
 
 # Face Tracking Dependencies
 import pkg_resources
@@ -21,12 +21,33 @@ from tensorflow.keras.models import load_model
 # Import IPs
 import userUI
 
+
+
+def file_manager(filename):
+
+	local_path = os.getcwd()
+
+	if os.path.exists(str(local_path) + "/temp_audio.wav"):
+		os.remove(str(local_path) + "/temp_audio.wav")
+	
+	if os.path.exists(str(local_path) + "/temp_video.avi"):
+		os.remove(str(local_path) + "/temp_video.avi")
+
+	if os.path.exists(str(local_path) + "/temp_video2.avi"):
+		os.remove(str(local_path) + "/temp_video2.avi")
+
+	while os.path.exists(str(local_path) + "/" + filename + ".avi"):
+		filename += "+"
+
+	return filename
+
 # Create sockets for communication
 client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-videographer_ip = userUI.videographer_ip
+# videographer_ip = userUI.videographer_ip
+videographer_ip = "164.67.209.201"
 remote_ip = userUI.remote_ip
 
 videographer_port = 9999
@@ -37,7 +58,7 @@ remote_port = 9999
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-remote_socket.connect((remote_ip,remote_port))
+# remote_socket.connect((remote_ip,remote_port))
 
 remote_socket.setblocking(0)
 
@@ -62,13 +83,14 @@ fps = 5.6               # fps should be the minimum constant rate at which the c
 fourcc = "MJPG"       # capture images (with no decrease in speed over time; testing is required)
 frameSize = (320,240) # video formats and sizes also depend and vary according to the camera used
 video_writer = cv2.VideoWriter_fourcc(*fourcc)
-video_out = cv2.VideoWriter("temp_video.avi", video_writer, fps, frameSize)
+video_out = cv2.VideoWriter(file_manager(userUI.filename) + ".avi", video_writer, fps, frameSize)
 temp_frame = None
 
 # From Speech recognition code
 command = "m"
 
 active_recording = False
+end_program = False
 
 def frompi():
 	global command
@@ -82,6 +104,7 @@ def frompi():
 	global temp_frame
 	global payload_size
 	global active_recording
+	global end_program
 	# Set the initial position of the motor
 	initial_position = 0
 	desired_face_area = 0
@@ -109,7 +132,15 @@ def frompi():
 		try:
 			frame = temp_frame
 			current_time = time.time()
+			try:  # used try so that if user pressed other than the given key error will not be shown
+				if keyboard.is_pressed('e'):  # if key 'q' is pressed 
+					print("here")
+					end_program = True
+			except:
+				pass
 
+			if end_program:
+				break
 			################################ Gesture Recognition Code #########################################
 			# Temporarily block all system output
 			sys.stdout = open(os.devnull, 'w')	
@@ -142,9 +173,11 @@ def frompi():
 					# Predict gesture
 					prediction = model.predict([landmarks])
 					classID = np.argmax(prediction)
-					# Only print prediction if its "stop", "okay", or "rock"
+					# Only print prediction if its "okay" or "rock"
 					if prediction[0][classID] > min_detection_confidence and classNames[classID] in ["okay","rock"]:
 						className = classNames[classID]
+					elif classNames[classID] == "stop" and prediction[0][0] > 0.01:
+						className = "okay"
 			# Enable system output
 			sys.stdout = sys.__stdout__ 
 
@@ -278,7 +311,7 @@ def frompi():
 			if manual_control:
 				try:
 					from_IMU = ''
-					from_IMU = remote_socket.recv(4096)
+					# from_IMU = remote_socket.recv(4096)
 					if from_IMU:
 						client_tracking_socket.sendall(from_IMU)
 				except:
@@ -298,8 +331,10 @@ def frame_capture():
 	global payload_size
 	global video_out
 	global active_recording
-
+	global end_program
 	while(True):
+		if end_program:
+			break
 		##### Camera Frame Handler ######
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
@@ -326,13 +361,15 @@ def frame_capture():
 
 ############################################ Speech Recognition #############################################	
 def hear():
-    time.sleep(10)
+    global end_program
+    global command
     
+    time.sleep(10)
     while(True):
-        
-        global command
-		
+	
         r = sr.Recognizer()
+        if end_program:
+            break
         with sr.Microphone() as source:
             print("Say something!")
             audio = r.listen(source)

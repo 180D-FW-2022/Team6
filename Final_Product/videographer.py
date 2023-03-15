@@ -5,12 +5,12 @@ import socket, cv2, pickle, struct, imutils, threading
 import numpy as np
 import serial
 import cv2
-import userUI
-import fcntl, struct
+# import fcntl, struct
 
 frame = None
 ret = None
 vs = None
+end_program = False
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -23,15 +23,19 @@ def camera_capture():
 	global frame
 	global ret
 	global vs
+	global end_program
 
 	vs = cv2.VideoCapture(0)
 	while(True):
+		if end_program:
+			break
 		ret, frame = vs.read()
 
 def frame_transmission():
 	global frame
 	global ret
 	global vs
+	global end_program
 	########## Socket Setup ##########
 	# Create socket
 	camera_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -44,9 +48,10 @@ def frame_transmission():
 	camera_port = 9999
 	instruction_port = 9998
 
-	print("Dynamic IP: ", get_ip_address("wlan0"))
-	camera_address = (userUI.videographer_ip,camera_port)
-	instruction_address = (userUI.videographer_ip,instruction_port)
+	# videographer_ip = get_ip_address("wlan0")
+	videographer_ip = "164.67.209.201"
+	camera_address = (videographer_ip,camera_port)
+	instruction_address = (videographer_ip,instruction_port)
 
 	# Socket Bind
 	camera_socket.bind(camera_address)
@@ -73,11 +78,15 @@ def frame_transmission():
 				laptop_instruction_socket.setblocking(0)
 				# laptop_camera_socket.setblocking(0)
 				while(vs):
+					if end_program:
+						break
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
 							# ser.write(direction)
 							pass
+					except ConnectionResetError:
+						end_program = True
 					except:
 						pass
 
@@ -91,8 +100,12 @@ def frame_transmission():
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)
+					except ConnectionResetError:
+						end_program = True
 					except:
 						pass
+			if end_program:
+						break
 										
 	finally:
 		vs.release()
