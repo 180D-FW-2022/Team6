@@ -27,9 +27,9 @@ def camera_capture():
 
 	vs = cv2.VideoCapture(0)
 	while(True):
+		ret, frame = vs.read()
 		if end_program:
 			break
-		ret, frame = vs.read()
 
 def frame_transmission():
 	global frame
