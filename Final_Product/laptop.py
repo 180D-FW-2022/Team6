@@ -131,14 +131,7 @@ def frompi():
 		try:
 			frame = temp_frame
 			current_time = time.time()
-			try:  # used try so that if user pressed other than the given key error will not be shown
-				if keyboard.is_pressed('e'):  # if key 'e' is pressed 
-					end_program = True
-			except:
-				pass
 
-			if end_program:
-				break
 			################################ Gesture Recognition Code #########################################
 			# Temporarily block all system output
 			sys.stdout = open(os.devnull, 'w')	
@@ -331,8 +324,6 @@ def frame_capture():
 	global active_recording
 	global end_program
 	while(True):
-		if end_program:
-			break
 		##### Camera Frame Handler ######
 		while len(data) < payload_size:
 			packet = client_socket.recv(4*1024) # 4K
@@ -366,8 +357,6 @@ def hear():
     while(True):
 	
         r = sr.Recognizer()
-        if end_program:
-            break
         with sr.Microphone() as source:
             print("Say something!")
             audio = r.listen(source)

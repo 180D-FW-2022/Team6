@@ -28,8 +28,6 @@ def camera_capture():
 	vs = cv2.VideoCapture(0)
 	while(True):
 		ret, frame = vs.read()
-		# if end_program:
-		# 	break
 
 def frame_transmission():
 	global frame
@@ -75,7 +73,6 @@ def frame_transmission():
 			print('GOT CONNECTION FROM:',instruction_addr)
 			if laptop_camera_socket and laptop_instruction_socket:
 				laptop_instruction_socket.setblocking(0)
-				# laptop_camera_socket.setblocking(0)
 				while(vs):
 					
 					if end_program:
@@ -84,8 +81,6 @@ def frame_transmission():
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
 							ser.write(direction)
-					# except ConnectionResetError:
-					# 	end_program = True
 					except:
 						pass
 
@@ -99,12 +94,8 @@ def frame_transmission():
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)
-					# except ConnectionResetError:
-					# 	end_program = True
 					except:
 						pass
-			if end_program:
-				break
 										
 	finally:
 		vs.release()
