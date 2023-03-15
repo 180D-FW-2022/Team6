@@ -26,6 +26,8 @@ def camera_capture():
 	global end_program
 
 	vs = cv2.VideoCapture(0)
+	vs.release()
+	vs = cv2.VideoCapture(0)
 	while(True):
 		ret, frame = vs.read()
 		if end_program:
