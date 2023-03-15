@@ -82,15 +82,15 @@ def frame_transmission():
 					print(counter)
 					if end_program:
 						break
-					try:
-						direction = laptop_instruction_socket.recv(4096)
-						if direction:
-							ser.write(direction)
-							pass
-					except ConnectionResetError:
-						end_program = True
-					except:
-						pass
+					# try:
+					# 	direction = laptop_instruction_socket.recv(4096)
+					# 	if direction:
+					# 		ser.write(direction)
+					# 		pass
+					# # except ConnectionResetError:
+					# # 	end_program = True
+					# except:
+					# 	pass
 
 					#### Camera frame capture and transmission ####
 					if( np.shape(frame)==()):
@@ -102,12 +102,12 @@ def frame_transmission():
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)
-					except ConnectionResetError:
-						end_program = True
+					# except ConnectionResetError:
+					# 	end_program = True
 					except:
 						pass
-			if end_program:
-						break
+			# if end_program:
+			# 			break
 										
 	finally:
 		vs.release()
