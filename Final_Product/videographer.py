@@ -48,8 +48,7 @@ def frame_transmission():
 	camera_port = 9999
 	instruction_port = 9998
 
-	# videographer_ip = get_ip_address("wlan0")
-	videographer_ip = "164.67.209.201"
+	videographer_ip = get_ip_address("wlan0")
 	camera_address = (videographer_ip,camera_port)
 	instruction_address = (videographer_ip,instruction_port)
 
@@ -64,8 +63,8 @@ def frame_transmission():
 	print("LISTENING AT:",instruction_address)
 
 	# Configure serial communication to videographer
-	# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-	# ser.reset_input_buffer()
+	ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+	ser.reset_input_buffer()
 
 	try:
 		# Socket Accept
@@ -83,7 +82,7 @@ def frame_transmission():
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
-							# ser.write(direction)
+							ser.write(direction)
 							pass
 					except ConnectionResetError:
 						end_program = True

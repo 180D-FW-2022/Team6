@@ -46,8 +46,7 @@ client_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client_tracking_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 remote_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
-# videographer_ip = userUI.videographer_ip
-videographer_ip = "164.67.209.201"
+videographer_ip = userUI.videographer_ip
 remote_ip = userUI.remote_ip
 
 videographer_port = 9999
@@ -58,7 +57,7 @@ remote_port = 9999
 
 client_socket.connect((videographer_ip,videographer_port))
 client_tracking_socket.connect((videographer_ip,tracking_port))
-# remote_socket.connect((remote_ip,remote_port))
+remote_socket.connect((remote_ip,remote_port))
 
 remote_socket.setblocking(0)
 
@@ -133,8 +132,7 @@ def frompi():
 			frame = temp_frame
 			current_time = time.time()
 			try:  # used try so that if user pressed other than the given key error will not be shown
-				if keyboard.is_pressed('e'):  # if key 'q' is pressed 
-					print("here")
+				if keyboard.is_pressed('e'):  # if key 'e' is pressed 
 					end_program = True
 			except:
 				pass
@@ -311,7 +309,7 @@ def frompi():
 			if manual_control:
 				try:
 					from_IMU = ''
-					# from_IMU = remote_socket.recv(4096)
+					from_IMU = remote_socket.recv(4096)
 					if from_IMU:
 						client_tracking_socket.sendall(from_IMU)
 				except:
