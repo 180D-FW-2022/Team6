@@ -75,7 +75,7 @@ def frame_transmission():
 			print('GOT CONNECTION FROM:',instruction_addr)
 			if laptop_camera_socket and laptop_instruction_socket:
 				laptop_instruction_socket.setblocking(0)
-				laptop_camera_socket.setblocking(0)
+				# laptop_camera_socket.setblocking(0)
 				while(vs):
 					
 					if end_program:
