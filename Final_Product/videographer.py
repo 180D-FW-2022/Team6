@@ -76,9 +76,9 @@ def frame_transmission():
 			print('GOT CONNECTION FROM:',instruction_addr)
 			if laptop_camera_socket and laptop_instruction_socket:
 				laptop_instruction_socket.setblocking(0)
-				# laptop_camera_socket.setblocking(0)
+				laptop_camera_socket.setblocking(0)
 				while(vs):
-					counter += 1
+					
 					print(counter)
 					if end_program:
 						break
@@ -102,6 +102,7 @@ def frame_transmission():
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)
+						counter += 1
 					# except ConnectionResetError:
 					# 	end_program = True
 					except:
