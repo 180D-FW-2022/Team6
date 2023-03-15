@@ -71,12 +71,10 @@ def frame_transmission():
 			laptop_instruction_socket,instruction_addr = instruction_socket.accept()
 			print('GOT CONNECTION FROM:',camera_addr)
 			print('GOT CONNECTION FROM:',instruction_addr)
-			if laptop_camera_socket and laptop_instruction_socket:
+			if laptop_camera_socket and laptop_instruction_socket and vs:
 				laptop_instruction_socket.setblocking(0)
-				while(vs):
-					
-					if end_program:
-						break
+				while(True):
+					temp_frame = frame
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
@@ -85,12 +83,12 @@ def frame_transmission():
 						pass
 
 					#### Camera frame capture and transmission ####
-					if( np.shape(frame)==()):
+					if( np.shape(temp_frame)==()):
 						continue
 					if ret != True:
 						continue
-					frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
-					a = pickle.dumps(frame)
+					temp_frame = imutils.resize(temp_frame,width=320,inter=cv2.INTER_LANCZOS4)
+					a = pickle.dumps(temp_frame)
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)
