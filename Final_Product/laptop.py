@@ -131,10 +131,9 @@ def frompi():
 		try:
 			frame = temp_frame
 			current_time = time.time()
-
 			################################ Gesture Recognition Code #########################################
 			# Temporarily block all system output
-			sys.stdout = open(os.devnull, 'w')	
+			# sys.stdout = open(os.devnull, 'w')	
 
 			x, y, c = frame.shape
 
@@ -147,7 +146,6 @@ def frompi():
 
 			# print(result)
 			className = ''
-
 			# post process the result
 			if result.multi_hand_landmarks:
 				landmarks = []
@@ -160,7 +158,6 @@ def frompi():
 
 					# Drawing landmarks on frames
 					mpDraw.draw_landmarks(frame, handslms, mpHands.HAND_CONNECTIONS)
-
 					# Predict gesture
 					prediction = model.predict([landmarks])
 					classID = np.argmax(prediction)
@@ -171,7 +168,6 @@ def frompi():
 						className = "okay"
 			# Enable system output
 			sys.stdout = sys.__stdout__ 
-
 			# show the prediction on the frame
 			cv2.putText(frame, className, (10, 50), cv2.FONT_HERSHEY_SIMPLEX,1, (0,0,255), 2, cv2.LINE_AA)
 
@@ -187,7 +183,6 @@ def frompi():
 			
 
 			############################### End of Gesture Recognition Code ###########################
-			
 
 			#################################### Speech Recognition ###################################
 			if "start recording" in command.lower():

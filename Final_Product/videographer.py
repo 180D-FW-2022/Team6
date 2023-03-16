@@ -47,6 +47,7 @@ def frame_transmission():
 	instruction_port = 9998
 
 	videographer_ip = get_ip_address("wlan0")
+	# videographer_ip = "131.179.42.136"
 	camera_address = (videographer_ip,camera_port)
 	instruction_address = (videographer_ip,instruction_port)
 
@@ -78,6 +79,7 @@ def frame_transmission():
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
 							ser.write(direction)
+							pass
 					except:
 						pass
 
