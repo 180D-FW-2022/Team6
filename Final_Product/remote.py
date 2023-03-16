@@ -475,8 +475,6 @@ def respond():
                         laptop_socket.sendall(b"LEFT\n")
                     elif stationary:
                         laptop_socket.sendall(b"STOP\n")
-    except ConnectionResetError:
-        remote_socket.close()
     finally: 
         remote_socket.close()
         

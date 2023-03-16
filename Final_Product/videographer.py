@@ -10,7 +10,7 @@ import fcntl, struct
 frame = None
 ret = None
 vs = None
-end_program = False
+# end_program = False
 def get_ip_address(ifname):
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     return socket.inet_ntoa(fcntl.ioctl(
@@ -33,7 +33,7 @@ def frame_transmission():
 	global frame
 	global ret
 	global vs
-	global end_program
+	# global end_program
 	########## Socket Setup ##########
 	# Create socket
 	camera_socket = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -74,7 +74,6 @@ def frame_transmission():
 			if laptop_camera_socket and laptop_instruction_socket and vs:
 				laptop_instruction_socket.setblocking(0)
 				while(True):
-					temp_frame = frame
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:
@@ -83,12 +82,12 @@ def frame_transmission():
 						pass
 
 					#### Camera frame capture and transmission ####
-					if( np.shape(temp_frame)==()):
+					if( np.shape(frame)==()):
 						continue
 					if ret != True:
 						continue
-					temp_frame = imutils.resize(temp_frame,width=320,inter=cv2.INTER_LANCZOS4)
-					a = pickle.dumps(temp_frame)
+					frame = imutils.resize(frame,width=320,inter=cv2.INTER_LANCZOS4)
+					a = pickle.dumps(frame)
 					message = struct.pack("Q",len(a))+a
 					try:
 						laptop_camera_socket.sendall(message)

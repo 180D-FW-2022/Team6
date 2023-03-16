@@ -165,7 +165,7 @@ def frompi():
 					prediction = model.predict([landmarks])
 					classID = np.argmax(prediction)
 					# Only print prediction if its "okay" or "rock"
-					if prediction[0][classID] > min_detection_confidence and classNames[classID] in ["okay","rock"]:
+					if classNames[classID] in ["okay","rock"] and prediction[0][classID] > min_detection_confidence:
 						className = classNames[classID]
 					elif classNames[classID] == "stop" and prediction[0][0] > 0.01:
 						className = "okay"
