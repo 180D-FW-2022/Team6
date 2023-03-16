@@ -72,9 +72,9 @@ def frame_transmission():
 			laptop_instruction_socket,instruction_addr = instruction_socket.accept()
 			print('GOT CONNECTION FROM:',camera_addr)
 			print('GOT CONNECTION FROM:',instruction_addr)
-			if laptop_camera_socket and laptop_instruction_socket and vs:
+			if laptop_camera_socket and laptop_instruction_socket:
 				laptop_instruction_socket.setblocking(0)
-				while(True):
+				while(vs):
 					try:
 						direction = laptop_instruction_socket.recv(4096)
 						if direction:

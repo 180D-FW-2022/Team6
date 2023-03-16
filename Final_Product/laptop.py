@@ -133,7 +133,7 @@ def frompi():
 			current_time = time.time()
 			################################ Gesture Recognition Code #########################################
 			# Temporarily block all system output
-			# sys.stdout = open(os.devnull, 'w')	
+			sys.stdout = open(os.devnull, 'w')	
 
 			x, y, c = frame.shape
 
