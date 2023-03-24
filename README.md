@@ -11,10 +11,17 @@ a readme file that explains the work done in that folder and includes sources fo
 The unmanned videographer is a cutting-edge tool that provides a variety of features, including:
 
 BerryIMU
+
 Communication
+
 Gesture
+
 Hardware
+
 Speech Control
+
 Tracking
+
 pan-tilt-cam
+
 Integration
